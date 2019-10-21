@@ -1,0 +1,42 @@
+{
+  "name": "Work line",
+  "description": "",
+  "manifest_version": 2,
+  "version": "1.0.0",
+  "minimum_chrome_version": "77",
+
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "web_accessible_resources": [
+    "wasaby_devtool.js"
+  ],
+
+  "background": {
+    "scripts": [
+      "background/index.js"
+    ],
+    "persistent": false
+  },
+
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "https://online.sbis.ru/"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://online.sbis.ru/"
+      ],
+      "js": [
+        "content/index.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+
+  "options_ui": {
+    "page": "options/index.html",
+    "open_in_tab": true
+  }
+}
