@@ -6,31 +6,18 @@
   "minimum_chrome_version": "77",
 
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": [
-    "wasaby_devtool.js"
-  ],
 
   "background": {
-    "scripts": [
-      "background/index.js"
-    ],
+    "scripts": ["background/bundle.js"],
     "persistent": false
   },
 
-  "permissions": [
-    "activeTab",
-    "tabs",
-    "https://online.sbis.ru/"
-  ],
+  "permissions": ["activeTab", "tabs", "https://online.sbis.ru/"],
 
   "content_scripts": [
     {
-      "matches": [
-        "https://online.sbis.ru/"
-      ],
-      "js": [
-        "content/index.js"
-      ],
+      "matches": ["https://online.sbis.ru/"],
+      "js": ["content/bundle.js"],
       "run_at": "document_start"
     }
   ],
