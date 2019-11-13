@@ -1,0 +1,10 @@
+{
+  "eslint.alwaysShowStatus": true,
+  "eslint.enable": true,
+  "eslint.run": "onType",
+  "eslint.autoFixOnSave": true,
+  "eslint.options": {
+     "configFile": "/Users/max/Documents/workline/.eslintrc", 
+     "workingDirectories": ["./client/"]
+ },
+}
