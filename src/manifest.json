@@ -9,7 +9,7 @@
 
   "background": {
     "scripts": ["background/bundle.js"],
-    "persistent": false
+    "persistent": true
   },
 
   "permissions": ["activeTab", "tabs", "https://online.sbis.ru/"],
