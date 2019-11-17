@@ -12,7 +12,9 @@ module.exports = {
    },
    mode: 'development',
    plugins: [
-      new CleanWebpackPlugin(),
+      new CleanWebpackPlugin({
+         cleanStaleWebpackAssets: false,
+      }),
       new HtmlWebpackPlugin({
          title: 'Workline',
          filename: 'options/index.html',
@@ -46,4 +48,5 @@ module.exports = {
       filename: '[name]/bundle.js',
    },
    watch: true,
+   devtool: 'inline-source-map',
 };
