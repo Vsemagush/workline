@@ -1,3 +1,10 @@
 .App {
   margin: 1rem;
 }
+
+.workline-content {
+  display: flex;
+  align-items: center;
+  width: auto;
+  flex-direction: column;
+}
