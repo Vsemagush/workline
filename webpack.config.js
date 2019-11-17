@@ -2,6 +2,7 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
    entry: {
@@ -19,6 +20,12 @@ module.exports = {
          inject: 'body',
          chunks: ['options'],
       }),
+      new CopyPlugin([
+         {
+            from: 'src/manifest.json',
+            to: 'manifest.json',
+         },
+      ]),
    ],
    module: {
       rules: [
