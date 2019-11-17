@@ -29,7 +29,7 @@ npm run build
   - VS: menu -> open with Live Server
   - WS: menu -> open chrome...
 - settings ESLint
-  - VS: `.vscode/settings.json` - заменить на свой путь до конфига в корне
+  - VS: работает без дополнительных настроек
   - WS: подключить в настройках для проекта
 
 ## Production
