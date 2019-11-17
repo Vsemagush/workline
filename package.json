@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint --ext .jsx,.js src/",
     "build": "webpack --mode development",
-    "build:production": "webpack --mode production"
+    "build:production": "webpack --mode production",
+    "reset": "sh reset.sh"
   },
   "repository": {
     "type": "git",
