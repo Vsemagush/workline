@@ -11,16 +11,16 @@
 
 ## Fast start
 ```bash 
-npm i
+yarn install
 ```
 ```bash 
-npm run build
+yarn build
 ```
 ```
-открыть в Chrome `chrome://extensions` и перенести папку build туда
+открыть в Chrome `chrome://extensions` включить режим разработчика и перенести папку `/build` туда
 ```
 ```
-открыт <путь расширения>/options/index.html
+открыт информацию о расширении и  3 пункт снизу
 ```
 
 ## Step by step
@@ -29,14 +29,12 @@ npm run build
 - `git clone https://github.com/alserz1/workline.git`
 - Открыть проект в удобной IDE 
   - VS - https://code.visualstudio.com/ + установить extensions:
-    - Live Server
     - Gitlens
-    - Debugger for Chrome
     - Eslint
   - WebStorm (WS) - https://www.jetbrains.com/webstorm/download/
-- Установить NPM https://www.npmjs.com/get-npm
-- `npm i` - установка приложения и зависимостей
-- `npm run build` - сборка приложения
+- Установить YARN - https://yarnpkg.com/lang/ru/docs/install/
+- `yarn install` - установка приложения и зависимостей
+- `yarn build` - сборка приложения
 - settings ESLint - линтер для анализа кода
   - VS: работает без дополнительных настроек
   - WS: подключить в настройках для проекта
@@ -45,19 +43,25 @@ npm run build
 - Открыть подробную информацию о расширении
 - Параметры расширения (3 снизу настройка)
 - Откроется страница вида (id будет уникальный): `chrome-extension://ileopabmfgojgnmihokibiaigdcokhjd/options/index.html`
+- Авторизоваться на fix-online и совершить клик - на странице расширения появиться информация о событии, на странице fix-online уведомление
 
 ## Production
 Сборка проекта для тестирования в браузере
-- `npm run build:production`
+- `yarn build:production`
 
 ## Structure
 - `/src` - ресурсы проекта
   - `/src/background/` - служебная станица взаимодействий
-  - `/src/content/` - для данных на конечной странице
-  - `/src/controller/` - отслеживание действий на странице
-  - `/src/options/` - основная страница расширения
-  - `manifest.json` - настройки для расширения хрома
-- `/build` - собранное приложение
+  - `/src/content/` - создает объекты для взаимодействия расширения с текущей страницей
+  - `/src/controller/` - отслеживание действий на странице через подписантов
+  - `/src/options/` - главная страница расширения
+  - `manifest.json` - настройки расширения
+- `/build` - собранный продукт
+
+Проект состоит из 3 основных частей
+-  Страницы отображения прогресса `/options/*`
+-  Контроллер отслеживания событий на странице `/controller/*`
+-  Контроль взаимодействия между модулями `/background/*`
 
 ## React - FAQ
 - https://ru.reactjs.org/docs/getting-started.html
@@ -83,6 +87,4 @@ npm run build
 - Контроллер - модуль содержащий логику управления и передачи данных другим модулям
 
 ## Helpers and commands
-- `du hs workline` - размер директории bash
-- `clear` - очистить консоль терминала
-- `npm run reset` - сброс директории к дефолту, только для osx/nix
+- `yarn reset` - сброс директории к дефолту, только для osx/nix
