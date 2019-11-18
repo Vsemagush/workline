@@ -12,15 +12,21 @@ import './App.css';
 
 function App() {
    const [lastMessage, setLastMessage] = useState('');
-   const channel = useRef(new ContentChannel('Stage-0'));
+   const ref = useRef();
+   useEffect(() => {
+      ref.channel = new ContentChannel('Stage-0');
+      return () => {
+         ref.channel.destroy();
+      }
+   }, []);
+
    useEffect(() => {
       function listener(data) {
          setLastMessage(data);
       }
-      const cur = channel.current;
-      cur.addListener('test-event', listener);
+      ref.channel.addListener('test-event', listener);
       return () => {
-         cur.removeListener('test-event', listener);
+         ref.channel.removeListener('test-event', listener);
       };
    });
 
