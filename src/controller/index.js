@@ -10,11 +10,13 @@ import ContentChannel from './../content/Channel';
  * - Каждый этап - выделить по итогу в отдельный файл, сюда импорт
  */
 
+// пример подписки на событие и передача данных в шину
+const channel = new ContentChannel('Stage-0');
 window.addEventListener('click', (event) => {
    const msg = 'detected click';
-   const date = new Date();
+   const date = new Date(); // потребуется в последствии для фиксирования времени исполнения
    const className = event.toElement.className;
-   new ContentChannel('Stage-0').dispatch('test-event', { msg, date, className });
+   channel.dispatch('test-event', { msg, date, className });
 
    window.require(['Controls/popup'], (popup) => {
       popup.Notification.openPopup({
