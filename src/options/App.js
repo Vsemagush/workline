@@ -4,7 +4,7 @@ import Admin from './Admin';
 import User from './User';
 import Home from './Home';
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Route,
   Link
 } from "react-router-dom";
