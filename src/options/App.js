@@ -1,24 +1,51 @@
 import React, {useState, useRef, useEffect} from 'react';
 import ContentChannel from './Channel';
+import Admin from './Admin';
+import User from './User';
+import Home from './Home';
+import {
+  HashRouter as Router,
+  Route,
+  Link
+} from "react-router-dom";
 import './App.css';
 
 function App() {
    const [lastMessage, setLastMessage] = useState('');
-   const channel = useRef(new ContentChannel('Stage-0'));
+   const ref = useRef();
+   useEffect(() => {
+      ref.channel = new ContentChannel('Stage-0');
+      return () => {
+         ref.channel.destroy();
+      }
+   }, []);
+
    useEffect(() => {
       function listener(data) {
          setLastMessage(data);
       }
-      const cur = channel.current;
-      cur.addListener('test-event', listener);
+      ref.channel.addListener('test-event', listener);
       return () => {
-         cur.removeListener('test-event', listener);
+         ref.channel.removeListener('test-event', listener);
       };
    });
 
    return (
       <div className="App">
-         <h1>Workline home page</h1>
+        <Router>
+            <div>
+               <div>
+                  <Route exact path="/" component={Home}/>
+                  <Route path="/user" component={User} />
+                  <Route path="/admin" component={Admin} />
+               </div>
+               <div className="menu">
+                  <Link to="/user">Обучение</Link>
+                  <Link to="/admin">Редактирование</Link>
+               </div>
+            </div>
+        </Router>
+        
          {lastMessage &&
             <div className="workline-content">
                <div>Сообщение: {lastMessage.msg}</div>
