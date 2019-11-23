@@ -1,6 +1,6 @@
 import React, {useState, useRef, useEffect} from 'react';
 import ContentChannel from './Channel';
-import Admin from './Admin';
+import Admin from './Admin/Admin';
 import User from './User';
 import Home from './Home';
 import {
@@ -45,7 +45,7 @@ function App() {
                </div>
             </div>
         </Router>
-        
+
          {lastMessage &&
             <div className="workline-content">
                <div>Сообщение: {lastMessage.msg}</div>
