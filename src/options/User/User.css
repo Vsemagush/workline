@@ -1,0 +1,47 @@
+.User__list {
+    font-size: 16px;
+}
+
+.User__header {
+    font-size: 30px;
+    font-weight: normal;
+    color: #555;
+}
+
+ul.User__list  {
+    list-style: none;
+}
+
+ul.User__list > li{
+    padding-left: 20px;
+    position: relative;
+    margin: 15px;
+}
+
+ul.User__list > li:before{
+    position: absolute; top: 0; left: 0;
+}
+
+li.User__item-done:before{
+    content: '✔';
+}
+
+li.User__item-closed:before{
+    content: '✘';
+}
+
+li.User__item-processing:before{
+    content: '⟳';
+}
+
+.User__item-done {
+    color: green;
+}
+
+.User__item-processing {
+    color: yellow;
+}
+
+.User__item-closed {
+    color: gray;
+}
