@@ -1,7 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 import ContentChannel from './Channel';
 import Admin from './Admin/Admin';
-import User from './User';
+import User from './User/User';
 import Home from './Home';
 import {
   HashRouter as Router,

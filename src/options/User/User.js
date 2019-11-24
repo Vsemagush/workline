@@ -1,6 +1,6 @@
 import React, { useMemo, Fragment, useState, useCallback } from 'react';
-import ListItem from './User/ListItem';
-import './User/User.css';
+import ListItem from './ListItem';
+import './User.css';
 
 /** Используем статус как css класс */
 const STATUS_DONE = 'done';
