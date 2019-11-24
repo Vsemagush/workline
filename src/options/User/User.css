@@ -32,6 +32,7 @@ li.User__item-closed:before{
 
 li.User__item-processing:before{
     content: '⟳';
+    color: #FFCC00;
 }
 
 .User__item-done {
@@ -39,7 +40,8 @@ li.User__item-processing:before{
 }
 
 .User__item-processing {
-    color: yellow;
+    color: rgb(42, 42, 42);
+    font-weight: 630;
 }
 
 .User__item-closed {
