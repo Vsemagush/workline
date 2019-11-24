@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import { useHistory } from "react-router-dom";
 
 /** Главная страница - страница авторизации */
@@ -11,18 +11,21 @@ function Home() {
     let history = useHistory();
 
     /** Обработчик нажатия на "Войти" */
-    function onEnterClick() {
-        let data = {
-            login: loginInput.current && loginInput.current.value,
-            password: passInput.current && passInput.current.value
-        };
-        if (data.login === EDIT_DEFAULT_LOGIN &&
-            data.password === EDIT_DEFAULT_PASSWORD) {
-            history.replace('/admin');
-        } else {
-            history.replace('/user');
-        }
-    }
+    const onEnterClick = useCallback(
+        () => {
+            let data = {
+                login: loginInput.current && loginInput.current.value,
+                password: passInput.current && passInput.current.value
+            };
+            if (data.login === EDIT_DEFAULT_LOGIN &&
+                data.password === EDIT_DEFAULT_PASSWORD) {
+                history.replace('/admin');
+            } else {
+                history.replace('/user');
+            }
+        }, 
+        [history, loginInput, passInput],
+    );
 
     return (
         <div>
