@@ -1,17 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-function ListItem({ text, onClick }) {
+function ListItem({ text, onClick, cssClass }) {
    return (
-      <div onClick={onClick} className="List__listItem">
+      <div onClick={onClick} className={cssClass}>
          {text}
       </div>
    );
 }
-
-ListItem.propTypes = {
-   text: PropTypes.string.isRequired,
-   onClick: PropTypes.func,
-};
 
 export default ListItem;

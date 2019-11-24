@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
 /*
 Редактирование может находиться в 2 состояниях: редактирование запущено и редактирование не запущено.
 Если редактирование не запущено, то рисуется пользовательский компонент с двумя перебитыми опциями:
@@ -18,7 +17,7 @@ import PropTypes from 'prop-types';
  */
 
 function EditableItem(props) {
-   const { onSave, initialText, Template } = props;
+   const { onSave, initialText, Template, cssClass } = props;
    const fieldRef = useRef();
    const [isEditing, setIsEditing] = useState(false);
    const [text, setText] = useState(initialText);
@@ -63,6 +62,7 @@ function EditableItem(props) {
       <>
          {isEditing ? (
             <input
+               className={cssClass}
                value={text}
                onChange={(event) => setText(event.target.value)}
                onKeyDown={onKeyDown}
@@ -75,11 +75,5 @@ function EditableItem(props) {
       </>
    );
 }
-
-EditableItem.propTypes = {
-   Template: PropTypes.func.isRequired,
-   initialText: PropTypes.string.isRequired,
-   onSave: PropTypes.func.isRequired,
-};
 
 export default EditableItem;
