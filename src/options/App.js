@@ -10,33 +10,36 @@ import DataBaseApi from './../storage/db';
 function App() {
    const [lastMessage, setLastMessage] = useState('');
    const [data, setData] = useState('');
-   const config = useRef({});
+   const channel = useRef();
+   const db = useRef();
+   
+   // отработает только 1 раз
    useEffect(() => {
-      const _ref = config.current;
-      _ref.channel = new ContentChannel('Stage-0');
-      _ref.db = new DataBaseApi();
+      channel.current = new ContentChannel('Stage-0');
+      db.current =  new DataBaseApi();
       return () => {
-         _ref.channel.destroy();
+         channel.current.destroy();
       };
    }, []);
 
    useEffect(() => {
-      const _ref = config.current;
+      const channelRef = channel.current;
+      const dbApi = db.current;
 
       function listener(data) {
          setLastMessage(data);
-         _ref.db.get('param');
+         dbApi.get('param');
       }
 
-      _ref.channel.addListener('test-event', listener);
+      channelRef.addListener('test-event', listener);
       return () => {
-         _ref.channel.removeListener('test-event', listener);
+         channelRef.removeListener('test-event', listener);
       };
    });
 
    /** тестовая функция получения и записи дополнительной задачи - удалить после подключения модули */
    function testClickHandler() {
-      const dbApi = config.current.db;
+      const dbApi = db.current;
       // получаем список всех задачи
       dbApi.get('tasks').then((res) => {
          const testList = Object.keys(res).map((key) => 
