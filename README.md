@@ -55,6 +55,7 @@ yarn build
   - `/src/content/` - создает объекты для взаимодействия расширения с текущей страницей
   - `/src/controller/` - отслеживание действий на странице через подписантов
   - `/src/options/` - главная страница расширения
+  - `/src/storage/` - содержит API CRUD к БД
   - `manifest.json` - настройки расширения
 - `/build` - собранный продукт
 
@@ -66,11 +67,11 @@ yarn build
 ## React - FAQ
 - https://ru.reactjs.org/docs/getting-started.html
 
-- https://reactjs.org/tutorial/tutorial.html
-- https://reactjs.org/docs/hooks-intro.html
-- https://reactjs.org/docs/fragments.html
-- https://reactjs.org/docs/portals.html
-- https://reactjs.org/docs/refs-and-the-dom.html
+- https://ru.reactjs.org/tutorial/tutorial.html
+- https://ru.reactjs.org/docs/hooks-intro.html
+- https://ru.reactjs.org/docs/fragments.html
+- https://ru.reactjs.org/docs/portals.html
+- https://ru.reactjs.org/docs/refs-and-the-dom.html
 
 ## Wasaby - FAQ
 - https://wasaby.dev/
@@ -80,11 +81,18 @@ yarn build
 ## GIT - FAQ
 - наименование веток: `dev/<инициалы.фамилия>/message-with-info`, например `dev/mu.slastuhin/add-controller`
 
+## DataBase - FireBase
+- https://firebase.google.com/docs/database/web/read-and-write - базовые операции
+- https://firebase.google.com/docs/database/security/quickstart - работа с доступом
+- https://firebase.google.com/docs/database/web/lists-of-data - сортировки и агрегации
+
 ## Определения и термины
 - Модуль - js файл с определенной логикой
 - Линтер - утилита проверки корректности кода
 - Бандл - исходники собранные через webpack
 - Контроллер - модуль содержащий логику управления и передачи данных другим модулям
+- БД - база данных
+- Firebase - условно бесплатная база данных, где будем хранить все
 
 ## Helpers and commands
 - `yarn reset` - сброс директории к дефолту, только для osx/nix
