@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import ContentChannel from './Channel';
 import Admin from './Admin/Admin';
 import User from './User/User';
@@ -38,7 +38,7 @@ function App() {
    });
 
    /** тестовая функция получения и записи дополнительной задачи - удалить после подключения модули */
-   function testClickHandler() {
+   const testClickHandler = useCallback(() => {
       const dbApi = db.current;
       // получаем список всех задачи
       dbApi.get('tasks').then((res) => {
@@ -72,7 +72,7 @@ function App() {
       setTimeout(() => {
          dbApi.removeTask(`task-0`);
       }, 1000)
-   }
+   }, []);
 
    return (
       <div className="App">
