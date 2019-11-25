@@ -10,34 +10,33 @@ import DataBaseApi from './../storage/db';
 function App() {
    const [lastMessage, setLastMessage] = useState('');
    const [data, setData] = useState('');
-   const ref = useRef({});
+   const config = useRef({});
    useEffect(() => {
-      const self = ref.current;
-      self.channel = new ContentChannel('Stage-0');
-      self.db = new DataBaseApi();
+      const _ref = config.current;
+      _ref.channel = new ContentChannel('Stage-0');
+      _ref.db = new DataBaseApi();
       return () => {
-         self.channel.destroy();
-         self.db = null;
+         _ref.channel.destroy();
       };
    }, []);
 
    useEffect(() => {
-      const self = ref.current;
+      const _ref = config.current;
 
       function listener(data) {
          setLastMessage(data);
-         self.db.get('param');
+         _ref.db.get('param');
       }
 
-      self.channel.addListener('test-event', listener);
+      _ref.channel.addListener('test-event', listener);
       return () => {
-         self.channel.removeListener('test-event', listener);
+         _ref.channel.removeListener('test-event', listener);
       };
    });
 
-   /** тестовая функция получения и записи дополнительной задачи - удалить в последствии */
+   /** тестовая функция получения и записи дополнительной задачи - удалить после подключения модули */
    function testClickHandler() {
-      const dbApi = ref.current.db;
+      const dbApi = config.current.db;
       // получаем список всех задачи
       dbApi.get('tasks').then((res) => {
          const testList = Object.keys(res).map((key) => 
@@ -78,8 +77,8 @@ function App() {
             <Route exact path = '/' component = { Home } /> 
             <Route path = '/user' component = { User } />
             <Route path = '/admin' component = { Admin } />
-            <button onClick={testClickHandler}>Тесты БД (добавляет запись)</button>
          </Switch>
+         <button onClick={testClickHandler}>Тесты БД (добавляет запись)</button>
 
          {/* Тесты записи в БД и перехвата событий - удалить перед релизом  */}
 
@@ -96,6 +95,7 @@ function App() {
                <div>Список CSS классов: {lastMessage.className}</div>
             </div>
          )}
+         {/*************************************************************    */}
       </div>
    );
 }

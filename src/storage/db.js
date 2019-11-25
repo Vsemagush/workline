@@ -97,7 +97,7 @@ class DataBaseApi {
     * @returns {Promise}
     */
    updateTask(key, data) {
-      var updates = {};
+      const updates = {};
       updates['/tasks/' + key] = data;
 
       return this._db.ref().update(updates);
@@ -105,10 +105,36 @@ class DataBaseApi {
 
    /**
     * Удалить задачу
-    * @param {String} key 
+    * @param {String} key
+    * @returns {Promise} 
     */
    removeTask(key) {
       return this._db.ref('/tasks/' + key).remove();
+   }
+
+   /**
+    * Добавляет статус задачи
+    * @param {String} taskId 
+    * @param {String} user 
+    * @param {String} state 
+    * @returns {Promise}
+    */
+   setState(taskId, user, state) {
+      const updates = {};
+      const stateTask = {
+         state,
+         user
+      };
+      updates['/progress/' + taskId] = stateTask;
+      return this._db.ref().update(updates);
+   }
+   
+   /**
+    * Список состояний по задачам
+    * @returns {Promise}
+    */
+   getState() {
+      return this.get('/progress');
    }
 }
 
