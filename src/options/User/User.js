@@ -94,14 +94,13 @@ const initialTasks = [
 
 /** Текущее задание */
 function getProcessingItem(items) {
-    let processingItem;
-    items.forEach(item => {
-        if (item.status === STATUS_PROCESSING) {
-            processingItem = item;
-            return;
-        }
-    });
-    return processingItem;
+   const processingItem = items.find(item => {
+      if (item.status === STATUS_PROCESSING) {
+         return item;
+      }
+   });
+
+   return processingItem;
 }
 
 function User() {
@@ -117,8 +116,11 @@ function User() {
             }
             const newItems = items.slice();
             
+            // смена у только что пройденного задания статуса на "Выполнен"
             let newItem = { ...currentProcessingItem, status: STATUS_DONE };
             newItems[items.indexOf(currentProcessingItem)] = newItem;
+
+            // Если есть еще задания для выполнения, то статус "В процессе" получает следущее задание
             if (currentProcessingItem.id !== items.length - 1) {
                 const newProcessingItem = items[currentProcessingItem.id + 1];
                 newItem = { ...newProcessingItem, status: STATUS_PROCESSING };
@@ -135,7 +137,7 @@ function User() {
             <button onClick={changeProcessingItem}>Событие - пройден пункт</button>
 
             <h1 className="User__header">Обучение</h1>
-            <ul className="User__list">
+            <ol className="User__list">
                 {groupedTasks.map((group) => {
                     return (
                     <Fragment key={group.id}>
@@ -144,7 +146,7 @@ function User() {
                                 cssClass={group.status}
                                 text={group.description}>
                             </ListItem>
-                            <ul className="User__list">
+                            <ol className="User__list">
                                 {group.items.map((item) => {
                                     return (
                                         <ListItem
@@ -154,12 +156,12 @@ function User() {
                                         </ListItem>
                                     );
                                 })}
-                            </ul>
+                            </ol>
                         
                     </Fragment>
                     );
                 })}
-            </ul>
+            </ol>
         </div>
     );
 }
