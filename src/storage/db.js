@@ -1,7 +1,7 @@
 import * as firebase from 'firebase/app';
 
-import 'firebase/auth';
-import 'firebase/database';
+import 'firebase/auth'; // подключение к API firebase
+import 'firebase/database'; // добавление плагинов по работе с базой
 
 // конфиг из админке FireBase + нужно в настройках БД разрешить чтение/запись
 // https://firebase.google.com/docs/database/security/quickstart?authuser=0
