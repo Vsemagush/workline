@@ -12,26 +12,48 @@
 
 .header {
   color: #444;
-  padding: 30px;
-  font-size: 40px;
+  font-family: 'Poiret One', cursive;
+  margin: 0 auto;
+  letter-spacing: .5px;
+  padding: 40px 0 22px 0;
+  text-transform: uppercase;
   text-align: center;
+  font-size: 48px;
 }
 
-.menu {
-  display: flex;
-  justify-content: space-around;
+.form {
+  width: 40%;
+  margin: 0 auto;
 }
 
-.menu > a {
-  text-decoration: none;
-  color: #737373;
-  text-align: center;
-  font: normal 17px arial;
-  padding: 10px 20px;
-  border: 1px solid #aaa;
-  box-shadow: 0 0 5px;
+.form-input {
+  width: 100%;
+  display: block;
+  height: 30px;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #aaa; 
 }
 
-.menu > a:hover {
-  color: #a5a2a2;
+.form-input:hover {
+  box-shadow: 0 0 10px #aaa;
+}
+
+.btn-enter {
+  width: 50%;
+  height: 40px;
+  padding: 10px;
+  border-width: 0;
+  display: block;
+  margin: 25px 0;
+  background: #444;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  text-transform: uppercase;
+}
+
+.btn-enter:hover {
+  cursor: pointer;
+  background: #777;
 }
