@@ -88,6 +88,15 @@ function App() {
             </div>
          )}
 
+
+         {/* Тесты записи в БД и перехвата событий - удалить перед релизом  */}
+
+         {data && (
+            <div className="workline-content">
+               {data}
+            </div>
+         )}
+
          {lastMessage && (
             <div className="workline-content">
                <div>Сообщение: {lastMessage.msg}</div>

@@ -9,7 +9,8 @@ module.exports = {
       background: './src/background/index.js',
       content: './src/content/index.js',
       options: './src/options/index.js',
-      controller: './src/controller/index.js'
+      controller: './src/controller/index.js',
+      storage: './src/storage/db.js'
    },
    mode: 'development',
    plugins: [
