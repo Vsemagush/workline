@@ -20,9 +20,20 @@ const serviceAccount = {
 firebase.initializeApp(serviceAccount);
 const database = firebase.database();
 
+/**
+ * Доступ к API FireBase
+ * Пример: const api = DataBaseApi();
+ */
 class DataBaseApi {
-   constructor() {
+
+   /**
+    * Уровень доступа к данным обучения, по умолчанию пишем на уровень "test"
+    * @param {String} root 
+    */
+   constructor(root='test') {
       this._db = database;
+      this._root = root ? `/${root}/`: '/' ;
+      this._user = localStorage.getItem('userName') ? localStorage.getItem('userName') : 'demo-user';
    }
 
    /**
@@ -30,11 +41,12 @@ class DataBaseApi {
     */
    getFormatTask() {
       return {
-         id: Date.now(), // уникальный идентификатор
+         id: Date.now(),  // уникальный идентификатор
          description: '', // описание задачи
-         theme: '', // раздел обучения, уникальная тема
-         additional: '', // дополнительные данные (подсказки)
-         type: '', // должность
+         theme: '',       // раздел обучения, уникальная тема
+         additional: '',  // дополнительные данные (подсказки)
+         type: '',        // должность
+         event: ''        // привязанное событие из controller/*
       };
    }
 
@@ -45,7 +57,7 @@ class DataBaseApi {
     */
    get(field = '') {
       const ref = this._db
-         .ref('/' + field)
+         .ref(this._root + field)
          .once('value')
          .then(
             function(snapshot) {
@@ -60,13 +72,24 @@ class DataBaseApi {
    }
 
    /**
+    * Создание задачи - берет данные по формату
+    * @param {Object} data 
+    */
+   createTask(data) {
+      const format = this.getFormatTask();
+      const taskData = Object.assign(format, data);
+      this.set('tasks/task-' + taskData.id, taskData);
+      return taskData;
+   }
+
+   /**
     * Создание данных узла, при отсутствии данных выбрасывает ошибку (опасно, возможна потеря данных DB)
     * @param {String} field
     * @returns {Promise}
     */
    set(field, data) {
       if (field) {
-         const ref = this._db.ref('/' + field).set(data, function(error) {
+         const ref = this._db.ref(this._root + field).set(data, function(error) {
             if (error) {
                return error;
             } else {
@@ -109,7 +132,7 @@ class DataBaseApi {
     * @returns {Promise} 
     */
    removeTask(key) {
-      return this._db.ref('/tasks/' + key).remove();
+      return this._db.ref(`/tasks/${key}`).remove();
    }
 
    /**
@@ -119,13 +142,14 @@ class DataBaseApi {
     * @param {String} state 
     * @returns {Promise}
     */
-   setState(taskId, user, state) {
+   setState(taskId, state) {
       const updates = {};
+      const user = this.getUser();
       const stateTask = {
          state,
          user
       };
-      updates['/progress/' + taskId] = stateTask;
+      updates[`/progress/${user}/${taskId}`] = stateTask;
       return this._db.ref().update(updates);
    }
    
@@ -134,7 +158,16 @@ class DataBaseApi {
     * @returns {Promise}
     */
    getState() {
-      return this.get('/progress');
+      const user = this.getUser();
+      return this.get(`/progress/${user}`);
+   }
+
+   /**
+    * Получить текущего пользователя
+    * @returns {String}
+    */
+   getUser() {
+      return this._user;
    }
 }
 

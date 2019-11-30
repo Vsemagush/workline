@@ -5,18 +5,19 @@ import User from './User/User';
 import Home from './Home';
 import { Switch, Route } from "react-router-dom";
 import './App.css';
-import DataBaseApi from './../storage/db';
+import DataBaseApi from '../storage/db';
 
 function App() {
    const [lastMessage, setLastMessage] = useState('');
    const [data, setData] = useState('');
    const channel = useRef();
    const db = useRef();
-   
+
    // отработает только 1 раз
    useEffect(() => {
       channel.current = new ContentChannel('Stage-0');
       db.current =  new DataBaseApi();
+
       return () => {
          channel.current.destroy();
       };
@@ -51,21 +52,24 @@ function App() {
          setData(testList);
       });
 
-      // получим формат объекта для задачи
-      const format = dbApi.getFormatTask();
-      format.description = new Date().toUTCString();
+      // создаем задачу
+      const dataObj = {
+         description: new Date().toUTCString()
+      };
+
+      const task = dbApi.createTask(dataObj);
 
       // пример установки значений, добавим еще одну задачу
-      dbApi.setTask(`task-${format.id}`, format);
+      dbApi.setTask(`task-${task.id}`, dataObj);
 
       // создадим задачу для обновления/удаления
-      format.id = 0;
-      dbApi.setTask(`task-0`, format);
-
+      dataObj.id = 0;
+      dbApi.setTask(`task-0`, dataObj);
+      
       // обновление задачи
       setTimeout(() => {
-         format.additional = '12345';
-         dbApi.updateTask(`task-0`, format);
+         dataObj.description = '12345';
+         dbApi.updateTask(`task-0`, dataObj);
       }, 500)
 
       // удаление задачи

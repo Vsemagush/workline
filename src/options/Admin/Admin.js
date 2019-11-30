@@ -134,15 +134,15 @@ function Admin() {
                      }}
                      caption="Добавить задание"
                   />
-                  <AddButton
+               </Fragment>
+            );
+         })}
+         <AddButton
                      onClick={() => {
                         addNewGroup();
                      }}
                      caption="Добавить тему"
                   />
-               </Fragment>
-            );
-         })}
       </div>
    );
 }
