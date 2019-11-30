@@ -8,22 +8,26 @@
   align-items: center;
   width: auto;
   flex-direction: column;
+  font-size: 18px;
 }
 
 .header {
   color: #444;
-  font-family: 'Poiret One', cursive;
   margin: 0 auto;
   letter-spacing: .5px;
   padding: 40px 0 22px 0;
   text-transform: uppercase;
   text-align: center;
   font-size: 48px;
+  color: #1e90ff;
 }
 
 .form {
   width: 40%;
   margin: 0 auto;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-input {
@@ -33,6 +37,7 @@
   padding: 10px;
   margin-top: 10px;
   border: 1px solid #aaa; 
+  font-size: 16px;
 }
 
 .form-input:hover {

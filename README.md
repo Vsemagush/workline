@@ -78,6 +78,9 @@ yarn build
 - https://wi.sbis.ru/doc/platform/developmentapl/interface-development/controls/openers/notification/
 - https://wi.sbis.ru/icons/?v=20.1000
 
+## UI - библиотека визуальных компонентов Evergreen
+- https://evergreen.segment.com/components/
+
 ## GIT - FAQ
 - наименование веток: `dev/<инициалы.фамилия>/message-with-info`, например `dev/mu.slastuhin/add-controller`
 
@@ -94,5 +97,7 @@ yarn build
 - БД - база данных
 - Firebase - условно бесплатная база данных, где будем хранить все
 
-## Helpers and commands
+## Help
 - `yarn reset` - сброс директории к дефолту, только для osx/nix
+- При возникновении подобной ошибки внутри консоли DevTools расширения - переустановить расширение:
+`index.cjs.js:10479 Refused to load the script 'https://workline-71bd0.firebaseio.com/.lp?start=t&ser=84136259&cb=7&v=5' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.`
