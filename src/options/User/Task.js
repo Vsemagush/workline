@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from 'evergreen-ui'
+import { ListItem, Text, Icon, Tooltip } from 'evergreen-ui'
 
 /** Стиль иконки в зависимости от статуса задачи */
 const iconStyle = {
@@ -17,18 +17,28 @@ const iconStyle = {
    }
 }
 
-function ListItem({ text, status, marginLeft }) {
+function Task({ text, status, subTask, hint }) {
    return (
-      <div>
-         <Icon
-            icon={iconStyle[status].icon}
-            color={iconStyle[status].color}
-            marginLeft={marginLeft}
-            marginRight={16}
-         />
-         <span className={'User__item-' + status}>{text}</span>
-      </div>
+      <ListItem
+         icon={iconStyle[status].icon}
+         iconColor={iconStyle[status].color}
+         className="User-Task__iconTaskGroup"
+         margin={18}>
+            <Text 
+               size={subTask && 500 || 600} 
+               className={'User-Task__pdg User-Task__' + status}>
+                  {text}
+            </Text>
+            {subTask && hint && <Tooltip content={hint}>
+               <Icon
+                  icon="double-chevron-down" 
+                  size={12} 
+                  color="disabled" 
+                  marginLeft={16}
+                  className="User-Task__hint-cursor" />
+            </Tooltip>}
+      </ListItem>
    );
 }
 
-export default ListItem;
+export default Task;
