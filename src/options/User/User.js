@@ -2,7 +2,7 @@ import React, { useMemo, Fragment, useState, useCallback } from 'react';
 import ListItem from './ListItem';
 import './User.css';
 
-/** Используем статус как css класс */
+/** Возможные состояния задачи */
 const STATUS_DONE = 'done';
 const STATUS_PROCESSING = 'processing';
 const STATUS_CLOSED = 'closed';
@@ -137,31 +137,32 @@ function User() {
             <button onClick={changeProcessingItem}>Событие - пройден пункт</button>
 
             <h1 className="User__header">Обучение</h1>
-            <ol className="User__list">
+            <div className="User__list">
                 {groupedTasks.map((group) => {
                     return (
                     <Fragment key={group.id}>
-                        
                             <ListItem
-                                cssClass={group.status}
+                                marginLeft={16}
+                                status={group.status}
                                 text={group.description}>
                             </ListItem>
-                            <ol className="User__list">
+                            <div className="User__list">
                                 {group.items.map((item) => {
                                     return (
                                         <ListItem
                                             key={item.id}
-                                            cssClass={item.status}
+                                            marginLeft={26}
+                                            status={item.status}
                                             text={item.description}>
                                         </ListItem>
                                     );
                                 })}
-                            </ol>
+                            </div>
                         
                     </Fragment>
                     );
                 })}
-            </ol>
+            </div>
         </div>
     );
 }

@@ -8,34 +8,6 @@
     color: #555;
 }
 
-ul.User__list  {
-    list-style: none;
-}
-
-ul.User__list > li{
-    padding-left: 20px;
-    position: relative;
-    margin: 15px;
-}
-
-ul.User__list > li:before{
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-li.User__item-done:before{
-    content: '✔';
-}
-
-li.User__item-closed:before{
-    content: '✘';
-}
-
-li.User__item-processing:before{
-    content: '⟳';
-    color: #FFCC00;
-}
 
 .User__item-done {
     color: green;
