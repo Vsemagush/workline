@@ -38,6 +38,7 @@ class DataBaseApi {
 
    /**
     * Возвращает формат данных для вставки задачи
+    * @returns {Object}
     */
    getFormatTask() {
       return {
@@ -53,7 +54,7 @@ class DataBaseApi {
    /**
     * Получение данных узла, по умолчанию возвращает все
     * @param {String} field
-    * @returns {Promise}
+    * @returns {Promise<object>}
     */
    get(field = '') {
       const ref = this._db
@@ -74,29 +75,24 @@ class DataBaseApi {
    /**
     * Создание задачи - берет данные по формату
     * @param {Object} data 
+    * @returns {Promise<object>}
     */
    createTask(data) {
       const format = this.getFormatTask();
       const taskData = Object.assign(format, data);
-      this.set('tasks/task-' + taskData.id, taskData);
-      return taskData;
+      const ref = this.set('tasks/task-' + taskData.id, taskData);
+      return ref.then((res) => res);
    }
 
    /**
     * Создание данных узла, при отсутствии данных выбрасывает ошибку (опасно, возможна потеря данных DB)
     * @param {String} field
-    * @returns {Promise}
+    * @returns {Promise<object>}
     */
    set(field, data) {
       if (field) {
-         const ref = this._db.ref(this._root + field).set(data, function(error) {
-            if (error) {
-               return error;
-            } else {
-               return true;
-            }
-         });
-         return ref;
+         const ref = this._db.ref(this._root + field).set(data);
+         return ref.then(() => data);
       } else {
          throw Error(
             'Попытка перезаписать корень хранилища, операция запрещена!',
@@ -107,7 +103,7 @@ class DataBaseApi {
    /**
     * Запись задачи
     * @param {String} field
-    * @returns {Promise}
+    * @returns {Promise<object>}
     */
    setTask(field, data) {
       return this.set('tasks/' + field, data);
@@ -117,11 +113,11 @@ class DataBaseApi {
     * Обновление задачи
     * @param {String} key
     * @param {Object} data
-    * @returns {Promise}
+    * @returns {Promise<object>}
     */
    updateTask(key, data) {
       const updates = {};
-      updates['/tasks/' + key] = data;
+      updates[`${this._root}/tasks/${key}`] = data;
 
       return this._db.ref().update(updates);
    }
@@ -140,7 +136,7 @@ class DataBaseApi {
     * @param {String} taskId 
     * @param {String} user 
     * @param {String} state 
-    * @returns {Promise}
+    * @returns {Promise<object>}
     */
    setState(taskId, state) {
       const updates = {};
@@ -149,13 +145,13 @@ class DataBaseApi {
          state,
          user
       };
-      updates[`/progress/${user}/${taskId}`] = stateTask;
+      updates[ `${this._root}/progress/${user}/${taskId}`] = stateTask;
       return this._db.ref().update(updates);
    }
    
    /**
     * Список состояний по задачам
-    * @returns {Promise}
+    * @returns {Promise<object>}
     */
    getState() {
       const user = this.getUser();
@@ -168,6 +164,18 @@ class DataBaseApi {
     */
    getUser() {
       return this._user;
+   }
+
+   /**
+    * Превращает объекты из БД в массив объектов с ключом внутри
+    * [{id, ...values}, ...]
+    * @param {Object} data
+    * @returns {Array<object>}  
+    */
+   toArray(data) {
+      return Object.entries(data).map(([id, value]) => {
+         return { id, ...value };
+      });
    }
 }
 
