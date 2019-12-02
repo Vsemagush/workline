@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { TextInput, Table } from 'evergreen-ui';
+import { TextInput, Text } from 'evergreen-ui';
 /*
 Редактирование может находиться в 2 состояниях: редактирование запущено и редактирование не запущено.
 Если редактирование не запущено, то рисуется пользовательский компонент с двумя перебитыми опциями:
@@ -18,7 +18,7 @@ import { TextInput, Table } from 'evergreen-ui';
  */
 
 function EditableItem(props) {
-   const { onSave, initialText, marginLeft } = props;
+   const { onSave, initialText, fontSize } = props;
    const [isEditing, setIsEditing] = useState(false);
    const [text, setText] = useState(initialText);
 
@@ -64,24 +64,20 @@ function EditableItem(props) {
    return (
       <>
          {isEditing ? (
-            <Table.Cell display="flex">
-               <TextInput
-                  value={text}
-                  onChange={(event) => setText(event.target.value)}
-                  onKeyDown={onKeyDown}
-                  onBlur={endEdit}
-                  innerRef={fieldRef}
-               />
-            </Table.Cell>
+            <TextInput
+               value={text}
+               onChange={(event) => setText(event.target.value)}
+               onKeyDown={onKeyDown}
+               size={fontSize}
+               innerRef={fieldRef}
+            />
          ) : (
-            <Table.TextCell
-               display="flex"
+            <Text
                onClick={beginEdit}
-               isSelectable={true}
-               marginLeft={marginLeft}
+               size={fontSize}
             >
                {text}
-            </Table.TextCell>
+            </Text>
          )}
       </>
    );
