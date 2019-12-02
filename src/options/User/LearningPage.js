@@ -14,69 +14,64 @@ const initialTasks = [
         id: 0,
         theme: 'Знакомство с online.sbis.ru',
         description: 'Авторизуйтесь на online.sbis.ru',
-        status: 'done',
         hint: 'подсказка 1',
     },
     {
         id: 1,
         theme: 'Знакомство с online.sbis.ru',
         description: 'Перейдите в календарь',
-        status: 'done',
         hint: 'подсказка 2',
     },
     {
         id: 2,
         theme: 'Создаем первый мерж-реквест',
         description: 'Перейдите в задачи',
-        status: 'done',
         hint: 'подсказка 3',
     },
     {
         id: 3,
         theme: 'Создаем первый мерж-реквест',
         description: 'Открыть любую задачу',
-        status: 'processing',
         hint: 'подсказка 1',
      },
      {
         id: 4,
         theme: 'Создаем первый мерж-реквест',
         description: 'Связанные',
-        status: 'closed',
      },
      {
         id: 5,
         theme: 'Создаем первый мерж-реквест',
         description: 'Найти Merge request',
-        status: 'closed',
         hint: 'подсказка 1',
      },
      {
         id: 6,
         theme: 'Задаем вопрос на сервисе Вопрос-ответ',
         description: 'Переходим в группы',
-        status: 'closed',
         hint: 'подсказка 1',
      },
      {
         id: 7,
         theme: 'Задаем вопрос на сервисе Вопрос-ответ',
         description: 'Wasaby framework',
-        status: 'closed',
      },
  ];
  
  function useGroupedItems(items) {
     return useMemo(() => {
-       const groups = new Map();
-       items.forEach((item) => {
-          if (!groups.has(item.theme)) {
-             groups.set(item.theme, []);
-          }
-          groups.get(item.theme).push(item);
-       });
-       const result = [];
-       groups.forEach((itemsInTheGroup, key) => {
+        if (items[0] && !items[0].status) {
+            items[0].status = STATUS_PROCESSING;
+        }
+        const groups = new Map();
+        items.forEach((item) => {
+            if (!groups.has(item.theme)) {
+                groups.set(item.theme, []);
+            }
+            groups.get(item.theme).push(item);
+        });
+        const result = [];
+        groups.forEach((itemsInTheGroup, key) => {
             let totalReadyInGroup = 0;
             let processing = false;
             let groupStatus = STATUS_CLOSED;
@@ -95,8 +90,8 @@ const initialTasks = [
                 items: itemsInTheGroup,
                 status: groupStatus,
             });
-       });
-       return result;
+        });
+        return result;
     }, [items]);
 }
 
@@ -167,7 +162,7 @@ function LearningPage({ history }) {
                                                 key={item.id}
                                                 hint={item.hint}
                                                 subTask={true}
-                                                status={item.status}
+                                                status={item.status || STATUS_CLOSED}
                                                 text={item.description}>
                                             </Task>
                                         );
