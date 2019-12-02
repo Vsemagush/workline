@@ -2,7 +2,7 @@ import React, { useMemo, Fragment, useState, useCallback } from 'react';
 import Task from './Task';
 import TopBar from './TopBar';
 import './User.css';
-import { OrderedList, Pane } from 'evergreen-ui'
+import { OrderedList, Pane } from 'evergreen-ui';
 
 /** Возможные состояния задачи */
 const STATUS_DONE = 'done';
@@ -106,7 +106,7 @@ function getProcessingItem(items) {
    return processingItem;
 }
 
-function LearningPage({ history }) {
+function LearningPage() {
     const [items, setItems] = useState(initialTasks);
     const groupedTasks = useGroupedItems(items);
 
