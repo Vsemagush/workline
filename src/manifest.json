@@ -13,11 +13,11 @@
       "persistent": true
    },
 
-   "permissions": ["activeTab", "tabs", "https://fix-online.sbis.ru/"],
+   "permissions": ["activeTab", "tabs", "https://fix-online.sbis.ru/*"],
 
    "content_scripts": [
       {
-         "matches": ["https://fix-online.sbis.ru/"],
+         "matches": ["https://fix-online.sbis.ru/*"],
          "js": ["content/bundle.js"],
          "run_at": "document_start"
       }
