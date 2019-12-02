@@ -1,5 +1,9 @@
+body {
+  margin: 0;
+}
+
 .App {
-  margin: 1rem;
+  margin: 0;
   height: 100%;
 }
 
@@ -12,7 +16,6 @@
 }
 
 .header {
-  color: #444;
   margin: 0 auto;
   letter-spacing: .5px;
   padding: 40px 0 22px 0;

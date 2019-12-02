@@ -37,6 +37,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
+    "evergreen-ui": "^4.21.5",
     "firebase": "^7.5.0",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
