@@ -1,61 +1,90 @@
-import React, { useMemo, useState, useCallback, Fragment } from 'react';
-import './Admin.css';
-import ListItem from './ListItem';
+import { Dialog, IconButton, Table, Textarea } from 'evergreen-ui';
+import React, {
+   Fragment,
+   useCallback,
+   useMemo,
+   useState,
+   useRef,
+   useEffect,
+} from 'react';
 import EditableItem from '../EditableItem/EditableItem';
 import AddButton from './AddButton';
+import DataBaseApi from '../../storage/db';
 
-const initialTasks = [
-   {
-      id: 0,
-      theme: 'Знакомство с online.sbis.ru',
-      description: 'Авторизуйтесь на online.sbis.ru',
-   },
-   {
-      id: 1,
-      theme: 'Знакомство с online.sbis.ru',
-      description: 'Перейдите в контакты',
-   },
-   {
-      id: 2,
-      theme: 'Работа с задачами',
-      description: 'Создайте ошибку',
-   },
-];
-let currentId = initialTasks.length;
+let currentId = 0;
 
 function useGroupedItems(items) {
    return useMemo(() => {
-      const groups = new Map();
-      items.forEach((item) => {
-         if (!groups.has(item.theme)) {
-            groups.set(item.theme, []);
-         }
-         groups.get(item.theme).push(item);
-      });
       const result = [];
-      groups.forEach((itemsInTheGroup, key) => {
-         result.push({
-            id: key + 'group',
-            description: key,
-            items: itemsInTheGroup,
+      if (items) {
+         const groups = new Map();
+         items.forEach((item) => {
+            if (!groups.has(item.theme)) {
+               groups.set(item.theme, []);
+            }
+            groups.get(item.theme).push(item);
          });
-      });
+         groups.forEach((itemsInTheGroup, key) => {
+            result.push({
+               id: key + 'group',
+               description: key,
+               items: itemsInTheGroup,
+            });
+         });
+      }
       return result;
    }, [items]);
 }
 
 function Admin() {
-   const [items, setItems] = useState(initialTasks);
+   const [isDialogShown, setIsDialogShown] = useState(false);
+
+   const [items, setItems] = useState();
    const groupedTasks = useGroupedItems(items);
+
+   const db = useRef();
+   useEffect(() => {
+      let isCancelled = false;
+      db.current = new DataBaseApi('test-adminpage');
+      db.current.get('tasks').then((result) => {
+         // Если компонент уничтожится раньше, чем прилетят данные, то нет смысла менять состояние
+         if (isCancelled) {
+            return;
+         }
+         const newItems = result
+            ? Object.entries(result).map(([id, value]) => {
+                 return {
+                    id,
+                    ...value,
+                 };
+              })
+            : [];
+         setItems(newItems);
+      });
+
+      return () => {
+         isCancelled = true;
+      };
+   }, []);
 
    // Каждый коллбек относится к данным как будто они иммутабельные, чтобы реакт мог правильно отслеживать изменения
    // Отсюда все клонирования массивов\объектов вместо их изменения
    const saveItem = useCallback(
       (item, newText) => {
-         const newItem = { ...item, description: newText };
-         const newItems = items.slice();
-         newItems[items.indexOf(item)] = newItem;
-         setItems(newItems);
+         let isCancelled = false;
+         const newTask = { ...item, description: newText };
+         db.current.updateTask(item.id, newTask).then(() => {
+            if (isCancelled) {
+               return;
+            }
+            const newItems = items.slice();
+            newItems[items.indexOf(item)] = newTask;
+            setItems(newItems);
+         });
+
+         return () => {
+            isCancelled = true;
+         };
       },
       [items],
    );
@@ -80,70 +109,108 @@ function Admin() {
 
    const addItemToGroup = useCallback(
       (group) => {
-         const newItems = items.slice();
-         newItems.push({
-            id: currentId++,
+         let isCancelled = false;
+         const task = db.current.createTask({
             theme: group.description,
             description: 'Новое задание',
          });
-         setItems(newItems);
+
+         db.current.setTask(task.id, task).then(() => {
+            if (isCancelled) {
+               return;
+            }
+            const newItems = items.slice();
+            newItems.push(task);
+            setItems(newItems);
+         });
+
+         return () => {
+            isCancelled = true;
+         };
       },
       [items],
    );
 
    const addNewGroup = useCallback(() => {
-      const newItems = items.slice();
-      newItems.push({
-         id: currentId++,
+      let isCancelled = false;
+      const task = db.current.createTask({
          theme: 'Новая группа',
          description: 'Новое задание',
       });
-      setItems(newItems);
+
+      db.current.setTask(task.id, task).then(() => {
+         if (isCancelled) {
+            return;
+         }
+         const newItems = items.slice();
+         newItems.push(task);
+         setItems(newItems);
+      });
+
+      return () => {
+         isCancelled = true;
+      };
    }, [items]);
 
    return (
-      <div className="Admin__list">
-         {groupedTasks.map((group) => {
-            return (
-               <Fragment key={group.id}>
-                  <EditableItem
-                     cssClass="Admin__listItem_group"
-                     initialText={group.description}
-                     onSave={(text) => {
-                        saveGroup(group.description, text);
-                     }}
-                     Template={ListItem}
-                  ></EditableItem>
-                  {group.items.map((item) => {
-                     return (
-                        <EditableItem
-                           key={item.id}
-                           cssClass="Admin__listItem"
-                           initialText={item.description}
-                           onSave={(text) => {
-                              saveItem(item, text);
-                           }}
-                           Template={ListItem}
-                        ></EditableItem>
-                     );
-                  })}
-                  <AddButton
-                     cssClass="Admin__addButton_group"
-                     onClick={() => {
-                        addItemToGroup(group);
-                     }}
-                     caption="Добавить задание"
-                  />
-               </Fragment>
-            );
-         })}
+      <Fragment>
+         <Table>
+            <Table.Body>
+               {groupedTasks.map((group) => {
+                  return (
+                     <Fragment key={group.id}>
+                        <Table.Row isHighlighted={true}>
+                           <EditableItem
+                              initialText={group.description}
+                              onSave={(text) => {
+                                 saveGroup(group.description, text);
+                              }}
+                           ></EditableItem>
+                           <Table.Cell flex="none">
+                              <AddButton
+                                 onClick={() => {
+                                    addItemToGroup(group);
+                                 }}
+                              />
+                           </Table.Cell>
+                        </Table.Row>
+                        {group.items.map((item) => {
+                           return (
+                              <Table.Row key={item.id}>
+                                 <EditableItem
+                                    initialText={item.description}
+                                    onSave={(text) => {
+                                       saveItem(item, text);
+                                    }}
+                                    marginLeft="10px"
+                                 ></EditableItem>
+                                 <Table.Cell flex="none">
+                                    <IconButton
+                                       icon="info-sign"
+                                       onClick={() => setIsDialogShown(true)}
+                                    />
+                                 </Table.Cell>
+                              </Table.Row>
+                           );
+                        })}
+                     </Fragment>
+                  );
+               })}
+            </Table.Body>
+         </Table>
          <AddButton
-                     onClick={() => {
-                        addNewGroup();
-                     }}
-                     caption="Добавить тему"
-                  />
-      </div>
+            onClick={() => {
+               addNewGroup();
+            }}
+         />
+         <Dialog
+            title="Редактирование подсказки"
+            isShown={isDialogShown}
+            onCloseComplete={() => setIsDialogShown(false)}
+         >
+            <Textarea />
+         </Dialog>
+      </Fragment>
    );
 }
 

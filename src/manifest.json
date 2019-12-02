@@ -1,32 +1,30 @@
 {
-  "name": "Workline",
-  "description": "",
-  "manifest_version": 2,
-  "version": "1.0.0",
-  "minimum_chrome_version": "77",
+   "name": "Workline",
+   "description": "",
+   "manifest_version": 2,
+   "version": "1.0.0",
+   "minimum_chrome_version": "77",
 
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": [
-    "/controller/bundle.js"
-  ],
+   "content_security_policy": "script-src 'self' 'unsafe-eval' https://workline-71bd0.firebaseio.com/ https://s-usc1c-nss-205.firebaseio.com/; object-src 'self'",
+   "web_accessible_resources": ["/controller/bundle.js"],
 
-  "background": {
-    "scripts": ["background/bundle.js"],
-    "persistent": true
-  },
+   "background": {
+      "scripts": ["background/bundle.js"],
+      "persistent": true
+   },
 
-  "permissions": ["activeTab", "tabs", "https://fix-online.sbis.ru/"],
+   "permissions": ["activeTab", "tabs", "https://fix-online.sbis.ru/"],
 
-  "content_scripts": [
-    {
-      "matches": ["https://fix-online.sbis.ru/"],
-      "js": ["content/bundle.js"],
-      "run_at": "document_start"
-    }
-  ],
+   "content_scripts": [
+      {
+         "matches": ["https://fix-online.sbis.ru/"],
+         "js": ["content/bundle.js"],
+         "run_at": "document_start"
+      }
+   ],
 
-  "options_ui": {
-    "page": "options/index.html",
-    "open_in_tab": true
-  }
+   "options_ui": {
+      "page": "options/index.html",
+      "open_in_tab": true
+   }
 }

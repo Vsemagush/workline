@@ -1,12 +1,8 @@
 import React from 'react';
-import './AddButton.css';
+import { IconButton } from 'evergreen-ui';
 
-function AddButton({ caption, onClick, cssClass }) {
-   return (
-      <button className={'AddButton ' + cssClass} onClick={onClick}>
-         {caption}
-      </button>
-   );
+function AddButton({ onClick }) {
+   return <IconButton icon="plus" onClick={onClick} />;
 }
 
 export default AddButton;
