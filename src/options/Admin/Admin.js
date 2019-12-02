@@ -11,8 +11,6 @@ import EditableItem from '../EditableItem/EditableItem';
 import AddButton from './AddButton';
 import DataBaseApi from '../../storage/db';
 
-let currentId = 0;
-
 function useGroupedItems(items) {
    return useMemo(() => {
       const result = [];
@@ -51,15 +49,7 @@ function Admin() {
          if (isCancelled) {
             return;
          }
-         const newItems = result
-            ? Object.entries(result).map(([id, value]) => {
-                 return {
-                    id,
-                    ...value,
-                 };
-              })
-            : [];
-         setItems(newItems);
+         setItems(db.toArray(result));
       });
 
       return () => {
@@ -110,19 +100,19 @@ function Admin() {
    const addItemToGroup = useCallback(
       (group) => {
          let isCancelled = false;
-         const task = db.current.createTask({
-            theme: group.description,
-            description: 'Новое задание',
-         });
-
-         db.current.setTask(task.id, task).then(() => {
-            if (isCancelled) {
-               return;
-            }
-            const newItems = items.slice();
-            newItems.push(task);
-            setItems(newItems);
-         });
+         const task = db.current
+            .createTask({
+               theme: group.description,
+               description: 'Новое задание',
+            })
+            .then(() => {
+               if (isCancelled) {
+                  return;
+               }
+               const newItems = items.slice();
+               newItems.push(task);
+               setItems(newItems);
+            });
 
          return () => {
             isCancelled = true;
