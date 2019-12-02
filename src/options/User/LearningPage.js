@@ -1,97 +1,66 @@
-import React, { useMemo, Fragment, useState, useCallback } from 'react';
+import React, { useMemo, Fragment, useState, useCallback, useRef, useEffect } from 'react';
 import Task from './Task';
 import TopBar from './TopBar';
 import './User.css';
 import { OrderedList, Pane } from 'evergreen-ui';
+import DataBaseApi from '../../storage/db';
 
 /** Возможные состояния задачи */
 const STATUS_DONE = 'done';
 const STATUS_PROCESSING = 'processing';
 const STATUS_CLOSED = 'closed';
-
-const initialTasks = [
-    {
-        id: 0,
-        theme: 'Знакомство с online.sbis.ru',
-        description: 'Авторизуйтесь на online.sbis.ru',
-        hint: 'подсказка 1',
-    },
-    {
-        id: 1,
-        theme: 'Знакомство с online.sbis.ru',
-        description: 'Перейдите в календарь',
-        hint: 'подсказка 2',
-    },
-    {
-        id: 2,
-        theme: 'Создаем первый мерж-реквест',
-        description: 'Перейдите в задачи',
-        hint: 'подсказка 3',
-    },
-    {
-        id: 3,
-        theme: 'Создаем первый мерж-реквест',
-        description: 'Открыть любую задачу',
-        hint: 'подсказка 1',
-     },
-     {
-        id: 4,
-        theme: 'Создаем первый мерж-реквест',
-        description: 'Связанные',
-     },
-     {
-        id: 5,
-        theme: 'Создаем первый мерж-реквест',
-        description: 'Найти Merge request',
-        hint: 'подсказка 1',
-     },
-     {
-        id: 6,
-        theme: 'Задаем вопрос на сервисе Вопрос-ответ',
-        description: 'Переходим в группы',
-        hint: 'подсказка 1',
-     },
-     {
-        id: 7,
-        theme: 'Задаем вопрос на сервисе Вопрос-ответ',
-        description: 'Wasaby framework',
-     },
- ];
  
- function useGroupedItems(items) {
+function useGroupedItems(items) {
     return useMemo(() => {
-        if (items[0] && !items[0].status) {
-            items[0].status = STATUS_PROCESSING;
-        }
-        const groups = new Map();
-        items.forEach((item) => {
-            if (!groups.has(item.theme)) {
-                groups.set(item.theme, []);
-            }
-            groups.get(item.theme).push(item);
-        });
         const result = [];
-        groups.forEach((itemsInTheGroup, key) => {
-            let totalReadyInGroup = 0;
-            let processing = false;
-            let groupStatus = STATUS_CLOSED;
-            itemsInTheGroup.forEach((item) => {
-                if (item.status === STATUS_DONE) totalReadyInGroup++;
-                if (item.status === STATUS_PROCESSING) processing = true;
+        const sortedItems = [];
+        if (items && items.length) {
+            // Последнее добавленное задание может относиться к первой группе, поэтому сначала группируем
+            const groups = new Map();
+            items.forEach((item) => {
+                if (!groups.has(item.theme)) {
+                    groups.set(item.theme, []);
+                }
+                groups.get(item.theme).push(item);
             });
-            if (totalReadyInGroup === itemsInTheGroup.length) {
-                groupStatus = STATUS_DONE;
-            } else if (processing) {
-                groupStatus = STATUS_PROCESSING;
+
+            // Случай нового пользователя - первая задача становится в процессе
+            // Порядок групп уже есть - нужен первый элемент первой группы
+            const itemsInFirstGroup = groups.values().next().value;
+            if (itemsInFirstGroup[0] && !itemsInFirstGroup[0].status) {
+                itemsInFirstGroup[0].status = STATUS_PROCESSING;
             }
-            result.push({
-                id: key,
-                description: key,
-                items: itemsInTheGroup,
-                status: groupStatus,
+
+            let index = 0;
+            // Актуализируем информацию по статусам групп
+            groups.forEach((itemsInTheGroup, key) => {
+                let totalReadyInGroup = 0;
+                let processing = false;
+                let groupStatus = STATUS_CLOSED;
+                itemsInTheGroup.forEach((item) => {
+                    if (item.status === STATUS_DONE) totalReadyInGroup++;
+                    if (item.status === STATUS_PROCESSING) processing = true;
+                });
+                if (totalReadyInGroup === itemsInTheGroup.length) {
+                    groupStatus = STATUS_DONE;
+                } else if (processing) {
+                    groupStatus = STATUS_PROCESSING;
+                }
+                result.push({
+                    id: key,
+                    description: key,
+                    items: itemsInTheGroup,
+                    status: groupStatus,
+                });
+                // Заодно сразу пересортируем (в порядке следования групп) задачи
+                itemsInTheGroup.forEach((item) => {
+                    item.index = index; // Нужен в последующем - брать следующее задания во время смены статуса
+                    index++;
+                    sortedItems.push(item);
+                })
             });
-        });
-        return result;
+        }
+        return { result, sortedItems };
     }, [items]);
 }
 
@@ -107,8 +76,39 @@ function getProcessingItem(items) {
 }
 
 function LearningPage() {
-    const [items, setItems] = useState(initialTasks);
-    const groupedTasks = useGroupedItems(items);
+    const [items, setItems] = useState();
+    const res = useGroupedItems(items);
+
+    const groupedTasks = res && res.result;
+    const sortedItems = res && res.sortedItems;
+
+    if (JSON.stringify(sortedItems) !== JSON.stringify(items)) {
+        setItems(sortedItems);
+    }
+
+    const db = useRef();
+
+    // Подключение к БД и загрузка данных
+    useEffect(() => {
+        db.current = new DataBaseApi();
+        db.current.get('tasks').then((result) => {
+            const items = db.current.toArray(result);
+            db.current.getState().then((result) => { // Загрузка прогресса
+                const progressTasks = db.current.toArray(result);
+                if (progressTasks) {
+                    items.forEach((item) => { // Сопоставление прогреса к соответсвующей задаче
+                        let curTask = progressTasks.find(task => {
+                            if (task.id === item.id) {
+                               return task;
+                            }
+                        });
+                        item.status = curTask && curTask.state;
+                    })
+                }
+                setItems(items);
+            });
+        });
+    }, []);
 
     /** Смена текущего задания для выполнения */
     const changeProcessingItem = useCallback(
@@ -120,12 +120,14 @@ function LearningPage() {
             const newItems = items.slice();
             
             // смена у только что пройденного задания статуса на "Выполнен"
+            db.current.setState(currentProcessingItem.id, STATUS_DONE);
             let newItem = { ...currentProcessingItem, status: STATUS_DONE };
             newItems[items.indexOf(currentProcessingItem)] = newItem;
 
             // Если есть еще задания для выполнения, то статус "В процессе" получает следущее задание
-            if (currentProcessingItem.id !== items.length - 1) {
-                const newProcessingItem = items[currentProcessingItem.id + 1];
+            if (currentProcessingItem.index !== items.length - 1) {
+                const newProcessingItem = items[currentProcessingItem.index + 1];
+                db.current.setState(newProcessingItem.id, STATUS_PROCESSING);
                 newItem = { ...newProcessingItem, status: STATUS_PROCESSING };
                 newItems[items.indexOf(newProcessingItem)] = newItem;
             }
