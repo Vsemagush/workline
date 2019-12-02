@@ -1,11 +1,14 @@
 import React from 'react';
-import './AddButton.css';
+import { IconButton } from 'evergreen-ui';
 
-function AddButton({ caption, onClick, cssClass }) {
+function AddButton({ onClick, tooltip }) {
    return (
-      <button className={'AddButton ' + cssClass} onClick={onClick}>
-         {caption}
-      </button>
+      <IconButton
+         icon="plus"
+         onClick={onClick}
+         appearance="minimal"
+         title={tooltip}
+      />
    );
 }
 

@@ -99,5 +99,3 @@ yarn build
 
 ## Help
 - `yarn reset` - сброс директории к дефолту, только для osx/nix
-- При возникновении подобной ошибки внутри консоли DevTools расширения - переустановить расширение:
-`index.cjs.js:10479 Refused to load the script 'https://workline-71bd0.firebaseio.com/.lp?start=t&ser=84136259&cb=7&v=5' because it violates the following Content Security Policy directive: "script-src 'self' 'unsafe-eval'". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback.`

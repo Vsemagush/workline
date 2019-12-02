@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
+import { TextInput, Text } from 'evergreen-ui';
 /*
 Редактирование может находиться в 2 состояниях: редактирование запущено и редактирование не запущено.
 Если редактирование не запущено, то рисуется пользовательский компонент с двумя перебитыми опциями:
@@ -17,8 +18,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
  */
 
 function EditableItem(props) {
-   const { onSave, initialText, Template, cssClass } = props;
-   const fieldRef = useRef();
+   const { onSave, initialText, fontSize } = props;
    const [isEditing, setIsEditing] = useState(false);
    const [text, setText] = useState(initialText);
 
@@ -52,25 +52,32 @@ function EditableItem(props) {
       [endEdit],
    );
 
-   useEffect(() => {
-      if (isEditing) {
-         fieldRef.current.focus();
-      }
-   }, [isEditing]);
+   const fieldRef = useCallback(
+      (node) => {
+         if (isEditing && node) {
+            node.focus();
+         }
+      },
+      [isEditing],
+   );
 
    return (
       <>
          {isEditing ? (
-            <input
-               className={cssClass}
+            <TextInput
                value={text}
                onChange={(event) => setText(event.target.value)}
                onKeyDown={onKeyDown}
-               onBlur={endEdit}
-               ref={fieldRef}
+               size={fontSize}
+               innerRef={fieldRef}
             />
          ) : (
-            <Template onClick={beginEdit} text={text} {...props} />
+            <Text
+               onClick={beginEdit}
+               size={fontSize}
+            >
+               {text}
+            </Text>
          )}
       </>
    );
