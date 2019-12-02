@@ -54,7 +54,7 @@ class DataBaseApi {
    /**
     * Получение данных узла, по умолчанию возвращает все
     * @param {String} field
-    * @returns {Promise<object|null>}
+    * @returns {Promise<Object|null>}
     */
    get(field = '') {
       const ref = this._db
@@ -75,7 +75,7 @@ class DataBaseApi {
    /**
     * Создание задачи - берет данные по формату
     * @param {Object} data 
-    * @returns {Promise<object|null>}
+    * @returns {Promise<Object|null>}
     */
    createTask(data) {
       const format = this.getFormatTask();
@@ -87,7 +87,7 @@ class DataBaseApi {
    /**
     * Создание данных узла, при отсутствии данных выбрасывает ошибку (опасно, возможна потеря данных DB)
     * @param {String} field
-    * @returns {Promise<object|null>}
+    * @returns {Promise<Object|null>}
     */
    set(field, data) {
       if (field) {
@@ -103,7 +103,7 @@ class DataBaseApi {
    /**
     * Запись задачи
     * @param {String} field
-    * @returns {Promise<object|null>}
+    * @returns {Promise<Object|null>}
     */
    setTask(field, data) {
       return this.set('tasks/' + field, data);
@@ -113,7 +113,7 @@ class DataBaseApi {
     * Обновление задачи
     * @param {String} key
     * @param {Object} data
-    * @returns {Promise<object|null>}
+    * @returns {Promise<Object|null>}
     */
    updateTask(key, data) {
       const updates = {};
@@ -136,7 +136,7 @@ class DataBaseApi {
     * @param {String} taskId 
     * @param {String} user 
     * @param {String} state 
-    * @returns {Promise<object|null>}
+    * @returns {Promise<Object|null>}
     */
    setState(taskId, state) {
       const updates = {};
@@ -151,7 +151,7 @@ class DataBaseApi {
    
    /**
     * Список состояний по задачам
-    * @returns {Promise<object|null>}
+    * @returns {Promise<Object|null>}
     */
    getState() {
       const user = this.getUser();
@@ -170,7 +170,7 @@ class DataBaseApi {
     * Превращает объекты из БД в массив объектов с ключом внутри
     * [{id, ...values}, ...]
     * @param {Object} data
-    * @returns {Array<object|null>}  
+    * @returns {Array<Object|null>}  
     */
    toArray(data) {
       if (!data) {
