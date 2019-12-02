@@ -2,7 +2,13 @@ const port = chrome.runtime.connect({
    name: 'Workline/options'
 });
 
+/**
+ * Позволяет отправлять сообщения из расширения на страницу.
+ */
 class OptionsChannel {
+   /**
+    * @param {String} name Имя канала, в который будет отправлено сообщение.
+    */
    constructor(name) {
       this._name = name;
       this._listeners = new Map();
@@ -10,6 +16,11 @@ class OptionsChannel {
       port.onMessage.addListener(this._onmessageHandler);
    }
 
+   /**
+    * Отправляет сообщение.
+    * @param {String} event Название события.
+    * @param args Аргументы события, которые придут в обработчик. Принимает любое сериализуемое значение.
+    */
    dispatch(event, args) {
       port.postMessage({
          source: this._name,
@@ -19,6 +30,12 @@ class OptionsChannel {
       return true;
    }
 
+   /**
+    * Регистрирует обработчик события.
+    * @param {String} event Название события.
+    * @param {Function} callback Обработчик события.
+    * @returns {ContentChannel}
+    */
    addListener(event, callback) {
       let listeners = this._listeners.get(event);
       if (!listeners) {
@@ -29,6 +46,12 @@ class OptionsChannel {
       return this;
    }
 
+   /**
+    * Удаляет обработчик события.
+    * @param {String} event Название события.
+    * @param {Function} callback Обработчик события.
+    * @returns {ContentChannel}
+    */
    removeListener(event, callback) {
       const listeners = this._listeners.get(event);
       if (listeners) {
@@ -37,6 +60,11 @@ class OptionsChannel {
       return this;
    }
 
+   /**
+    * Удаляет все обработчики события.
+    * @param {String} event Название события
+    * @returns {ContentChannel}
+    */
    removeAllListeners(event) {
       if (!event) {
          this._listeners.clear();
@@ -46,6 +74,9 @@ class OptionsChannel {
       return this;
    }
 
+   /**
+    * Нужно звать при разрушении канала, чтобы он не слушал события.
+    */
    destructor() {
       port.onMessage.removeListener(this._onmessageHandler);
    }

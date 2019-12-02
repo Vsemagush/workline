@@ -4,7 +4,13 @@ const TAB_ID = Math.random()
 
 export const POST_MESSAGE_SOURCE = 'Workline/content-message';
 
+/**
+ * Позволяет отправлять сообщения со страницы в расширение.
+ */
 class ContentChannel {
+   /**
+    * @param {String} name Имя канала, в который будет отправлено сообщение.
+    */
    constructor(name) {
       this._name = name;
       this._listeners = new Map();
@@ -12,6 +18,11 @@ class ContentChannel {
       window.addEventListener('message', this._onmessageHandler);
    }
 
+   /**
+    * Отправляет сообщение.
+    * @param {String} event Название события.
+    * @param args Аргументы события, которые придут в обработчик. Принимает любое сериализуемое значение.
+    */
    dispatch(event, args) {
       window.postMessage(
          {
@@ -25,9 +36,14 @@ class ContentChannel {
          },
          '*'
       );
-      return true;
    }
 
+   /**
+    * Регистрирует обработчик события.
+    * @param {String} event Название события.
+    * @param {Function} callback Обработчик события.
+    * @returns {ContentChannel}
+    */
    addListener(event, callback) {
       let listeners = this._listeners.get(event);
       if (!listeners) {
@@ -38,6 +54,12 @@ class ContentChannel {
       return this;
    }
 
+   /**
+    * Удаляет обработчик события.
+    * @param {String} event Название события.
+    * @param {Function} callback Обработчик события.
+    * @returns {ContentChannel}
+    */
    removeListener(event, callback) {
       const listeners = this._listeners.get(event);
       if (listeners) {
@@ -46,6 +68,11 @@ class ContentChannel {
       return this;
    }
 
+   /**
+    * Удаляет все обработчики события.
+    * @param {String} event Название события
+    * @returns {ContentChannel}
+    */
    removeAllListeners(event) {
       if (!event) {
          this._listeners.clear();
@@ -55,8 +82,12 @@ class ContentChannel {
       return this;
    }
 
+   /**
+    * Нужно звать при разрушении канала, чтобы он не слушал события.
+    */
    destructor() {
       window.removeEventListener('message', this._onmessageHandler);
+      this._listeners.clear();
    }
 
    _onmessage(event) {
