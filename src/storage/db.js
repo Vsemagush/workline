@@ -170,9 +170,12 @@ class DataBaseApi {
     * Превращает объекты из БД в массив объектов с ключом внутри
     * [{id, ...values}, ...]
     * @param {Object} data
-    * @returns {Array<object>}  
+    * @returns {Array<object|null>}  
     */
    toArray(data) {
+      if (!data) {
+         data = {};
+      }
       return Object.entries(data).map(([id, value]) => {
          return { id, ...value };
       });
