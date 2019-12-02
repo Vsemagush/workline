@@ -7,6 +7,10 @@ body {
   height: 100%;
 }
 
+.workline-hidden {
+  display: none;
+}
+
 .workline-content {
   display: flex;
   align-items: center;

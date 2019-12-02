@@ -89,6 +89,11 @@ yarn build
 - https://firebase.google.com/docs/database/security/quickstart - работа с доступом
 - https://firebase.google.com/docs/database/web/lists-of-data - сортировки и агрегации
 
+Важные замечания:
+- все работа с доступным API определена в `src/storage/db.js`
+- нельзя устанавливать в БД данные с полями `undefined`
+- операция обновления целиком перезаписывает данные по ключу
+
 ## Определения и термины
 - Модуль - js файл с определенной логикой
 - Линтер - утилита проверки корректности кода
