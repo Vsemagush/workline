@@ -133,7 +133,27 @@ class DataBaseApi {
     * @returns {Promise<null>} 
     */
    updateTasks(data) {
+      data.forEach()
       return this.massOperations(null, data);
+   }
+
+   /**
+    * Создание нескольких задач, принимает на вход массив данных
+    * @param {Array<object>} data 
+    * @returns {Promise<Object|null>}
+    */
+   createTasks(data) {
+      if (data) {
+         const createData = {};
+         data.forEach((item) => {
+            const format = this.getFormatTask();
+            const taskData = Object.assign(format, item);
+            createData[`task-${taskData.id}`] = taskData;
+         })
+         return this.massOperations(null, createData);
+      } else {
+         throw Error('Попытка создать набор задач без данных');
+      }
    }
 
    /**
@@ -160,7 +180,7 @@ class DataBaseApi {
 
    /**
     * Массовые операции с задачами
-    * @param {Array} keys
+    * @param {Array|null} keys
     * @param {Object} data данные для массовой вставки
     * @returns {Promise<null>} 
     */
@@ -168,6 +188,7 @@ class DataBaseApi {
       const updates = {};
 
       if (!keys && data) {
+         // если нет ключей - извлечем их из данных
          keys = Object.keys(data);
       } else {
          if (!data) {
@@ -177,7 +198,13 @@ class DataBaseApi {
 
       // переберем ключи и создадим набор обновляемых данных
       keys.forEach((key) => {
-         updates[`${this._root}tasks/${key}`] = data ? data[key] : null;
+         let keyTask = key;
+         
+         // если по каким то причинам нам передачи идентификаторы за место ключа, создадим ключ для вставки
+         if (Number.isInteger(key)) {
+            keyTask = `task-${key}`;
+         }
+         updates[`${this._root}tasks/${keyTask}`] = data ? data[key] : null;
       });
 
       return this._db.ref().update(updates);
