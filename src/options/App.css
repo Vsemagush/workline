@@ -29,6 +29,10 @@ body {
   color: #1e90ff;
 }
 
+.header-logo {
+  width: 40px;
+}
+
 .form {
   width: 40%;
   margin: 0 auto;

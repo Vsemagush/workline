@@ -18,10 +18,13 @@ function TopBar() {
         <div className="User-TopBar">
             <div className="User-TopBar__headerGroup">
                 <div className="User-TopBar__header">Workline</div>
+                <div className="User-TopBar__logoBlock">
+                  <img className="User-TopBar__logo" src="./../../assets/logo.png"></img>
+               </div>
                 <div className="User-TopBar__subHeader">Обучение</div>
             </div>
             <div className="User-TopBar__exitGroup" onClick={exitClick}>
-                <div className="User-TopBar__text">Выйти</div>
+               <img className="User-TopBar__logout" src="./../../assets/logout.png"></img>
                 <Avatar name={localStorage.getItem('userName')} size={40} marginRight={16} />
             </div>
         </div>

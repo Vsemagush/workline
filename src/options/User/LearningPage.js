@@ -75,7 +75,7 @@ function LearningPage() {
             const progressTasks = db.current.toArray(result[1]);
             if (progressTasks) {
                items.forEach((item) => { // Сопоставление прогреса к соответсвующей задаче
-                  let curTask = progressTasks.find(task => task.id === item.id);
+                  let curTask = progressTasks.find(task => task.id.includes(item.id));
                   item.status = curTask && curTask.state;
                });
             }
