@@ -3,7 +3,7 @@ import React, { useRef, useCallback } from 'react';
 /** Главная страница - страница авторизации */
 function Home({ history }) {
     const EDIT_DEFAULT_LOGIN = 'admin';
-    const EDIT_DEFAULT_PASSWORD = 'admin123';
+    const EDIT_DEFAULT_PASSWORD = '123';
 
     const loginInput = useRef();
     const passInput = useRef();
