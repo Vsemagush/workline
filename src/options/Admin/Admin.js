@@ -95,7 +95,7 @@ function Admin() {
       (group) => {
          const task = db.current
             .createTask({
-               theme: group.description,
+               theme: group.description || null,
                description: 'Новое задание',
             })
             .then(() => {

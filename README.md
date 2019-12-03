@@ -89,6 +89,11 @@ yarn build
 - https://firebase.google.com/docs/database/security/quickstart - работа с доступом
 - https://firebase.google.com/docs/database/web/lists-of-data - сортировки и агрегации
 
+Важные замечания:
+- все работа с доступным API определена в `src/storage/db.js`
+- нельзя устанавливать в БД данные с полями `undefined`
+- операция обновления целиком перезаписывает данные по ключу
+
 ## Deploy - развертывание приложения на хостинге (только для Кураторов)
 - https://console.firebase.google.com/project/workline-71bd0/hosting
 - `yarn install firebase-tools`
@@ -97,7 +102,6 @@ yarn build
 - `yarn deploy` - тестовая версия
 - `yarn deploy:production` - разворот релизной версии
 - https://workline-71bd0.firebaseapp.com/options/index.html
-
 
 ## Определения и термины
 - Модуль - js файл с определенной логикой

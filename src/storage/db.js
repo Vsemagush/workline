@@ -20,6 +20,11 @@ const serviceAccount = {
 firebase.initializeApp(serviceAccount);
 const database = firebase.database();
 
+// список событий, константный набор -  обработка их тут /src/controller/index.js
+const EVENTS_ARRAY = [
+   ''
+];
+
 /**
  * Доступ к API FireBase
  * Пример: const api = DataBaseApi();
@@ -34,6 +39,7 @@ class DataBaseApi {
       this._db = database;
       this._root = root ? `/${root}/`: '/' ;
       this._user = localStorage.getItem('userName') ? localStorage.getItem('userName') : 'demo-user';
+      this._events = EVENTS_ARRAY;
    }
 
    /**
@@ -80,7 +86,7 @@ class DataBaseApi {
    createTask(data) {
       const format = this.getFormatTask();
       const taskData = Object.assign(format, data);
-      const ref = this.set('tasks/task-' + taskData.id, taskData);
+      const ref = this.setTask(`task-${taskData.id}`, taskData);
       return ref.then((res) => res);
    }
 
@@ -116,19 +122,92 @@ class DataBaseApi {
     * @returns {Promise<Object|null>}
     */
    updateTask(key, data) {
-      const updates = {};
-      updates[`${this._root}/tasks/${key}`] = data;
-
-      return this._db.ref().update(updates);
+      const param = {};
+      param[key] = data;
+      return this.massOperations([key], param);
    }
 
    /**
-    * Удалить задачу
-    * @param {String} key
-    * @returns {Promise} 
+    * Массовое обновление задач
+    * @param {Object} data - список задач в формате {'task-1': {...}, ...}
+    * @returns {Promise<null>} 
+    */
+   updateTasks(data) {
+      data.forEach()
+      return this.massOperations(null, data);
+   }
+
+   /**
+    * Создание нескольких задач, принимает на вход массив данных
+    * @param {Array<object>} data 
+    * @returns {Promise<Object|null>}
+    */
+   createTasks(data) {
+      if (data) {
+         const createData = {};
+         data.forEach((item) => {
+            const format = this.getFormatTask();
+            const taskData = Object.assign(format, item);
+            createData[`task-${taskData.id}`] = taskData;
+         })
+         return this.massOperations(null, createData);
+      } else {
+         throw Error('Попытка создать набор задач без данных');
+      }
+   }
+
+   /**
+    * Удалить конкретную задачу
+    * @param {String|Number} key
+    * @returns {Promise<null>} 
     */
    removeTask(key) {
+      // Подпорка, если передали не путь до задач (task-123), а числовой id
+      if (Number.isInteger(key)) {
+         key = `task-${key}`;
+      }
       return this._db.ref(`/tasks/${key}`).remove();
+   }
+
+   /**
+    * Удаление задач по массиву ключей
+    * @param {Array} keys 
+    * @returns {Promise<null>} 
+    */
+   removeTasks(keys) {
+      return this.massOperations(keys);
+   }
+
+   /**
+    * Массовые операции с задачами
+    * @param {Array|null} keys
+    * @param {Object} data данные для массовой вставки
+    * @returns {Promise<null>} 
+    */
+   massOperations(keys, data) {
+      const updates = {};
+
+      if (!keys && data) {
+         // если нет ключей - извлечем их из данных
+         keys = Object.keys(data);
+      } else {
+         if (!data) {
+            throw Error('Недопустимый набор параметров, нужны ключи или данные')
+         }
+      }
+
+      // переберем ключи и создадим набор обновляемых данных
+      keys.forEach((key) => {
+         let keyTask = key;
+         
+         // если по каким то причинам нам передачи идентификаторы за место ключа, создадим ключ для вставки
+         if (Number.isInteger(key)) {
+            keyTask = `task-${key}`;
+         }
+         updates[`${this._root}tasks/${keyTask}`] = data ? data[key] : null;
+      });
+
+      return this._db.ref().update(updates);
    }
 
    /**
@@ -156,6 +235,14 @@ class DataBaseApi {
    getState() {
       const user = this.getUser();
       return this.get(`/progress/${user}`);
+   }
+
+   /**
+    * Возвращает список поддерживаем событий
+    * @returns {Array}
+    */
+   getEvent() {
+      return this._events;
    }
 
    /**

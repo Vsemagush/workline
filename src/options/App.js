@@ -17,7 +17,7 @@ function App() {
 
    // отработает только 1 раз
    useEffect(() => {
-      channel.current = new ContentChannel('Stage-0');
+      channel.current = new ContentChannel('user-event');
       db.current =  new DataBaseApi();
 
       return () => {
@@ -59,14 +59,13 @@ function App() {
          description: new Date().toUTCString()
       };
 
-      const task = dbApi.createTask(dataObj);
-
-      // пример установки значений, добавим еще одну задачу
-      dbApi.setTask(`task-${task.id}`, dataObj);
+      dbApi.createTask(dataObj);
 
       // создадим задачу для обновления/удаления
       dataObj.id = 0;
-      dbApi.setTask(`task-0`, dataObj);
+      dbApi.setTask('task-0', dataObj);
+      dbApi.setTask('task-1', dataObj);
+      dbApi.setTask('task-2', dataObj);
       
       // обновление задачи
       setTimeout(() => {
@@ -74,9 +73,21 @@ function App() {
          dbApi.updateTask(`task-0`, dataObj);
       }, 500)
 
-      // удаление задачи
+      // удаление задач - для отладки
       setTimeout(() => {
-         dbApi.removeTask(`task-0`);
+         // получим все
+         dbApi.get('tasks').then((cur) => {
+            console.log(cur);
+            // массово удалим задачи созданные ранее
+            dbApi.removeTasks(['task-0', 'task-1', 'task-2']).then((rs)=>{
+               console.log(rs);
+               // проверим удаление
+               dbApi.get('tasks').then((res) => {
+                  console.log(res);
+               })
+            });
+         })
+
       }, 1000)
    }, []);
 
@@ -87,7 +98,8 @@ function App() {
             <Route path='/user'> <User history={ history }/> </Route>
             <Route path='/admin' component = { Admin } />
          </Switch>
-         <button onClick={testClickHandler}>Тесты БД (добавляет запись)</button>
+
+         <button className="workline-hidden" onClick={testClickHandler}>Тесты БД (добавляет запись)</button>
 
          {/* Тесты записи в БД и перехвата событий - удалить перед релизом  */}
 
