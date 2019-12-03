@@ -1,9 +1,4 @@
-import {
-   IconButton,
-   OrderedList,
-   ListItem,
-   Pane,
-} from 'evergreen-ui';
+import { IconButton, OrderedList, ListItem, Pane } from 'evergreen-ui';
 import React, {
    Fragment,
    useCallback,
@@ -31,7 +26,7 @@ function useGroupedItems(items) {
          });
          groups.forEach((itemsInTheGroup, key) => {
             result.push({
-               id: key + 'group',
+               id: key,
                description: key,
                items: itemsInTheGroup,
             });
@@ -74,19 +69,23 @@ function Admin() {
 
    const saveGroup = useCallback(
       (groupName, newText) => {
-         // TODO: звать метод БЛ, после того как он появится
+         const updatedTasks = {};
          const newItems = items.map((item) => {
-            if (item.group === groupName) {
-               return {
+            if (item.theme === groupName) {
+               const result = {
                   ...item,
-                  group: newText,
+                  theme: newText,
                };
+               updatedTasks[item.id] = result;
+               return result;
             } else {
                return item;
             }
          });
 
-         setItems(newItems);
+         db.current.updateTasks(updatedTasks).then(() => {
+            setItems(newItems);
+         });
       },
       [items],
    );
@@ -120,20 +119,35 @@ function Admin() {
          });
    }, [items]);
 
-   const removeTask = useCallback((itemId) => {
-      // TODO: добавить удаление групп
-      db.current.removeTask(itemId).then(() => {
-         const index = items.findIndex(({ id }) => id === itemId);
-         if (index !== -1) {
-            const newItems = items.slice();
-            newItems.splice(index, 1);
-            setItems(newItems);
-         }
-      });
-   }, [items]);
+   const removeTask = useCallback(
+      (itemId) => {
+         db.current.removeTask(itemId).then(() => {
+            const index = items.findIndex(({ id }) => id === itemId);
+            if (index !== -1) {
+               const newItems = items.slice();
+               newItems.splice(index, 1);
+               setItems(newItems);
+            }
+         });
+      },
+      [items],
+   );
+
+   const removeGroup = useCallback(
+      (groupName) => {
+         const itemsToRemove = items
+            .filter((item) => item.theme === groupName)
+            .map((item) => item.id);
+
+         db.current.removeTasks(itemsToRemove).then(() => {
+            setItems(items.filter((item) => !itemsToRemove.includes(item.id)));
+         });
+      },
+      [items],
+   );
 
    return (
-      <Pane background="purpleTint">
+      <Pane background="#DDEBF7">
          <TopBar caption="Администрирование" />
          <Pane
             padding={30}
@@ -165,6 +179,14 @@ function Admin() {
                               }}
                               tooltip="Добавить задачу"
                            />
+                           <IconButton
+                              icon="cross"
+                              appearance="minimal"
+                              title="Удалить тему"
+                              onClick={() => {
+                                 removeGroup(group.id);
+                              }}
+                           />
                         </ListItem>
                         <OrderedList>
                            {group.items.map((item) => {
@@ -190,14 +212,16 @@ function Admin() {
                                           setCurrentEditingItem(item);
                                        }}
                                     />
-                                    {group.items.length > 1 && <IconButton
-                                       icon="cross"
-                                       appearance="minimal"
-                                       title="Удалить задачу"
-                                       onClick={() => {
-                                          removeTask(item.id)
-                                       }}
-                                    />}
+                                    {group.items.length > 1 && (
+                                       <IconButton
+                                          icon="cross"
+                                          appearance="minimal"
+                                          title="Удалить задачу"
+                                          onClick={() => {
+                                             removeTask(item.id);
+                                          }}
+                                       />
+                                    )}
                                  </ListItem>
                               );
                            })}
@@ -212,17 +236,19 @@ function Admin() {
                }}
                tooltip="Добавить группу"
             />
-            {currentEditingItem && <EditDialog
-               initialText={currentEditingItem.additional}
-               isShown={true}
-               onSave={(text) => {
-                  saveItem(currentEditingItem, 'additional', text);
-                  setCurrentEditingItem();
-               }}
-               onCancel={() => {
-                  setCurrentEditingItem();
-               }}
-            />}
+            {currentEditingItem && (
+               <EditDialog
+                  initialText={currentEditingItem.additional}
+                  isShown={true}
+                  onSave={(text) => {
+                     saveItem(currentEditingItem, 'additional', text);
+                     setCurrentEditingItem();
+                  }}
+                  onCancel={() => {
+                     setCurrentEditingItem();
+                  }}
+               />
+            )}
          </Pane>
       </Pane>
    );

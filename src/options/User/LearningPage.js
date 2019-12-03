@@ -4,6 +4,7 @@ import TopBar from './TopBar';
 import './User.css';
 import { OrderedList, Pane } from 'evergreen-ui';
 import DataBaseApi from '../../storage/db';
+import ProgressBar from "./ProgressBar";
 
 /** Возможные состояния задачи */
 const STATUS_DONE = 'done';
@@ -124,7 +125,7 @@ function LearningPage() {
 
     return (
         <Pane
-            background="purpleTint">
+            background="#DDEBF7">
             <TopBar history={ history } />
             <Pane
                 padding={30}
@@ -134,6 +135,7 @@ function LearningPage() {
                 background="white"
                 className="User-LearningPage__height-90vh"
             >
+               <ProgressBar progress={50} />
                 <OrderedList>
                     {groupedTasks.map((group) => {
                         return (
