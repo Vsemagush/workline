@@ -177,10 +177,6 @@ function LearningPage() {
                     })}
                 </OrderedList>
             </Pane>
-
-
-            {/* Временная имитация события для переключения пройденных заданий */}
-            {/* <button onClick={changeProcessingItem}>Событие - пройден пункт</button> */}
         </Pane>
     );
 }
