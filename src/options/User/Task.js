@@ -44,8 +44,8 @@ function Task({ text, status, subTask, hint }) {
                   setShowHint(true);
                }}
             />}
-            {showHint && <Dialog
-               isShown={true}
+            {hint && <Dialog
+               isShown={showHint}
                hasFooter={false}
                title="Подсказка к заданию"
                onCancel={() => {
