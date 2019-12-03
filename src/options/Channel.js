@@ -1,6 +1,11 @@
-const port = chrome.runtime.connect({
-   name: 'Workline/options'
-});
+let port = {};
+
+// подпорка для разворота на хостинге, там нет API работы с расширениями
+if (!window.location.href.includes('firebase')) {
+   port = chrome.runtime.connect({
+      name: 'Workline/options'
+   });
+}
 
 /**
  * Позволяет отправлять сообщения из расширения на страницу.
@@ -13,7 +18,11 @@ class OptionsChannel {
       this._name = name;
       this._listeners = new Map();
       this._onmessageHandler = this._onmessage.bind(this);
-      port.onMessage.addListener(this._onmessageHandler);
+
+      // страховка, если нету onMessage (актуально для хостинга)
+      if (port.onMessage) {
+         port.onMessage.addListener(this._onmessageHandler);
+      }
    }
 
    /**
