@@ -79,8 +79,8 @@ function LearningPage() {
     const [items, setItems] = useState();
     const res = useGroupedItems(items);
 
-    const groupedTasks = res && res.result;
-    const sortedItems = res && res.sortedItems;
+    const groupedTasks = res.result;
+    const sortedItems = res.sortedItems;
 
     if (JSON.stringify(sortedItems) !== JSON.stringify(items)) {
         setItems(sortedItems);
@@ -97,11 +97,7 @@ function LearningPage() {
                 const progressTasks = db.current.toArray(result);
                 if (progressTasks) {
                     items.forEach((item) => { // Сопоставление прогреса к соответсвующей задаче
-                        let curTask = progressTasks.find(task => {
-                            if (task.id === item.id) {
-                               return task;
-                            }
-                        });
+                        let curTask = progressTasks.find(task => task.id === item.id)
                         item.status = curTask && curTask.state;
                     })
                 }
