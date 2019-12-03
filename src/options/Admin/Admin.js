@@ -1,4 +1,4 @@
-import { IconButton, OrderedList, ListItem, Pane } from 'evergreen-ui';
+import { IconButton, OrderedList, ListItem, Pane, Select } from 'evergreen-ui';
 import React, {
    Fragment,
    useCallback,
@@ -41,6 +41,7 @@ function Admin() {
    const [currentEditingItem, setCurrentEditingItem] = useState();
 
    const [items, setItems] = useState();
+   const [events, setEvents] = useState();
    const groupedTasks = useGroupedItems(items);
 
    const db = useRef();
@@ -48,6 +49,7 @@ function Admin() {
    useEffect(() => {
       db.current = new DataBaseApi('test-adminpage');
       db.current.get('tasks').then((result) => {
+         setEvents(db.current.getEvent());
          setItems(db.current.toArray(result));
       });
    }, []);
@@ -146,6 +148,21 @@ function Admin() {
       [items],
    );
 
+   const setTaskEvents = useCallback(
+      (item, event) => {
+         const newTask = {
+            ...item,
+            event,
+         };
+         db.current.updateTask(item.id, newTask).then(() => {
+            const newItems = items.slice();
+            newItems[items.indexOf(item)] = newTask;
+            setItems(newItems);
+         });
+      },
+      [items],
+   );
+
    return (
       <Pane background="#DDEBF7">
          <TopBar caption="Администрирование" />
@@ -204,6 +221,25 @@ function Admin() {
                                        }}
                                        fontSize={500}
                                     />
+                                    <Select
+                                       marginLeft={10}
+                                       width={240}
+                                       maxWidth={240}
+                                       items={events}
+                                       value={item.event}
+                                       onChange={(event) => {
+                                          setTaskEvents(
+                                             item,
+                                             event.target.value,
+                                          );
+                                       }}
+                                    >
+                                       {events.map((event) => (
+                                          <option value={event} key={event}>
+                                             {event}
+                                          </option>
+                                       ))}
+                                    </Select>
                                     <IconButton
                                        icon="info-sign"
                                        appearance="minimal"
