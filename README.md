@@ -89,11 +89,11 @@ yarn build
 - https://firebase.google.com/docs/database/security/quickstart - работа с доступом
 - https://firebase.google.com/docs/database/web/lists-of-data - сортировки и агрегации
 
-## Deploy - развертывание приложения на хостинге
+## Deploy - развертывание приложения на хостинге (только для Кураторов)
 - https://console.firebase.google.com/project/workline-71bd0/hosting
 - `yarn install firebase-tools`
 - `firebase login`
-- Настройка разворота и путей до `index.html` находиться в `firebase.json`
+- Настройка разворота и путей до `index.html` находится в `firebase.json`
 - `yarn deploy` - тестовая версия
 - `yarn deploy:production` - разворот релизной версии
 - https://workline-71bd0.firebaseapp.com/options/index.html
