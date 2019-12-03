@@ -67,7 +67,6 @@ function LearningPage() {
 
     // Подключение к БД и загрузка данных
    useEffect(() => {
-      channel.current = new ContentChannel('user-event');
       db.current = new DataBaseApi('test-adminpage');
       const promises = [
          db.current.get('tasks'),
@@ -82,11 +81,17 @@ function LearningPage() {
                item.status = curTask && curTask.state;
             });
          }
-         setItems(itemsFromDB)
-         const currentProcessingItemIndex = items.find(item => item.status === STATUS_PROCESSING);
-         channel.current.addListener(currentProcessingItemIndex.event, changeProcessingItem);
+         setItems(itemsFromDB);
       });
    }, []);
+
+   useEffect(() => {
+      channel.current = new ContentChannel('user-event');
+      const currentProcessingItemIndex = items && items.find(item => item.status === STATUS_PROCESSING);
+      if (currentProcessingItemIndex) {
+         channel.current.addListener(currentProcessingItemIndex.event, changeProcessingItem);
+      }
+   }, [items]);
 
     /** Смена текущего задания для выполнения */
     const changeProcessingItem = useCallback(() => {
