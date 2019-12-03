@@ -22,7 +22,9 @@ const database = firebase.database();
 
 // список событий, константный набор -  обработка их тут /src/controller/index.js
 const EVENTS_ARRAY = [
-   ''
+   'news_click-all-staff',
+   'contacts_click-new-message',
+   'tasks_click-new-task'
 ];
 
 /**
@@ -133,7 +135,6 @@ class DataBaseApi {
     * @returns {Promise<null>} 
     */
    updateTasks(data) {
-      data.forEach()
       return this.massOperations(null, data);
    }
 
@@ -149,7 +150,7 @@ class DataBaseApi {
             const format = this.getFormatTask();
             const taskData = Object.assign(format, item);
             createData[`task-${taskData.id}`] = taskData;
-         })
+         });
          return this.massOperations(null, createData);
       } else {
          throw Error('Попытка создать набор задач без данных');
@@ -162,11 +163,8 @@ class DataBaseApi {
     * @returns {Promise<null>} 
     */
    removeTask(key) {
-      // Подпорка, если передали не путь до задач (task-123), а числовой id
-      if (Number.isInteger(key)) {
-         key = `task-${key}`;
-      }
-      return this._db.ref(`/tasks/${key}`).remove();
+      let taskKey = this._getTaskId(key);
+      return this._db.ref(`/tasks/${taskKey}`).remove();
    }
 
    /**
@@ -187,27 +185,34 @@ class DataBaseApi {
    massOperations(keys, data) {
       const updates = {};
 
-      if (!keys && data) {
-         // если нет ключей - извлечем их из данных
-         keys = Object.keys(data);
-      } else {
+      if (!keys) {
          if (!data) {
             throw Error('Недопустимый набор параметров, нужны ключи или данные')
          }
+         // если нет ключей - извлечем их из данных
+         keys = Object.keys(data);
       }
 
       // переберем ключи и создадим набор обновляемых данных
       keys.forEach((key) => {
-         let keyTask = key;
-         
-         // если по каким то причинам нам передачи идентификаторы за место ключа, создадим ключ для вставки
-         if (Number.isInteger(key)) {
-            keyTask = `task-${key}`;
-         }
+         let keyTask = this._getTaskId(key);
          updates[`${this._root}tasks/${keyTask}`] = data ? data[key] : null;
       });
 
       return this._db.ref().update(updates);
+   }
+
+   /**
+    * Возвращает id задачи для вставки
+    * @param {String|Number} key 
+    * @returns {String}
+    */
+   _getTaskId(key) {
+      let keyTask = key;
+      if (Number.isInteger(+key)) {
+         keyTask = `task-${key}`;
+      }
+      return keyTask;
    }
 
    /**
