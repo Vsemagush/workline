@@ -94,6 +94,15 @@ yarn build
 - нельзя устанавливать в БД данные с полями `undefined`
 - операция обновления целиком перезаписывает данные по ключу
 
+## Deploy - развертывание приложения на хостинге (только для Кураторов)
+- https://console.firebase.google.com/project/workline-71bd0/hosting
+- `yarn install firebase-tools`
+- `firebase login`
+- Настройка разворота и путей до `index.html` находится в `firebase.json`
+- `yarn deploy` - тестовая версия
+- `yarn deploy:production` - разворот релизной версии
+- https://workline-71bd0.firebaseapp.com/options/index.html
+
 ## Определения и термины
 - Модуль - js файл с определенной логикой
 - Линтер - утилита проверки корректности кода
