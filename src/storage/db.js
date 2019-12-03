@@ -22,9 +22,9 @@ const database = firebase.database();
 
 // список событий, константный набор -  обработка их тут /src/controller/index.js
 const EVENTS_ARRAY = [
-   'news_click-all-staff',
-   'contacts_click-new-message',
-   'tasks_click-new-task'
+   'news_click-all-staff', // Открыть список всех сотрудников с главной страницы через поиск
+   'contacts_click-new-message', // В разделе контактов создание сообщение и отправка его 
+   'tasks_click-new-task' // В разделе задач - запуск задачи на выполнение
 ];
 
 /**
