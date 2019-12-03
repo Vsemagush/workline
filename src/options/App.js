@@ -17,7 +17,7 @@ function App() {
 
    // отработает только 1 раз
    useEffect(() => {
-      channel.current = new ContentChannel('Stage-0');
+      channel.current = new ContentChannel('user-event');
       db.current =  new DataBaseApi();
 
       return () => {
