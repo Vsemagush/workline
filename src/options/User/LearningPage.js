@@ -91,7 +91,7 @@ function LearningPage() {
       if (currentProcessingItemIndex) {
          channel.current.addListener(currentProcessingItemIndex.event, changeProcessingItem);
       }
-   }, [items, currentProcessingItemIndex]);
+   }, [items, changeProcessingItem]);
 
     /** Смена текущего задания для выполнения */
     const changeProcessingItem = useCallback(() => {
