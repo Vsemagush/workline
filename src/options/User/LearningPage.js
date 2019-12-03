@@ -85,14 +85,6 @@ function LearningPage() {
       });
    }, []);
 
-   useEffect(() => {
-      channel.current = new ContentChannel('user-event');
-      const currentProcessingItemIndex = items && items.find(item => item.status === STATUS_PROCESSING);
-      if (currentProcessingItemIndex) {
-         channel.current.addListener(currentProcessingItemIndex.event, changeProcessingItem);
-      }
-   }, [items, currentProcessingItemIndex]);
-
     /** Смена текущего задания для выполнения */
     const changeProcessingItem = useCallback(() => {
            const currentProcessingItemIndex = items.findIndex(item => item.status === STATUS_PROCESSING);
@@ -135,6 +127,21 @@ function LearningPage() {
 
            setItems(newItems);
        }, [items, groupedTasks]);
+
+   useEffect(() => {
+      if (items) {
+         channel.current = new ContentChannel('user-event');
+         const currentProcessingItemIndex = items && items.find(item => item.status === STATUS_PROCESSING);
+         const event = currentProcessingItemIndex.event;
+         if (currentProcessingItemIndex) {
+            channel.current.addListener(event, changeProcessingItem);
+         }
+
+         return () => {
+            channel.current.removeListener(event, changeProcessingItem)
+         }
+      }
+   }, [items, changeProcessingItem]);
 
     return (
         <Pane
