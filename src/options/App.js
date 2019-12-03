@@ -3,7 +3,7 @@ import ContentChannel from './Channel';
 import Admin from './Admin/Admin';
 import User from './User/LearningPage';
 import Home from './Home';
-import { Switch, Route, useHistory } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import './App.css';
 import DataBaseApi from '../storage/db';
 
@@ -12,8 +12,6 @@ function App() {
    const [data, setData] = useState('');
    const channel = useRef();
    const db = useRef();
-
-   let history = useHistory();
 
    // отработает только 1 раз
    useEffect(() => {
@@ -94,8 +92,8 @@ function App() {
    return (
       <div className="App">
          <Switch>
-            <Route exact path='/'> <Home history={ history }/> </Route>
-            <Route path='/user'> <User history={ history }/> </Route>
+            <Route exact path='/' component = { Home } />
+            <Route path='/user' component = { User } />
             <Route path='/admin' component = { Admin } />
          </Switch>
 
