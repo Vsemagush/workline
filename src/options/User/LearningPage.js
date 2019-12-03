@@ -91,7 +91,7 @@ function LearningPage() {
       if (currentProcessingItemIndex) {
          channel.current.addListener(currentProcessingItemIndex.event, changeProcessingItem);
       }
-   }, [items]);
+   }, [items, currentProcessingItemIndex]);
 
     /** Смена текущего задания для выполнения */
     const changeProcessingItem = useCallback(() => {
@@ -101,6 +101,9 @@ function LearningPage() {
            }
            const newItems = items.slice();
            const currentProcessingItem = newItems[currentProcessingItemIndex];
+
+           channel.current.removeListener(currentProcessingItem.event);
+
            newItems.splice(currentProcessingItemIndex, 1, {
                ...currentProcessingItem,
                status: STATUS_DONE
