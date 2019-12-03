@@ -65,18 +65,20 @@ function LearningPage() {
     // Подключение к БД и загрузка данных
     useEffect(() => {
         db.current = new DataBaseApi('test-adminpage');
-        db.current.get('tasks').then((result) => {
-            const items = db.current.toArray(result);
-            db.current.getState().then((result) => { // Загрузка прогресса
-                const progressTasks = db.current.toArray(result);
-                if (progressTasks) {
-                    items.forEach((item) => { // Сопоставление прогреса к соответсвующей задаче
-                        let curTask = progressTasks.find(task => task.id === item.id);
-                        item.status = curTask && curTask.state;
-                    })
-                }
-                setItems(items);
-            });
+        const promises = [
+           db.current.get('tasks'),
+           db.current.getState()
+        ];
+        Promise.all(promises).then((result) => {
+            const items = db.current.toArray(result[0]);
+            const progressTasks = db.current.toArray(result[1]);
+            if (progressTasks) {
+               items.forEach((item) => { // Сопоставление прогреса к соответсвующей задаче
+                  let curTask = progressTasks.find(task => task.id === item.id);
+                  item.status = curTask && curTask.state;
+               });
+            }
+            setItems(items);
         });
     }, []);
 
