@@ -147,7 +147,7 @@ function Admin() {
    );
 
    return (
-      <Pane background="purpleTint">
+      <Pane background="#DDEBF7">
          <TopBar caption="Администрирование" />
          <Pane
             padding={30}

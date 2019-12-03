@@ -65,7 +65,7 @@ const initialTasks = [
         status: 'closed',
      },
  ];
- 
+
  function useGroupedItems(items) {
     return useMemo(() => {
        const groups = new Map();
@@ -123,7 +123,7 @@ function LearningPage({ history }) {
                 return;
             }
             const newItems = items.slice();
-            
+
             // смена у только что пройденного задания статуса на "Выполнен"
             let newItem = { ...currentProcessingItem, status: STATUS_DONE };
             newItems[items.indexOf(currentProcessingItem)] = newItem;
@@ -141,7 +141,7 @@ function LearningPage({ history }) {
 
     return (
         <Pane
-            background="purpleTint">
+            background="#DDEBF7">
             <TopBar history={ history } />
             <Pane
                 padding={30}
@@ -173,7 +173,7 @@ function LearningPage({ history }) {
                                         );
                                     })}
                                 </OrderedList>}
-                            
+
                         </Fragment>
                         );
                     })}
