@@ -1,147 +1,131 @@
-import React, { useMemo, Fragment, useState, useCallback } from 'react';
+import React, { useMemo, Fragment, useState, useCallback, useRef, useEffect } from 'react';
 import Task from './Task';
 import TopBar from './TopBar';
 import './User.css';
-import { OrderedList, Pane } from 'evergreen-ui'
+import { OrderedList, Pane } from 'evergreen-ui';
+import DataBaseApi from '../../storage/db';
+import ProgressBar from "./ProgressBar";
 
 /** Возможные состояния задачи */
 const STATUS_DONE = 'done';
 const STATUS_PROCESSING = 'processing';
 const STATUS_CLOSED = 'closed';
 
-const initialTasks = [
-    {
-        id: 0,
-        theme: 'Знакомство с online.sbis.ru',
-        description: 'Авторизуйтесь на online.sbis.ru',
-        status: 'done',
-        hint: 'подсказка 1',
-    },
-    {
-        id: 1,
-        theme: 'Знакомство с online.sbis.ru',
-        description: 'Перейдите в календарь',
-        status: 'done',
-        hint: 'подсказка 2',
-    },
-    {
-        id: 2,
-        theme: 'Создаем первый мерж-реквест',
-        description: 'Перейдите в задачи',
-        status: 'done',
-        hint: 'подсказка 3',
-    },
-    {
-        id: 3,
-        theme: 'Создаем первый мерж-реквест',
-        description: 'Открыть любую задачу',
-        status: 'processing',
-        hint: 'подсказка 1',
-     },
-     {
-        id: 4,
-        theme: 'Создаем первый мерж-реквест',
-        description: 'Связанные',
-        status: 'closed',
-     },
-     {
-        id: 5,
-        theme: 'Создаем первый мерж-реквест',
-        description: 'Найти Merge request',
-        status: 'closed',
-        hint: 'подсказка 1',
-     },
-     {
-        id: 6,
-        theme: 'Задаем вопрос на сервисе Вопрос-ответ',
-        description: 'Переходим в группы',
-        status: 'closed',
-        hint: 'подсказка 1',
-     },
-     {
-        id: 7,
-        theme: 'Задаем вопрос на сервисе Вопрос-ответ',
-        description: 'Wasaby framework',
-        status: 'closed',
-     },
- ];
- 
- function useGroupedItems(items) {
+function useGroupedItems(items) {
     return useMemo(() => {
-       const groups = new Map();
-       items.forEach((item) => {
-          if (!groups.has(item.theme)) {
-             groups.set(item.theme, []);
-          }
-          groups.get(item.theme).push(item);
-       });
-       const result = [];
-       groups.forEach((itemsInTheGroup, key) => {
-            let totalReadyInGroup = 0;
-            let processing = false;
-            let groupStatus = STATUS_CLOSED;
-            itemsInTheGroup.forEach((item) => {
-                if (item.status === STATUS_DONE) totalReadyInGroup++;
-                if (item.status === STATUS_PROCESSING) processing = true;
+        const result = [];
+        if (items && items.length) {
+            // Последнее добавленное задание может относиться к первой группе, поэтому сначала группируем
+            const groups = new Map();
+            items.forEach((item) => {
+                if (!groups.has(item.theme)) {
+                    groups.set(item.theme, []);
+                }
+                groups.get(item.theme).push(item);
             });
-            if (totalReadyInGroup === itemsInTheGroup.length) {
-                groupStatus = STATUS_DONE;
-            } else if (processing) {
-                groupStatus = STATUS_PROCESSING;
+
+            // Случай нового пользователя - первая задача становится в процессе
+            // Порядок групп уже есть - нужен первый элемент первой группы
+            const itemsInFirstGroup = groups.values().next().value;
+            if (itemsInFirstGroup[0] && !itemsInFirstGroup[0].status) {
+                itemsInFirstGroup[0].status = STATUS_PROCESSING;
             }
-            result.push({
-                id: key,
-                description: key,
-                items: itemsInTheGroup,
-                status: groupStatus,
+
+            // Актуализируем информацию по статусам групп
+            groups.forEach((itemsInTheGroup, key) => {
+                let totalReadyInGroup = 0;
+                let processing = false;
+                let groupStatus = STATUS_CLOSED;
+                itemsInTheGroup.forEach((item) => {
+                    if (item.status === STATUS_DONE) totalReadyInGroup++;
+                    if (item.status === STATUS_PROCESSING) processing = true;
+                });
+                if (totalReadyInGroup === itemsInTheGroup.length) {
+                    groupStatus = STATUS_DONE;
+                } else if (processing) {
+                    groupStatus = STATUS_PROCESSING;
+                }
+                result.push({
+                    id: key,
+                    description: key,
+                    items: itemsInTheGroup,
+                    status: groupStatus,
+                });
             });
-       });
-       return result;
+        }
+        return result;
     }, [items]);
 }
 
-/** Текущее задание */
-function getProcessingItem(items) {
-   const processingItem = items.find(item => {
-      if (item.status === STATUS_PROCESSING) {
-         return item;
-      }
-   });
-
-   return processingItem;
-}
-
-function LearningPage({ history }) {
-    const [items, setItems] = useState(initialTasks);
+function LearningPage() {
+    const [items, setItems] = useState();
     const groupedTasks = useGroupedItems(items);
 
-    /** Смена текущего задания для выполнения */
-    const changeProcessingItem = useCallback(
-        () => {
-            const currentProcessingItem = getProcessingItem(items);
-            if (!currentProcessingItem) {
-                return;
-            }
-            const newItems = items.slice();
-            
-            // смена у только что пройденного задания статуса на "Выполнен"
-            let newItem = { ...currentProcessingItem, status: STATUS_DONE };
-            newItems[items.indexOf(currentProcessingItem)] = newItem;
+    const db = useRef();
 
-            // Если есть еще задания для выполнения, то статус "В процессе" получает следущее задание
-            if (currentProcessingItem.id !== items.length - 1) {
-                const newProcessingItem = items[currentProcessingItem.id + 1];
-                newItem = { ...newProcessingItem, status: STATUS_PROCESSING };
-                newItems[items.indexOf(newProcessingItem)] = newItem;
+    // Подключение к БД и загрузка данных
+    useEffect(() => {
+        db.current = new DataBaseApi('test-adminpage');
+        const promises = [
+           db.current.get('tasks'),
+           db.current.getState()
+        ];
+        Promise.all(promises).then((result) => {
+            const items = db.current.toArray(result[0]);
+            const progressTasks = db.current.toArray(result[1]);
+            if (progressTasks) {
+               items.forEach((item) => { // Сопоставление прогреса к соответсвующей задаче
+                  let curTask = progressTasks.find(task => task.id.includes(item.id));
+                  item.status = curTask && curTask.state;
+               });
             }
-            setItems(newItems);
-        },
-        [items]
-    );
+            setItems(items);
+        });
+    }, []);
+
+    /** Смена текущего задания для выполнения */
+    const changeProcessingItem = useCallback(() => {
+           const currentProcessingItemIndex = items.findIndex(item => item.status === STATUS_PROCESSING);
+           if (currentProcessingItemIndex === -1) {
+               return;
+           }
+           const newItems = items.slice();
+           const currentProcessingItem = newItems[currentProcessingItemIndex];
+           newItems.splice(currentProcessingItemIndex, 1, {
+               ...currentProcessingItem,
+               status: STATUS_DONE
+           });
+           db.current.setState(currentProcessingItem.id, STATUS_DONE);
+
+           const group = groupedTasks.find((group) =>
+              group.id === currentProcessingItem.theme
+           );
+           const indexInGroup = group.items.findIndex((item) => item.id === currentProcessingItem.id);
+           let newItem;
+           if (indexInGroup === group.items.length - 1) {
+               const groupIndex = groupedTasks.findIndex((value) => value === group);
+               if (groupIndex !== groupedTasks.length - 1) {
+                  newItem = groupedTasks[groupIndex + 1].items[0];
+               }
+           } else {
+               newItem = group.items[indexInGroup + 1];
+           }
+
+           if (newItem) {
+              const newItemIndex = newItems.findIndex((item) => item === newItem);
+              newItems.splice(newItemIndex, 1, {
+                 ...newItems[newItemIndex],
+                 status: STATUS_PROCESSING
+              });
+              db.current.setState(newItem.id, STATUS_PROCESSING);
+           }
+
+           setItems(newItems);
+       }, [items, groupedTasks]);
 
     return (
         <Pane
-            background="purpleTint">
+            background="#DDEBF7">
             <TopBar history={ history } />
             <Pane
                 padding={30}
@@ -151,6 +135,7 @@ function LearningPage({ history }) {
                 background="white"
                 className="User-LearningPage__height-90vh"
             >
+               <ProgressBar progress={50} />
                 <OrderedList>
                     {groupedTasks.map((group) => {
                         return (
@@ -167,13 +152,13 @@ function LearningPage({ history }) {
                                                 key={item.id}
                                                 hint={item.hint}
                                                 subTask={true}
-                                                status={item.status}
+                                                status={item.status || STATUS_CLOSED}
                                                 text={item.description}>
                                             </Task>
                                         );
                                     })}
                                 </OrderedList>}
-                            
+
                         </Fragment>
                         );
                     })}

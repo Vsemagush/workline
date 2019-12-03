@@ -35,7 +35,7 @@ class DataBaseApi {
 
    /**
     * Уровень доступа к данным обучения, по умолчанию пишем на уровень "test"
-    * @param {String} root 
+    * @param {String} root
     */
    constructor(root='test') {
       this._db = database;
@@ -82,7 +82,7 @@ class DataBaseApi {
 
    /**
     * Создание задачи - берет данные по формату
-    * @param {Object} data 
+    * @param {Object} data
     * @returns {Promise<Object|null>}
     */
    createTask(data) {
@@ -132,7 +132,7 @@ class DataBaseApi {
    /**
     * Массовое обновление задач
     * @param {Object} data - список задач в формате {'task-1': {...}, ...}
-    * @returns {Promise<null>} 
+    * @returns {Promise<null>}
     */
    updateTasks(data) {
       return this.massOperations(null, data);
@@ -140,7 +140,7 @@ class DataBaseApi {
 
    /**
     * Создание нескольких задач, принимает на вход массив данных
-    * @param {Array<object>} data 
+    * @param {Array<object>} data
     * @returns {Promise<Object|null>}
     */
    createTasks(data) {
@@ -160,7 +160,7 @@ class DataBaseApi {
    /**
     * Удалить конкретную задачу
     * @param {String|Number} key
-    * @returns {Promise<null>} 
+    * @returns {Promise<null>}
     */
    removeTask(key) {
       let taskKey = this._getTaskId(key);
@@ -169,8 +169,8 @@ class DataBaseApi {
 
    /**
     * Удаление задач по массиву ключей
-    * @param {Array} keys 
-    * @returns {Promise<null>} 
+    * @param {Array} keys
+    * @returns {Promise<null>}
     */
    removeTasks(keys) {
       return this.massOperations(keys);
@@ -180,7 +180,7 @@ class DataBaseApi {
     * Массовые операции с задачами
     * @param {Array|null} keys
     * @param {Object} data данные для массовой вставки
-    * @returns {Promise<null>} 
+    * @returns {Promise<null>}
     */
    massOperations(keys, data) {
       const updates = {};
@@ -217,9 +217,9 @@ class DataBaseApi {
 
    /**
     * Добавляет статус задачи
-    * @param {String} taskId 
-    * @param {String} user 
-    * @param {String} state 
+    * @param {String} taskId
+    * @param {String} user
+    * @param {String} state
     * @returns {Promise<Object|null>}
     */
    setState(taskId, state) {
@@ -229,10 +229,13 @@ class DataBaseApi {
          state,
          user
       };
+      
+      taskId = this._getTaskId(taskId);
+
       updates[ `${this._root}/progress/${user}/${taskId}`] = stateTask;
       return this._db.ref().update(updates);
    }
-   
+
    /**
     * Список состояний по задачам
     * @returns {Promise<Object|null>}
@@ -262,7 +265,7 @@ class DataBaseApi {
     * Превращает объекты из БД в массив объектов с ключом внутри
     * [{id, ...values}, ...]
     * @param {Object} data
-    * @returns {Array<Object|null>}  
+    * @returns {Array<Object|null>}
     */
    toArray(data) {
       if (!data) {

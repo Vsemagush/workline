@@ -1,7 +1,9 @@
 import React, { useCallback } from 'react';
 import { Avatar } from 'evergreen-ui'
+import { useHistory } from "react-router-dom";
 
-function TopBar({ history }) {
+function TopBar() {
+    const history = useHistory();
 
     /** Обработчик нажатия на "Выйти" */
     const exitClick = useCallback(
