@@ -5,6 +5,7 @@ import './User.css';
 import { OrderedList, Pane } from 'evergreen-ui';
 import DataBaseApi from '../../storage/db';
 import ProgressBar from "./ProgressBar";
+import ContentChannel from './../Channel';
 
 /** Возможные состояния задачи */
 const STATUS_DONE = 'done';
@@ -61,27 +62,28 @@ function LearningPage() {
     const [items, setItems] = useState();
     const groupedTasks = useGroupedItems(items);
 
-    const db = useRef();
+   const db = useRef();
+   const channel = useRef();
 
     // Подключение к БД и загрузка данных
-    useEffect(() => {
-        db.current = new DataBaseApi('test-adminpage');
-        const promises = [
-           db.current.get('tasks'),
-           db.current.getState()
-        ];
-        Promise.all(promises).then((result) => {
-            const items = db.current.toArray(result[0]);
-            const progressTasks = db.current.toArray(result[1]);
-            if (progressTasks) {
-               items.forEach((item) => { // Сопоставление прогреса к соответсвующей задаче
-                  let curTask = progressTasks.find(task => task.id.includes(item.id));
-                  item.status = curTask && curTask.state;
-               });
-            }
-            setItems(items);
-        });
-    }, []);
+   useEffect(() => {
+      db.current = new DataBaseApi('test-adminpage');
+      const promises = [
+         db.current.get('tasks'),
+         db.current.getState()
+      ];
+      Promise.all(promises).then((result) => {
+         const itemsFromDB = db.current.toArray(result[0]);
+         const progressTasks = db.current.toArray(result[1]);
+         if (progressTasks) {
+            itemsFromDB.forEach((item) => { // Сопоставление прогреса к соответсвующей задаче
+               let curTask = progressTasks.find(task => task.id.includes(item.id));
+               item.status = curTask && curTask.state;
+            });
+         }
+         setItems(itemsFromDB);
+      });
+   }, []);
 
     /** Смена текущего задания для выполнения */
     const changeProcessingItem = useCallback(() => {
@@ -91,6 +93,9 @@ function LearningPage() {
            }
            const newItems = items.slice();
            const currentProcessingItem = newItems[currentProcessingItemIndex];
+
+           channel.current.removeListener(currentProcessingItem.event);
+
            newItems.splice(currentProcessingItemIndex, 1, {
                ...currentProcessingItem,
                status: STATUS_DONE
@@ -122,6 +127,21 @@ function LearningPage() {
 
            setItems(newItems);
        }, [items, groupedTasks]);
+
+   useEffect(() => {
+      if (items) {
+         channel.current = new ContentChannel('user-event');
+         const currentProcessingItemIndex = items && items.find(item => item.status === STATUS_PROCESSING);
+         const event = currentProcessingItemIndex.event;
+         if (currentProcessingItemIndex) {
+            channel.current.addListener(event, changeProcessingItem);
+         }
+
+         return () => {
+            channel.current.removeListener(event, changeProcessingItem)
+         }
+      }
+   }, [items, changeProcessingItem]);
 
     return (
         <Pane
@@ -164,10 +184,6 @@ function LearningPage() {
                     })}
                 </OrderedList>
             </Pane>
-
-
-            {/* Временная имитация события для переключения пройденных заданий */}
-            <button onClick={changeProcessingItem}>Событие - пройден пункт</button>
         </Pane>
     );
 }
