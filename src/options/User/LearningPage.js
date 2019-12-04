@@ -67,7 +67,7 @@ function LearningPage() {
 
     // Подключение к БД и загрузка данных
    useEffect(() => {
-      db.current = new DataBaseApi('test-adminpage');
+      db.current = new DataBaseApi();
       const promises = [
          db.current.get('tasks'),
          db.current.getState()
@@ -170,7 +170,7 @@ function LearningPage() {
                                         return (
                                             <Task
                                                 key={item.id}
-                                                hint={item.hint}
+                                                hint={item.additional}
                                                 subTask={true}
                                                 status={item.status || STATUS_CLOSED}
                                                 text={item.description}>
