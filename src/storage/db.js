@@ -45,7 +45,7 @@ class DataBaseApi {
     */
    constructor(root='test') {
       this._db = database;
-      this._events = {};
+      this._subscriber = {};
       this._root = root ? `/${root}/`: '/' ;
       this._user = localStorage.getItem('userName') ? localStorage.getItem('userName') : DEFAULT_USER;
       this._events = EVENTS_ARRAY;
