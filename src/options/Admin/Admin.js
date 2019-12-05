@@ -47,7 +47,7 @@ function Admin() {
    const db = useRef();
    // подключаемся к БД и грузим данные
    useEffect(() => {
-      db.current = new DataBaseApi('test-adminpage');
+      db.current = new DataBaseApi();
       db.current.get('tasks').then((result) => {
          setEvents(db.current.getEvent());
          setItems(db.current.toArray(result));
@@ -172,7 +172,6 @@ function Admin() {
             marginLeft={80}
             elevation={2}
             background="white"
-            height="90vh"
          >
             <OrderedList>
                {groupedTasks.map((group) => {

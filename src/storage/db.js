@@ -27,9 +27,15 @@ const EVENTS_ARRAY = [
    'tasks_click-new-task' // В разделе задач - запуск задачи на выполнение
 ];
 
+const DEFAULT_USER = 'demo-user'
+
 /**
  * Доступ к API FireBase
  * Пример: const api = DataBaseApi();
+ * База состоит из нескольких основных веток
+ *    /tasks - список задач
+ *    /progress - список состояний прогресса
+ *    /users - список авторизованных пользователей
  */
 class DataBaseApi {
 
@@ -39,8 +45,9 @@ class DataBaseApi {
     */
    constructor(root='test') {
       this._db = database;
+      this._subscriber = {};
       this._root = root ? `/${root}/`: '/' ;
-      this._user = localStorage.getItem('userName') ? localStorage.getItem('userName') : 'demo-user';
+      this._user = localStorage.getItem('userName') ? localStorage.getItem('userName') : DEFAULT_USER;
       this._events = EVENTS_ARRAY;
    }
 
@@ -78,6 +85,35 @@ class DataBaseApi {
          );
 
       return ref;
+   }
+
+   /**
+    * Подписка на изменение(любое) данных в БД
+    * @param {String} field - имя поля на которое смотреть
+    * @param {Function} callback - колбек функция которая будет вызываться каждый раз когда происходит изменение данных в БД
+    */
+   subscribeChanges(field, callback) {
+      if (field) {
+         const ref = this._db.ref(this._root + field);
+         this._subscriber[field] = ref;
+   
+         ref.on('value', (res) => callback(res.val()));
+      } else {
+         throw Error('Нельзя наблюдать за корнем базы!')
+      }
+   }
+
+   /**
+    * Отписка от вотчера
+    * @param {String} field 
+    * @returns {Boolean}
+    */
+   unsubscribeChanges(field='') {
+      const currentEvents = this._events[field];
+      if (currentEvents) {
+         this._subscriber[field].off('value');
+      }
+      return !!currentEvents;
    }
 
    /**
@@ -163,7 +199,7 @@ class DataBaseApi {
     * @returns {Promise<null>}
     */
    removeTask(key) {
-      let taskKey = this._getTaskId(key);
+      let taskKey = this.getTaskId(key);
       return this._db.ref(`/tasks/${taskKey}`).remove();
    }
 
@@ -195,7 +231,7 @@ class DataBaseApi {
 
       // переберем ключи и создадим набор обновляемых данных
       keys.forEach((key) => {
-         let keyTask = this._getTaskId(key);
+         let keyTask = this.getTaskId(key);
          updates[`${this._root}tasks/${keyTask}`] = data ? data[key] : null;
       });
 
@@ -207,7 +243,7 @@ class DataBaseApi {
     * @param {String|Number} key 
     * @returns {String}
     */
-   _getTaskId(key) {
+   getTaskId(key) {
       let keyTask = key;
       if (Number.isInteger(+key)) {
          keyTask = `task-${key}`;
@@ -230,9 +266,9 @@ class DataBaseApi {
          user
       };
       
-      taskId = this._getTaskId(taskId);
+      taskId = this.getTaskId(taskId);
 
-      updates[ `${this._root}/progress/${user}/${taskId}`] = stateTask;
+      updates[`${this._root}/progress/${user}/${taskId}`] = stateTask;
       return this._db.ref().update(updates);
    }
 
@@ -259,6 +295,28 @@ class DataBaseApi {
     */
    getUser() {
       return this._user;
+   }
+
+   /**
+    * Установка пользователя в базу, сохраняет/обновляет дату последнего логина
+    * @param {String} userName 
+    * @returns {Promise<Object|null>}
+    */
+   setUser(userName=DEFAULT_USER) {
+      const data = {
+         dateLastLogin: Date().toString()
+      };
+      return this.set(`users/${userName}`, data);
+   }
+
+   /**
+    * Возвращает массив всех пользователей которые когда либо входили в систему
+    * @returns {Array<String|null>}
+    */
+   getAllUsers() {
+      return this.get(`users`).then((users) => {
+         return users ? Object.keys(users) : null;
+      });
    }
 
    /**
