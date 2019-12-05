@@ -15,7 +15,7 @@ function Home() {
     const db = useRef();
     useEffect(() => {
        db.current = new DataBaseApi();
-    });
+    }, []);
 
     /** Обработчик нажатия на "Войти" */
     const onEnterClick = useCallback(

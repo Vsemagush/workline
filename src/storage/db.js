@@ -90,13 +90,17 @@ class DataBaseApi {
    /**
     * Подписка на изменение(любое) данных в БД
     * @param {String} field - имя поля на которое смотреть
-    * @param {*} callback - колбек функция которая будет вызываться каждый раз когда происходит изменение данных в БД
+    * @param {Function} callback - колбек функция которая будет вызываться каждый раз когда происходит изменение данных в БД
     */
-   subscribeChanges(field='', callback) {
-      const ref = this._db.ref(this._root + field);
-      this._subscriber[field] = ref;
-
-      ref.on('value', (res) => callback(res.val()));
+   subscribeChanges(field, callback) {
+      if (field) {
+         const ref = this._db.ref(this._root + field);
+         this._subscriber[field] = ref;
+   
+         ref.on('value', (res) => callback(res.val()));
+      } else {
+         throw Error('Нельзя наблюдать за корнем базы!')
+      }
    }
 
    /**
@@ -307,7 +311,7 @@ class DataBaseApi {
 
    /**
     * Возвращает массив всех пользователей которые когда либо входили в систему
-    * @returns {Array<String>}
+    * @returns {Array<String|null>}
     */
    getAllUsers() {
       return this.get(`users`).then((users) => {
