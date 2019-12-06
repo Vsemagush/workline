@@ -101,7 +101,19 @@ function startDetectedEvent(path) {
          break;
       case '/Calendar/':
          //мы в календаре
-         sendNotification('События создаются здесь!')
+         sendNotification('Здесь Вы можете заполнить своё расписание!')
+         window.addEventListener('click', (event) => {
+            const arrayList = event.toElement.className;
+            if (arrayList.includes('icon-Yes')) {
+               const msg = 'Вы создали событие, продолжайте работу!';
+               const date = new Date();
+
+               channel.dispatch('kalendar_click-new-evil', { msg, date });
+               
+               // временно, перейти на определение открытия панели
+               setTimeout(() => sendConfirmation(msg), 1000)
+            }
+         });
          break;
    }
 }
