@@ -23,7 +23,7 @@ function LearningPage() {
     const changeProcessingItem = {};
 
     return (
-        <div></div>
+        <div>lkjdfg</div>
     );
 }
 
