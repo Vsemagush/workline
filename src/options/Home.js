@@ -1,6 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { TextInput } from 'evergreen-ui';
-import { Button } from 'evergreen-ui';
+import { TextInput, Button } from 'evergreen-ui';
 import { useHistory } from "react-router-dom";
 
 /** Главная страница - страница авторизации */
@@ -13,8 +12,8 @@ function Home() {
 
     /** Обработчик нажатия на "Войти" */
     const onEnterClick = useCallback(() => {
-        const loginInput = login.current && login.current.value;
-        const passwordInput = password.current && password.current.value;
+        const loginInput = login.current.value;
+        const passwordInput = password.current.value;
         if (loginInput === EDIT_DEFAULT_LOGIN && passwordInput === EDIT_DEFAULT_PASSWORD){
             history.replace('/admin');
         }
@@ -25,23 +24,21 @@ function Home() {
 
     return (
         <div>
-            <div className="TopBar__header">Workline</div>
             <div className="TopBar__logoBlock">
                <img className="TopBar__logo" src="../../assets/logo.png"></img>
             </div>
-            <div className = "TextBar"><TextInput
+            <div className="TopBar__header">Workline</div>
+            <div className = "TextBar1"><TextInput
                 innerRef={login}
                 placeholder="Логин"
-                className=""
             />
             </div>
-            <div className = "TextBar"><TextInput
-                innerRef = {password}
+            <div className = "TextBar2"><TextInput
+                innerRef={password}
                 placeholder="Пароль"
             />
             </div>
-            <div className = "TextBar"><Button 
-                //arginRight={12} 
+            <div className = "TextBar3"><Button 
                 height={40} 
                 onClick={onEnterClick}
                >

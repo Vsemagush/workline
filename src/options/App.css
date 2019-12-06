@@ -10,16 +10,38 @@ body {
   text-align: center;
   color: #1e90ff;
   font-size: 48px;
+  top: 36%;
+  left: 44%;
+  position: absolute;
 }
-.TextBar {
+.TextBar1 {
   text-align: center;
+  top: 45%;
+  left: 40%;
+  position: absolute;
+}
+.TextBar2 {
+  text-align: center;
+  top: 52%;
+  left: 40%;
+  position: absolute;
+}
+.TextBar3 {
+  text-align: center;
+  top: 59%;
+  left: 47%;
+  position: absolute;
 }
 .TopBar__logo {
-  width: 30px;
-  top: 12px;
+  
+  text-align: center;
+  width: 26px;
+  top: 40%;
+  left: 42%;
   position: absolute;
 }
 .TopBar__logoBlock {
-  width: 30px;
+  text-align: center;
+  width: 570px;
   padding: 0 10px 0 0;
 }
