@@ -105,10 +105,10 @@ function startDetectedEvent(path) {
          window.addEventListener('click', (event) => {
             const arrayList = event.toElement.className;
             if (arrayList.includes('icon-Yes')) {
-               const msg = 'Вы создали событие, продолжайте работу!';
+               const msg = 'Вы создали событие в Вашем расписании, можете продолжить работу!';
                const date = new Date();
 
-               channel.dispatch('kalendar_click-new-evil', { msg, date });
+               channel.dispatch('calendar_click-new-event', { msg, date });
                
                // временно, перейти на определение открытия панели
                setTimeout(() => sendConfirmation(msg), 1000)
