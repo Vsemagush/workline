@@ -99,6 +99,10 @@ function startDetectedEvent(path) {
          // мы в Сотрудниках
          sendNotification('Коллег и других сотрудников можно найти здесь!')
          break;
+      case '/Calendar/':
+         //мы в календаре
+         sendNotification('События создаются здесь!')
+         break;
    }
 }
 
