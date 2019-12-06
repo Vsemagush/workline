@@ -13,11 +13,16 @@ function Admin() {
    const saveItem = useCallback(function (item){
       data.current.updateTask(item.id,item)
    });
-
+   const saveGroup = useCallback(function(items){
+      data.current.updateTask(items.description,items)
+   });
    return (
       <Pane background="#DDEBF7">
          <button onClick={ ()=> saveItem({id:0,description:'1',theme:'2',additional: '3',type: '4',event:'5'})}>
             Проверка
+         </button>
+         <button onClick={ ()=> saveGroup({id:0,description:'1',theme:'2',additional: '3',type: '4',event:'5'})}>
+            проверка_проверочка
          </button>
       </Pane>
    );
