@@ -44,7 +44,6 @@ function Home() {
             >
                 Войти
             </Button>
-            </div>
         </div>
     );
 }
