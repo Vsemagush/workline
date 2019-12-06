@@ -52,7 +52,6 @@ function startDetectedEvent(path) {
             const openNews = event.toElement.parentElement;
             const parentFirstLevel = openNews.parentElement;
 
-            //           console.log(event.toElement().hasParent('sn-ExtraGroup-ItemGroup sn-ExtraGroup__name-onelines'););
             if (textButton === 'Все сотрудники') {
                const msg = 'Вы открыли список сотрудников! Тут можно найти ваших коллег!';
                const date = new Date();
@@ -62,7 +61,7 @@ function startDetectedEvent(path) {
                // временно, перейти на определение открытия панели
                setTimeout(() => sendConfirmation(msg), 1000);
             }
-            if (elementClass === 'n-EmojiPT__Button n-EmojiButton n-Emoji__Like n-EmojiLike icon-primary icon-24') {
+            if (elementClass.includes('n-EmojiLike')) {
                const msg = 'Вы оценили новость! Так держать!';
                const date = new Date();
 
@@ -71,7 +70,7 @@ function startDetectedEvent(path) {
                // временно, перейти на определение открытия панели
                setTimeout(() => sendConfirmation(msg), 1000);
             }
-            if (elementClass === 'n-EmojiPT__Button n-EmojiButton n-Emoji__Like n-EmojiLikeHover icon-primary icon-24') {
+            if (elementClass.includes('n-EmojiLikeHover')) {
                const msg = 'Вы сняли лайк. Ещё не поздно передумать)';
                const date = new Date();
 
@@ -101,7 +100,6 @@ function startDetectedEvent(path) {
                // временно, перейти на определение открытия панели
                setTimeout(() => sendConfirmation(msg), 1000);
             }
-
          });
          break;
       case '/contacts/':
@@ -146,7 +144,7 @@ function startDetectedEvent(path) {
          break;
       case '/Calendar/':
          //мы в календаре
-         sendNotification('Здесь Вы можете заполнить своё расписание!')
+         sendNotification('Здесь Вы можете заполнить своё расписание!');
          window.addEventListener('click', (event) => {
             const arrayList = event.toElement.className;
             if (arrayList.includes('icon-Yes')) {
@@ -154,9 +152,9 @@ function startDetectedEvent(path) {
                const date = new Date();
 
                channel.dispatch('calendar_click-new-event', { msg, date });
-               
+
                // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000)
+               setTimeout(() => sendConfirmation(msg), 1000);
             }
          });
          break;
