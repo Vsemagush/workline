@@ -200,7 +200,7 @@ class DataBaseApi {
     */
    removeTask(key) {
       let taskKey = this.getTaskId(key);
-      return this._db.ref(`/tasks/${taskKey}`).remove();
+      return this._db.ref(`${this._root}/tasks/${taskKey}`).remove();
    }
 
    /**
