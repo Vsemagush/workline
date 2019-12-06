@@ -24,7 +24,8 @@ const database = firebase.database();
 const EVENTS_ARRAY = [
    'news_click-all-staff', // Открыть список всех сотрудников с главной страницы через поиск
    'contacts_click-new-message', // В разделе контактов создание сообщение и отправка его 
-   'tasks_click-new-task' // В разделе задач - запуск задачи на выполнение
+   'tasks_click-new-task', // В разделе задач - запуск задачи на выполнение
+   'calendar_click-new-event' // В разделе календарь - создание события
 ];
 
 const DEFAULT_USER = 'demo-user'
