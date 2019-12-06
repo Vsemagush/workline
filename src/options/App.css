@@ -6,3 +6,20 @@ body {
   margin: 0;
   height: 100%;
 }
+.TopBar__header {
+  text-align: center;
+  color: #1e90ff;
+  font-size: 48px;
+}
+.TextBar {
+  text-align: center;
+}
+.TopBar__logo {
+  width: 30px;
+  top: 12px;
+  position: absolute;
+}
+.TopBar__logoBlock {
+  width: 30px;
+  padding: 0 10px 0 0;
+}

@@ -87,7 +87,7 @@ function LearningPage() {
         });
     }, [])
     return (
-        <div></div>
+        <div>Hello,world</div>
     );
 }
 
