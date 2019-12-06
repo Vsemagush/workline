@@ -43,7 +43,7 @@ class OptionsChannel {
     * Регистрирует обработчик события.
     * @param {String} event Название события.
     * @param {Function} callback Обработчик события.
-    * @returns {ContentChannel}
+    * @returns {OptionsChannel}
     */
    addListener(event, callback) {
       let listeners = this._listeners.get(event);
@@ -59,7 +59,7 @@ class OptionsChannel {
     * Удаляет обработчик события.
     * @param {String} event Название события.
     * @param {Function} callback Обработчик события.
-    * @returns {ContentChannel}
+    * @returns {OptionsChannel}
     */
    removeListener(event, callback) {
       const listeners = this._listeners.get(event);
@@ -72,7 +72,7 @@ class OptionsChannel {
    /**
     * Удаляет все обработчики события.
     * @param {String} event Название события
-    * @returns {ContentChannel}
+    * @returns {OptionsChannel}
     */
    removeAllListeners(event) {
       if (!event) {
