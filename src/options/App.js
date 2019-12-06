@@ -8,7 +8,7 @@ import LearningPage from './User/LearningPage';
 function App() {
    return (
       <Switch>
-         <Route path="/" component={Home}/>
+         <Route exact path="/" component={Home}/>
          <Route path="/admin" component={Admin}/>
          <Route path="/user" component={LearningPage}/>
       </Switch>
