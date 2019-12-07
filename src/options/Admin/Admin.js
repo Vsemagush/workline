@@ -6,7 +6,7 @@ import React, {
    useMemo,
 } from 'react';
 import DataBase from '../../storage/db';
-import { Pane, Icon, Select } from 'evergreen-ui';
+import { Pane, Select, IconButton } from 'evergreen-ui';
 import EditingItem from './EditingItem';
 import EditDialog from './EditDialog';
 
@@ -87,7 +87,11 @@ function Admin() {
                         }}
                         newup={group.theme}
                      />
-                     <Icon icon="cross" color="red" size={20} onClick={() => { deleteGroup(group.items) }} />
+                     <IconButton icon="plus" color="green" size={20} onClick={() => data.current.createTask({
+                        description: 'Новое задание',
+                        theme: group.theme
+                     })} />
+                     <IconButton icon="cross" color="red" size={20} onClick={() => { deleteGroup(group.items) }} />
                      <ul>
                         {group.items.map((item) => {
                            return (
@@ -99,7 +103,7 @@ function Admin() {
                                     }}
                                     newup={item.description}
                                  />
-                                 <Icon
+                                 <IconButton
                                     icon="info-sign"
                                     color="info"
                                     marginLeft={16}
@@ -116,7 +120,7 @@ function Admin() {
                                        return <option value={text} key={text}>{text}</option>;
                                     })}
                                  </Select>
-                                 <Icon icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
+                                 <IconButton icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
                               </li>
                            );
                         })}
@@ -125,19 +129,17 @@ function Admin() {
                );
             })}
          </ul>
-         {
-            editElement && (
-               <EditDialog
-                  text={editElement.additional}
-                  onConfirm={(text) => {
-                     editElement.additional = text;
-                     saveItem(editElement);
-                  }}
-                  onCloseComplete={() => setEditElement()}
-               />
-            )
-         }
-      </Pane >
+         {editElement && (
+            <EditDialog
+               text={editElement.additional}
+               onConfirm={(text) => {
+                  editElement.additional = text;
+                  saveItem(editElement);
+               }}
+               onCloseComplete={() => setEditElement()}
+            />
+         )}
+      </Pane>
    );
 }
 export default Admin;
