@@ -24,24 +24,32 @@ function Home() {
     }, [history,password,login]);
 
     return (
-        <div>
-            <div className="TopBar__header">Workline</div>
-            <div className="TopBar__logoBlock">
-               <img className="TopBar__logo" src="../../assets/logo.png"></img>
+        <div className="Home-Form">
+            <div>
+                <span className="TopBar__logoBlock">
+                    <img className="TopBar__logo" src="../../assets/logo.png"></img>
+                </span>
+                <span className="TopBar__header">Workline</span>
             </div>
-            <TextInput
-                innerRef={login}
-                placeholder="Логин"
-                className="TextBar"
-            />
-            <TextInput
-                innerRef = {password}
-                placeholder="Пароль"
-            />
+            <div> 
+                <TextInput
+                    innerRef={login}
+                    placeholder="Логин"
+                    className="Home-TextInput"
+                />
+            </div>
+            <div>
+                <TextInput
+                    innerRef={password}
+                    placeholder="Пароль"
+                    className="Home-TextInput"
+                />
+            </div>
             <Button 
-                height={40} 
+                height={40}
+                margin='10px'
+                appearance="primary"
                 onClick={onEnterClick}
-                className="TextBar"
             >
                 Войти
             </Button>
