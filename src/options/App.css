@@ -61,3 +61,12 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.invscroll::-webkit-scrollbar {
+  display: none;
+}
+
+.progress {
+  justify-content: center;
+  display: flex;
+}
