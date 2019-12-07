@@ -91,7 +91,7 @@ function useMatchingData(tasks, progress) {
 function useCurrentLineProgress(items) {
     return useMemo(() => {
         let progress = 0;
-        if(items) {
+        if (items && items.length) {
             let doneCount = 0;
             items.forEach(item => {
                 if(item.state===STATE_DONE) doneCount++;  
