@@ -65,6 +65,10 @@ function Admin() {
       [taskList],
    );
 
+   const deleteTask = useCallback((key) => {
+      data.current.removeTask(key);
+   }, []);
+
    return (
       <Pane background="#DDEBF7">
          <ul>
@@ -105,6 +109,7 @@ function Admin() {
                                        return <option value={text} key={text}>{text}</option>;
                                     })}
                                  </Select>
+                                 <Icon icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
                               </li>
                            );
                         })}
