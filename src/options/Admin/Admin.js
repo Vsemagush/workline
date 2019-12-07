@@ -76,7 +76,7 @@ function Admin() {
    }, []);
 
    return (
-      <Pane background="#DDEBF7">
+      <Pane>
          <ul>
             {groupedTasks.map((group) => {
                return (
