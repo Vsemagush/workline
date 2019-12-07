@@ -83,152 +83,146 @@ function Admin() {
    return (
       <Pane height="100vh" overflow="hidden">
          <TopBar caption="Администрирование" />
-         <Pane height={1000} justifyContent="center">
-            <Pane
-               height={1000}
-               display="flex"
-               flexDirection="column"
-               className="invscroll"
-               overflow="scroll"
-               background="white"
-               elevation={2}
-               marginLeft={80}
-               marginRight={80}
-               padding={30}
-            >
-               <UnorderedList>
-                  {groupedTasks.map((group) => {
-                     return (
-                        <Fragment key={group.id}>
-                           <ListItem
-                              listStyleType="none"
-                              display="flex"
-                              alignItems="center"
-                           >
-                              <EditingItem
-                                 onSave={(text) => {
-                                    saveGroup(group.theme, text);
-                                 }}
-                                 newup={group.theme}
-                                 size={30}
-                              />
-                              <Icon
-                                 size={30}
-                                 icon="plus"
-                                 color="muted"
-                                 onClick={() =>
-                                    data.current.createTask({
-                                       description: 'Новое задание',
-                                       theme: group.theme,
-                                    })
-                                 }
-                                 appearance="minimal"
-                                 marginRight={5}
-                                 marginLeft={5}
-                              />
-                              <Icon
-                                 size={30}
-                                 icon="cross"
-                                 color="danger"
-                                 onClick={() => {
-                                    deleteGroup(group.items);
-                                 }}
-                                 appearance="minimal"
-                              />
-                           </ListItem>
-                           <ListItem listStyleType="none">
-                              <UnorderedList>
-                                 {group.items.map((item) => {
-                                    return (
-                                       <ListItem
-                                          key={item.id}
-                                          listStyleType="none"
-                                          display="flex"
-                                          alignItems="center"
-                                          margin={10}
+         <Pane
+            height={1000}
+            className="invscroll"
+            overflow="auto"
+            background="white"
+            elevation={2}
+            marginLeft={80}
+            marginRight={80}
+            padding={30}
+         >
+            <UnorderedList>
+               {groupedTasks.map((group) => {
+                  return (
+                     <Fragment key={group.id}>
+                        <ListItem
+                           listStyleType="none"
+                           display="flex"
+                           alignItems="center"
+                        >
+                           <EditingItem
+                              onSave={(text) => {
+                                 saveGroup(group.theme, text);
+                              }}
+                              newup={group.theme}
+                              size={30}
+                           />
+                           <Icon
+                              size={30}
+                              icon="plus"
+                              color="muted"
+                              onClick={() =>
+                                 data.current.createTask({
+                                    description: 'Новое задание',
+                                    theme: group.theme,
+                                 })
+                              }
+                              appearance="minimal"
+                              marginRight={5}
+                              marginLeft={5}
+                           />
+                           <Icon
+                              size={30}
+                              icon="cross"
+                              color="danger"
+                              onClick={() => {
+                                 deleteGroup(group.items);
+                              }}
+                              appearance="minimal"
+                           />
+                        </ListItem>
+                        <ListItem listStyleType="none">
+                           <UnorderedList>
+                              {group.items.map((item) => {
+                                 return (
+                                    <ListItem
+                                       key={item.id}
+                                       listStyleType="none"
+                                       display="flex"
+                                       alignItems="center"
+                                       margin={10}
+                                    >
+                                       <EditingItem
+                                          onSave={(text) => {
+                                             item.description = text;
+                                             saveItem(item);
+                                          }}
+                                          newup={item.description}
+                                          size={20}
+                                       />
+                                       <Select
+                                          value={item.event}
+                                          onChange={(event) => {
+                                             item.event = event.target.value;
+                                             saveItem(item);
+                                          }}
+                                          marginLeft={10}
+                                          marginRight={20}
+                                          maxWidth={350}
+                                          minWidth={300}
+                                          className="Admin-Select"
                                        >
-                                          <EditingItem
-                                             onSave={(text) => {
-                                                item.description = text;
-                                                saveItem(item);
-                                             }}
-                                             newup={item.description}
-                                             size={20}
-                                          />
-                                          <Select
-                                             value={item.event}
-                                             onChange={(event) => {
-                                                item.event = event.target.value;
-                                                saveItem(item);
-                                             }}
-                                             marginLeft={10}
-                                             marginRight={20}
-                                             maxWidth={350}
-                                             minWidth={300}
-                                             className="Admin-Select"
-                                          >
-                                             {events.map((text) => {
-                                                return (
-                                                   <option
-                                                      value={text}
-                                                      key={text}
-                                                   >
-                                                      {text}
-                                                   </option>
-                                                );
-                                             })}
-                                          </Select>
-                                          <Icon
-                                             icon="info-sign"
-                                             color="info"
-                                             onClick={() => {
-                                                setEditElement(item);
-                                             }}
-                                             appearance="minimal"
-                                             size={25}
-                                             marginRight={10}
-                                          />
-                                          <Icon
-                                             icon="cross"
-                                             onClick={() => {
-                                                deleteTask(item.id);
-                                             }}
-                                             color="danger"
-                                             appearance="minimal"
-                                             size={25}
-                                          />
-                                       </ListItem>
-                                    );
-                                 })}
-                              </UnorderedList>
-                           </ListItem>
-                        </Fragment>
-                     );
-                  })}
-               </UnorderedList>
-               <Icon
-                  icon="plus"
-                  color="muted"
-                  size={30}
-                  onClick={() =>
-                     data.current.createTask({
-                        description: 'Новое задание',
-                        theme: 'Новая тема',
-                     })
-                  }
-                  appearance="minimal"
+                                          {events.map((text) => {
+                                             return (
+                                                <option value={text} key={text}>
+                                                   {text}
+                                                </option>
+                                             );
+                                          })}
+                                       </Select>
+                                       <Icon
+                                          icon="info-sign"
+                                          color="info"
+                                          onClick={() => {
+                                             setEditElement(item);
+                                          }}
+                                          appearance="minimal"
+                                          size={25}
+                                          marginRight={10}
+                                       />
+                                       <Icon
+                                          icon="cross"
+                                          onClick={() => {
+                                             deleteTask(item.id);
+                                          }}
+                                          color="danger"
+                                          appearance="minimal"
+                                          size={25}
+                                       />
+                                    </ListItem>
+                                 );
+                              })}
+                           </UnorderedList>
+                        </ListItem>
+                     </Fragment>
+                  );
+               })}
+            </UnorderedList>
+            <Icon
+               icon="plus"
+               color="muted"
+               size={30}
+               onClick={() =>
+                  data.current.createTask({
+                     description: 'Новое задание',
+                     theme: 'Новая тема',
+                  })
+               }
+               appearance="minimal"
+            />
+            <Pane marginBottom={500} />
+            {editElement && (
+               <EditDialog
+                  text={editElement.additional}
+                  onConfirm={(text) => {
+                     editElement.additional = text;
+                     saveItem(editElement);
+                  }}
+                  onCloseComplete={() => setEditElement()}
                />
-               {editElement && (
-                  <EditDialog
-                     text={editElement.additional}
-                     onConfirm={(text) => {
-                        editElement.additional = text;
-                        saveItem(editElement);
-                     }}
-                     onCloseComplete={() => setEditElement()}
-                  />
-               )}
-            </Pane>
+            )}
          </Pane>
       </Pane>
    );
