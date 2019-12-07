@@ -6,7 +6,7 @@ import React, {
    useMemo,
 } from 'react';
 import DataBase from '../../storage/db';
-import { Pane, Icon, Select } from 'evergreen-ui';
+import { Pane, Select, IconButton } from 'evergreen-ui';
 import EditingItem from './EditingItem';
 import EditDialog from './EditDialog';
 
@@ -45,7 +45,7 @@ function Admin() {
    useEffect(() => {
       data.current = new DataBase();
       setEvents(data.current.getEvent());
-      data.current.get('tasks').then((result) => {
+      data.current.subscribeChanges('tasks', (result) => {
          var array = data.current.toArray(result);
          setTaskList(array);
       });
@@ -87,7 +87,11 @@ function Admin() {
                         }}
                         newup={group.theme}
                      />
-                     <Icon icon="cross" color="red" size={20} onClick={() => { deleteGroup(group.items) }} />
+                     <IconButton icon="plus" onClick={() => data.current.createTask({
+                        description: 'Новое задание',
+                        theme: group.theme
+                     })} />
+                     <IconButton icon="cross" onClick={() => { deleteGroup(group.items) }} />
                      <ul>
                         {group.items.map((item) => {
                            return (
@@ -99,7 +103,7 @@ function Admin() {
                                     }}
                                     newup={item.description}
                                  />
-                                 <Icon
+                                 <IconButton
                                     icon="info-sign"
                                     color="info"
                                     marginLeft={16}
@@ -116,7 +120,7 @@ function Admin() {
                                        return <option value={text} key={text}>{text}</option>;
                                     })}
                                  </Select>
-                                 <Icon icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
+                                 <IconButton icon="cross" onClick={() => { deleteTask(item.id) }} />
                               </li>
                            );
                         })}
@@ -125,19 +129,21 @@ function Admin() {
                );
             })}
          </ul>
-         {
-            editElement && (
-               <EditDialog
-                  text={editElement.additional}
-                  onConfirm={(text) => {
-                     editElement.additional = text;
-                     saveItem(editElement);
-                  }}
-                  onCloseComplete={() => setEditElement()}
-               />
-            )
-         }
-      </Pane >
+         <IconButton icon="plus" onClick={() => data.current.createTask({
+            description: 'Новое задание',
+            theme: "Новая тема"
+         })} />
+         {editElement && (
+            <EditDialog
+               text={editElement.additional}
+               onConfirm={(text) => {
+                  editElement.additional = text;
+                  saveItem(editElement);
+               }}
+               onCloseComplete={() => setEditElement()}
+            />
+         )}
+      </Pane>
    );
 }
 export default Admin;

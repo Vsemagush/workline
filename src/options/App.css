@@ -43,3 +43,11 @@ body {
   height: 100%;
 }
 
+.HomeButton {
+  width:500px;
+}
+
+.disp-flex {
+  display: flex;
+  flex-direction: column;
+}
