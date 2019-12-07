@@ -121,16 +121,15 @@ function setLayout() {
          notificationDisable[0].style.borderRadius = '10px';
          notificationDisable[0].style.boxShadow = ' inset 0 0 30px lightblue ';
          notificationDisable[0].appendChild(span);
-      }
-
-
-      const notificationEnable = document.getElementsByClassName('noticeCenter-Button');
-      if (notificationEnable.length !== 0) {
-         notificationEnable[0].style.border = '3px solid';
-         notificationEnable[0].style.borderColor = 'lightblue';
-         notificationEnable[0].style.borderRadius = '10px';
-         notificationEnable[0].style.boxShadow = ' inset 0 0 30px lightblue ';
-         document.body.appendChild(spanSecond);
+      } else {
+         const notificationEnable = document.getElementsByClassName('noticeCenter-Button');
+         if (notificationEnable.length !== 0) {
+            notificationEnable[0].style.border = '3px solid';
+            notificationEnable[0].style.borderColor = 'lightblue';
+            notificationEnable[0].style.borderRadius = '10px';
+            notificationEnable[0].style.boxShadow = ' inset 0 0 30px lightblue ';
+            document.body.appendChild(spanSecond);
+         }
       }
    }, 2000);
 
