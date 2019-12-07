@@ -22,3 +22,12 @@ hr {
     color: rgb(42, 42, 42);
     font-weight: 500;
 }
+.ProgressBar-Text{
+    background: linear-gradient(to right, rgb(228, 208, 131), rgb(79, 228, 104));
+  }
+.ProgressBar-Border{
+  border-width: 2px;
+}
+.ProgressBar-Number{
+font-weight: 700;
+}

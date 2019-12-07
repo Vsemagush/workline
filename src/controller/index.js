@@ -1,4 +1,5 @@
 import ContentChannel from './../content/Channel';
+import db from './../storage/db';
 
 /**
  * Модуль отвечающий за отслеживание действий на странице.
@@ -9,6 +10,8 @@ import ContentChannel from './../content/Channel';
  * - Каждое отслеживаемое действие должно сопровождаться датой выполнения
  * - Каждый этап - выделить по итогу в отдельный файл, сюда импорт
  */
+
+const DataBase = new db();
 
 // пример подписки на событие и передача данных в шину
 const channel = new ContentChannel('user-event');
@@ -53,53 +56,33 @@ function startDetectedEvent(path) {
             const parentFirstLevel = openNews.parentElement;
 
             if (textButton === 'Все сотрудники') {
-               const msg = 'Вы открыли список сотрудников! Тут можно найти ваших коллег!';
-               const date = new Date();
-
-               channel.dispatch('news_click-all-staff', { msg, date });
-
-               // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000);
+               preparation('Вы открыли список сотрудников! Тут можно найти ваших коллег!', 'news_click-all-staff');
             }
-            if (elementClass.includes('n-EmojiLike')) {
-               const msg = 'Вы оценили новость! Так держать!';
-               const date = new Date();
 
-               channel.dispatch('news_like-click', { msg, date });
-
-               // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000);
-            }
             if (elementClass.includes('n-EmojiLikeHover')) {
-               const msg = 'Вы сняли лайк. Ещё не поздно передумать)';
-               const date = new Date();
-
-               channel.dispatch('news_unlike-click', { msg, date });
-
-               // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000);
+               preparation('Вы сняли лайк. Ещё не поздно передумать)', 'news_unlike-click');
+            } else if (elementClass.includes('n-EmojiLike')) {
+               preparation('Вы оценили новость! Так держать!', 'news_like-click');
             }
+
             if ((openNews.className === 'feed-Item' ||
                openNews.className === 'feed-Content' ||
                (parentFirstLevel.parentElement !== null && parentFirstLevel.parentElement.parentElement !== null &&
                   parentFirstLevel.parentElement.parentElement.className === 'feed-Content'))) {
-               const msg = 'Вы открыли новость! Замечательно!';
-               const date = new Date();
-
-               channel.dispatch('news_post-open', { msg, date });
-
-               // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000);
+               preparation('Вы открыли новость! Замечательно!', 'news_post-open');
             }
             if (openNews.parentElement.className.includes('controls-ListView__item__selected') ||
                parentFirstLevel.parentElement.className.includes('controls-ListView__item__selected')) {
-               const msg = 'Вы получили список новостей по выбранной группе!';
-               const date = new Date();
-
-               channel.dispatch('news_post-filter', { msg, date });
-               // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000);
+               preparation('Вы получили список новостей по выбранной группе!', 'news_post-filter');
             }
+
+            if (elementClass.includes('noticeCenter-Panel__closeButton_shading') ||
+               openNews.className.includes('noticeCenter-Panel__closeButton_shading')) {
+               preparation('Вы скрыли панель уведомлений. Они будут скучать', 'news_notification-hidden');
+            } else if (openNews.className === 'noticeCenter-EmbedButton' || openNews.className === 'noticeCenter-Button') {
+               preparation('Вы открыли панель уведомлений. Здесь много важных событий', 'news_notification-open');
+            }
+
          });
          break;
       case '/contacts/':
@@ -108,13 +91,7 @@ function startDetectedEvent(path) {
          window.addEventListener('click', (event) => {
             const isSendButton = event.toElement.classList.contains('icon-Send');
             if (isSendButton) {
-               const msg = 'Вы отправили свое первое сообщение!';
-               const date = new Date();
-
-               channel.dispatch('contacts_click-new-message', { msg, date });
-
-               // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000);
+               preparation('Вы отправили свое первое сообщение!', 'contacts_click-new-message');
             }
          });
          break;
@@ -124,13 +101,7 @@ function startDetectedEvent(path) {
          window.addEventListener('click', (event) => {
             const textButton = event.toElement.innerText;
             if (textButton === 'Задача') {
-               const msg = 'Вы открыли свою первую задачу, заполните поля и продолжите работу!';
-               const date = new Date();
-
-               channel.dispatch('tasks_click-new-task', { msg, date });
-
-               // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000);
+               preparation('Вы открыли свою первую задачу, заполните поля и продолжите работу!', 'tasks_click-new-task');
             }
          });
          break;
@@ -141,6 +112,33 @@ function startDetectedEvent(path) {
       case '/employees.html':
          // мы в Сотрудниках
          sendNotification('Коллег и других сотрудников можно найти здесь!');
+         let timerId = setInterval(() => {
+            const cearhelement = document.getElementsByClassName('controls-InputRender__wrapper_singleLine');
+            if ( cearhelement[0]){
+               clearInterval(timerId);
+               cearhelement[0].addEventListener('click', (event) => {
+                  let stopId = setInterval(() => {
+                     const isSearchButton = document.getElementsByClassName('controls-InputRender__field');
+                     if (isSearchButton[0].value !== '') {
+                        clearInterval(timerId);
+                        clearInterval(stopId);
+                        const msg = 'Вы начали свой первый поиск сотрудника!';
+                        const date = new Date();
+
+                        channel.dispatch('news_click-all-staff',{ msg, date });
+
+                        // временно, перейти на определение открытия панели
+                        setTimeout(() => sendConfirmation(msg), 1000);
+                     }
+                  },100)
+
+               });
+            }
+   },100);
+
+         // setTimeout(() => { clearInterval(timerId); alert(''); }, 5000);
+         // if (timerId) {
+
          break;
       case '/Calendar/':
          //мы в календаре
@@ -148,16 +146,11 @@ function startDetectedEvent(path) {
          window.addEventListener('click', (event) => {
             const arrayList = event.toElement.className;
             if (arrayList.includes('icon-Yes')) {
-               const msg = 'Вы создали событие в Вашем расписании, можете продолжить работу!';
-               const date = new Date();
-
-               channel.dispatch('calendar_click-new-event', { msg, date });
-
-               // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000);
+               preparation('Вы создали событие в Вашем расписании, можете продолжить работу!', 'calendar_click-new-event');
             }
          });
          break;
+
    }
 }
 
@@ -201,6 +194,37 @@ function sendConfirmation(msg) {
          templateOptions: {
             style: 'danger',
          },
+      });
+   });
+}
+
+/**
+ * Cоздаю окошко с сообщением, отправляю событие
+ * @param {String} msg - текст который будет показан в окошке
+ * @param {Date} date - дата, необязательный аттрибут. По умолчанию new Date()
+ * @param {String} eventName - название событие которое должно запускать действие
+ */
+function preparation(msg, eventName, date = new Date()) {
+   // получаю список состояний задач
+   DataBase.getState().then((res) => {
+      // рассматриваю отдельно каждое состояние
+      DataBase.toArray(res).forEach((task) => {
+         if (task !== undefined) {
+            // Получаю данные по таску
+            DataBase.subscribeChanges('tasks', function(data) {
+               // Задание связано с нашим событием
+               if (data[task.id].event === eventName) {
+                  // И оно выполнено
+                  if (task.state === 'done') {
+                     return;
+                  }
+                  // Если не выполнено отправляю event и показываю окошко с текстом
+                  channel.dispatch(eventName, { msg, date });
+                  // временно, перейти на определение открытия панели
+                  setTimeout(() => sendConfirmation(msg), 1000);
+               }
+            });
+         }
       });
    });
 }
