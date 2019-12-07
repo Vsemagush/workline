@@ -85,7 +85,6 @@ function Admin() {
                         description: 'Новое задание',
                         theme: group.theme
                      })} />
-
                      <ul>
                         {group.items.map((item) => {
                            return (
@@ -119,7 +118,6 @@ function Admin() {
                            );
                         })}
                      </ul>
-
                   </li>
                );
             })}
