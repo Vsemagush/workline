@@ -271,7 +271,7 @@ function preparation(msg, eventName, date = new Date()) {
             // Получаю данные по таску
             DataBase.subscribeChanges('tasks', function(data) {
                // Задание связано с нашим событием
-               if (data[task.id].event === eventName) {
+               if (data[task.id] && data[task.id].event === eventName) {
                   // И оно выполнено
                   if (task.state === 'done') {
                      return;
