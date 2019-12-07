@@ -37,7 +37,7 @@ function Admin() {
    );
 
    const data = useRef();
-   const saveItem = useCallback(function(item) {
+   const saveItem = useCallback(function (item) {
       data.current.updateTask(item.id, item);
    }, []);
 
@@ -50,7 +50,7 @@ function Admin() {
    }, []);
 
    const saveGroup = useCallback(
-      function(oldName, newName) {
+      function (oldName, newName) {
          let newData = {};
          for (var i = 0; i < taskList.length; i++) {
             if (taskList[i].theme === oldName) {
@@ -66,7 +66,13 @@ function Admin() {
    const deleteTask = useCallback((key) => {
       data.current.removeTask(key);
    }, []);
-   
+
+   const deleteGroup = useCallback((groupItems) => {
+      data.current.removeTasks(groupItems.map((item) => {
+         return item.id;
+      }));
+   }, []);
+
    return (
       <Pane background="#DDEBF7">
          <ul>
@@ -79,6 +85,7 @@ function Admin() {
                         }}
                         newup={group.theme}
                      />
+                     <Icon icon="cross" color="red" size={20} onClick={() => { deleteGroup(group.items) }} />
                      <ul>
                         {group.items.map((item) => {
                            return (
@@ -89,7 +96,7 @@ function Admin() {
                                        saveItem(item);
                                     }}
                                     newup={item.description}
-                                 />              
+                                 />
                                  <Icon
                                     icon="info-sign"
                                     color="info"
@@ -98,7 +105,7 @@ function Admin() {
                                        setEditElement(item);
                                     }}
                                  />
-                                  <Icon icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
+                                 <Icon icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
                               </li>
                            );
                         })}
@@ -107,17 +114,19 @@ function Admin() {
                );
             })}
          </ul>
-         {editElement && (
-            <EditDialog
-               text={editElement.additional}
-               onConfirm={(text) => {
-                  editElement.additional = text;
-                  saveItem(editElement);
-               }}
-               onCloseComplete={() => setEditElement()}
-            />
-         )}
-      </Pane>
+         {
+            editElement && (
+               <EditDialog
+                  text={editElement.additional}
+                  onConfirm={(text) => {
+                     editElement.additional = text;
+                     saveItem(editElement);
+                  }}
+                  onCloseComplete={() => setEditElement()}
+               />
+            )
+         }
+      </Pane >
    );
 }
 export default Admin;
