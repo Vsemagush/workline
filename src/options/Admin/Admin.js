@@ -63,6 +63,10 @@ function Admin() {
       [taskList],
    );
 
+   const deleteTask = useCallback((key) => {
+      data.current.removeTask(key);
+   }, []);
+   
    return (
       <Pane background="#DDEBF7">
          <ul>
@@ -85,7 +89,7 @@ function Admin() {
                                        saveItem(item);
                                     }}
                                     newup={item.description}
-                                 />
+                                 />              
                                  <Icon
                                     icon="info-sign"
                                     color="info"
@@ -94,6 +98,7 @@ function Admin() {
                                        setEditElement(item);
                                     }}
                                  />
+                                  <Icon icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
                               </li>
                            );
                         })}
