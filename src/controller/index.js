@@ -96,14 +96,72 @@ function startDetectedEvent(path) {
          });
          break;
       case '/Tasks/registry/OnMe/':
-         // мы в задачах
-         sendNotification('Тут будут твои задачи!');
+         // мы в задачах на мне
+         if (!window.myper){
+         window.myper = true;
+         sendNotification('Тут будут твои задачи!')
          window.addEventListener('click', (event) => {
             const textButton = event.toElement.innerText;
-            if (textButton === 'Задача') {
-               preparation('Вы открыли свою первую задачу, заполните поля и продолжите работу!', 'tasks_click-new-task');
+            if (window.location.pathname==="/Tasks/registry/OnMe/" && textButton === 'Задача') {
+               const msg = 'Вы открыли свою первую задачу, заполните поля и продолжите работу!';
+               const date = new Date();
+
+               channel.dispatch('tasks_click-new-task-dlyamenya', { msg, date });
+               
+               // временно, перейти на определение открытия панели
+               setTimeout(() => sendConfirmation(msg), 1000)
+            }
+            // создаём задачу в разделе задачи на мне
+            else{
+               if (window.location.pathname==="/Tasks/registry/OnMe/" && textButton === 'На выполнение' && document.getElementsByClassName('richEditor_TinyMCE')[0].innerText != null){
+                  const msg = 'Вы создали свою первую задачу, можете продолжать работу!';
+                  const date = new Date();
+
+                  channel.dispatch('tasks_click-create-new-task-dlyamenya', { msg, date });
+            
+                  // временно, перейти на определение открытия панели
+                  setTimeout(() => sendConfirmation(msg), 1000)
+               }
             }
          });
+         }
+         break;
+      case '/Tasks/registry/FromMe/':
+         // мы в задачах от меня
+         if (!window.myper1){
+         window.myper1 = true;
+         window.addEventListener('click', (event) => {
+            const textButton = event.toElement.innerText;
+            if (window.location.pathname==="/Tasks/registry/FromMe/" && textButton === 'На выполнение' && document.getElementsByClassName('richEditor_TinyMCE')[0].innerText != null){
+               const msg = 'Вы создали свою первую задачу, можете продолжать работу!';
+               const date = new Date();
+
+               channel.dispatch('tasks_click-create-new-task-otmenya', { msg, date });
+            
+               // временно, перейти на определение открытия панели
+               setTimeout(() => sendConfirmation(msg), 1000);
+            }
+            else{
+               // создавали из раздела задачи на мне
+               const poisk = document.getElementsByClassName('controls-Button__text_clickable_theme-online-default')
+               let element;
+               for (let item of poisk) {
+                  if (item.innerText==='Да'){
+                      element = item;
+                  }
+               }
+               if (window.location.pathname==="/Tasks/registry/FromMe/" && textButton === 'Да' && element.closest(".controls-ConfirmationTemplate").children[0].children[0].children[0].children[0].children[0].children[0].innerText ==='Удалить документ?'){
+                  const msg = 'Вы удалили свою первую задачу, можете продолжать работу!';
+                  const date = new Date();
+      
+                  channel.dispatch('tasks_click-delete-task-otmenya-yesout', { msg, date });
+                  
+                  // временно, перейти на определение открытия панели
+                  setTimeout(() => sendConfirmation(msg), 1000);
+               }
+            }
+         });
+         }
          break;
       case '/disk.html':
          // мы в Документах
@@ -141,7 +199,7 @@ function startDetectedEvent(path) {
 
          break;
       case '/Calendar/':
-         //мы в календаре
+         // мы в календаре
          sendNotification('Здесь Вы можете заполнить своё расписание!');
          window.addEventListener('click', (event) => {
             const arrayList = event.toElement.className;

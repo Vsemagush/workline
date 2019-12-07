@@ -36,6 +36,8 @@ function Home() {
                </div>
                <div>
                   <TextInput
+                     height={40}
+                     width={400}
                      innerRef={login}
                      placeholder="Логин"
                      className="Home-TextInput"
@@ -43,6 +45,8 @@ function Home() {
                </div>
                <div>
                   <TextInput
+                     height={40}
+                     width={400}
                      innerRef={password}
                      placeholder="Пароль"
                      className="Home-TextInput"
@@ -53,6 +57,8 @@ function Home() {
                   height={40}
                   margin='10px'
                   appearance="primary"
+                  className="HomeButtonAuth"
+                  justifyContent="center"
                   onClick={onEnterClick}
                >
                   Войти

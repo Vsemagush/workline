@@ -32,6 +32,11 @@ const EVENTS_ARRAY = [
    'news_post-filter', // В разделе Новости получение новостей по фильтру
    'news_notification-open', // В разделе Новости открытие панели уведомлений
    'news_notification-hidden', // В раздели Новости скрытие панели уведомлений
+   'tasks_click-new-task-dlyamenya', // Из on me Вы открыли свою первую задачу, заполните поля и продолжите работу!
+   'tasks_click-create-new-task-dlyamenya', // Из on me Вы создали свою первую задачу, можете продолжать работу!
+   'tasks_click-create-new-task-otmenya', // Из from me Вы создали свою первую задачу, можете продолжать работу!
+   'tasks_click-delete-task-otmenya-yesout' // Из from me Вы удалили свою первую задачу, можете продолжать работу!
+
 ];
 
 const DEFAULT_USER = 'demo-user';

@@ -4,11 +4,13 @@ import React, {
    useState,
    useCallback,
    useMemo,
+   Fragment
 } from 'react';
 import DataBase from '../../storage/db';
-import { Pane, Select, IconButton } from 'evergreen-ui';
+import { Pane, Select, IconButton, UnorderedList, ListItem, Button } from 'evergreen-ui';
 import EditingItem from './EditingItem';
 import EditDialog from './EditDialog';
+import TopBar from '../TopBar/TopBar'
 
 function Admin() {
    const [taskList, setTaskList] = useState([]);
@@ -77,72 +79,88 @@ function Admin() {
 
    return (
       <Pane>
-         <ul>
-            {groupedTasks.map((group) => {
-               return (
-                  <li key={group.id}>
-                     <EditingItem
-                        onSave={(text) => {
-                           saveGroup(group.theme, text);
-                        }}
-                        newup={group.theme}
-                     />
-                     <IconButton icon="plus" onClick={() => data.current.createTask({
-                        description: 'Новое задание',
-                        theme: group.theme
-                     })} />
-                     <IconButton icon="cross" onClick={() => { deleteGroup(group.items) }} />
-                     <ul>
-                        {group.items.map((item) => {
-                           return (
-                              <li key={item.id}>
-                                 <EditingItem
-                                    onSave={(text) => {
-                                       item.description = text;
-                                       saveItem(item);
-                                    }}
-                                    newup={item.description}
-                                 />
-                                 <IconButton
-                                    icon="info-sign"
-                                    color="info"
-                                    marginLeft={16}
-                                    onClick={() => {
-                                       setEditElement(item);
-                                    }}
-                                 />
-                                 <Select onChange={(event) => {
-                                    item.event = event.target.value;
-                                    saveItem(item);
-                                 }
-                                 }>
-                                    {events.map((text) => {
-                                       return <option value={text} key={text}>{text}</option>;
-                                    })}
-                                 </Select>
-                                 <IconButton icon="cross" onClick={() => { deleteTask(item.id) }} />
-                              </li>
-                           );
-                        })}
-                     </ul>
-                  </li>
-               );
-            })}
-         </ul>
-         <IconButton icon="plus" onClick={() => data.current.createTask({
-            description: 'Новое задание',
-            theme: "Новая тема"
-         })} />
-         {editElement && (
-            <EditDialog
-               text={editElement.additional}
-               onConfirm={(text) => {
-                  editElement.additional = text;
-                  saveItem(editElement);
-               }}
-               onCloseComplete={() => setEditElement()}
-            />
-         )}
+         <TopBar caption="Администрирование" />
+         <Pane display="flex" alignItems="center" justifyContent="center">
+            <Pane display="flex" flexDirection="column">
+               <UnorderedList>
+                  {groupedTasks.map((group) => {
+                     return (
+                        <Fragment key={group.id}>
+                           <ListItem listStyleType="none" display="flex" alignItems="center">
+                              <EditingItem
+                                 onSave={(text) => {
+                                    saveGroup(group.theme, text);
+                                 }}
+                                 newup={group.theme}
+                                 size={600}
+                              />
+                              <IconButton icon="plus" onClick={() => data.current.createTask({
+                                 description: 'Новое задание',
+                                 theme: group.theme
+                              })} appearance="minimal" />
+                              <IconButton icon="cross" intent="danger" onClick={() => { deleteGroup(group.items) }} appearance="minimal" />
+                           </ListItem>
+                           <ListItem listStyleType="none">
+                              <UnorderedList>
+                                 {group.items.map((item) => {
+                                    return (
+                                       <ListItem key={item.id} listStyleType="none" display="flex" alignItems="center" margin={10}>
+                                          <EditingItem
+                                             onSave={(text) => {
+                                                item.description = text;
+                                                saveItem(item);
+                                             }}
+                                             newup={item.description}
+                                             size={500}
+                                          />
+
+                                          <Select onChange={(event) => {
+                                             item.event = event.target.value;
+                                             saveItem(item);
+                                          }
+                                          }
+                                             marginLeft={10}
+                                             maxWidth={200}
+                                             minWidth={170}
+                                          >
+
+                                             {events.map((text) => {
+                                                return <option value={text} key={text}>{text}</option>;
+                                             })}
+                                          </Select>
+                                          <Button
+                                             iconBefore="info-sign" paddingRight={0}
+                                             onClick={() => {
+                                                setEditElement(item);
+                                             }}
+                                             appearance="minimal"
+                                          />
+                                          <IconButton icon="cross" onClick={() => { deleteTask(item.id) }} intent="danger" appearance="minimal" />
+                                       </ListItem>
+                                    );
+                                 })}
+                              </UnorderedList>
+                           </ListItem>
+                        </Fragment>
+                     );
+                  })}
+               </UnorderedList>
+               <IconButton icon="plus" onClick={() => data.current.createTask({
+                  description: 'Новое задание',
+                  theme: "Новая тема"
+               })} appearance="minimal" />
+               {editElement && (
+                  <EditDialog
+                     text={editElement.additional}
+                     onConfirm={(text) => {
+                        editElement.additional = text;
+                        saveItem(editElement);
+                     }}
+                     onCloseComplete={() => setEditElement()}
+                  />
+               )}
+            </Pane>
+         </Pane>
       </Pane>
    );
 }

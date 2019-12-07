@@ -1,6 +1,11 @@
-import React, { useMemo, useEffect, useState, useRef, useCallback } from 'react';
+import React, { useMemo, useEffect, useState, useRef, Fragment,useCallback } from 'react';
 import './User.css';
 import DataBaseApi from '../../storage/db';
+import TopBar from '../TopBar/TopBar';
+import {Pane, OrderedList} from 'evergreen-ui';
+import Task from './Task'
+import { GROUPED_BAR_CHART } from '@blueprintjs/icons/lib/esm/generated/iconContents';
+
 import ContentChannel from './../Channel';
 import Progress from './ProgressBar';
 
@@ -67,6 +72,7 @@ function useGroupedItems(items) {
 
    }, [items]);
 }
+
 
 /** Сопоставление задачам прогресс */
 function useMatchingData(tasks, progress) {
@@ -144,9 +150,57 @@ function LearningPage() {
             }
 
          }
-    },[changeProcessingItem, items])
+    },[changeProcessingItem, items]);
+    
     return (
-        <div>Hello,world</div>
+        <div height="100vh">
+            <TopBar />
+            <Pane 
+                background="#DDEBF7"
+            >
+                <Pane 
+                    height={1000}  
+                    background="white"
+                    marginLeft={80}
+                    marginRight={80}
+                    padding={30}
+                    elevation={2}
+                >
+                    
+                    <OrderedList>
+                    {
+                        groupedItems.map((group) => {  
+                            
+                            return( 
+                                <Fragment key={group.id}>   
+                                     <hr/>                                     
+                                    <Task status={group.status} description={group.theme}></Task> 
+                                     
+                                    <OrderedList>
+                                    {
+                                        group.items.map((item) => {
+                                            return (
+                                                <Task 
+                                                status = {item.status} 
+                                                description={item.description} 
+                                                additional = {item.additional}  
+                                                subTask={true}
+                                                key={item.id}>
+
+                                                </Task> 
+                                            );
+                                        })
+                                    }
+                                    </OrderedList>                           
+                                </Fragment>
+                            );         
+                        })
+                    }     
+                    </OrderedList>       
+                    
+                </Pane>
+            </Pane>
+        </div>
     );
 }
 
