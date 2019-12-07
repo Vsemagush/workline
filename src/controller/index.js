@@ -100,6 +100,23 @@ function startDetectedEvent(path) {
                // временно, перейти на определение открытия панели
                setTimeout(() => sendConfirmation(msg), 1000);
             }
+            if (elementClass.includes('noticeCenter-Panel__closeButton_shading') ||
+               openNews.className.includes('noticeCenter-Panel__closeButton_shading')) {
+               const msg = 'Вы скрыли панель уведомлений. Они будут скучать';
+               const date = new Date();
+
+               channel.dispatch('news_notification-hidden', { msg, date });
+               // временно, перейти на определение открытия панели
+               setTimeout(() => sendConfirmation(msg), 1000);
+            } else if (openNews.className === 'noticeCenter-EmbedButton' || openNews.className === 'noticeCenter-Button') {
+               const msg = 'Вы открыли панель уведомлений. Здесь много важных событий';
+               const date = new Date();
+
+               channel.dispatch('news_notification-open', { msg, date });
+               // временно, перейти на определение открытия панели
+               setTimeout(() => sendConfirmation(msg), 1000);
+            }
+
          });
          break;
       case '/contacts/':

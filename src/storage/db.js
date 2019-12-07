@@ -30,6 +30,8 @@ const EVENTS_ARRAY = [
    'news_unlike-click', // В разделе Новости нажатие на кнопку дизлайка
    'news_post-open', // В разделе Новости открытие поп-апа при нажатие на новость
    'news_post-filter', // В разделе Новости получение новостей по фильтру
+   'news_notification-open', // В разделе Новости открытие панели уведомлений
+   'news_notification-hidden', // В раздели Новости скрытие панели уведомлений
 ];
 
 const DEFAULT_USER = 'demo-user';
