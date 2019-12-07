@@ -12,7 +12,7 @@ import db from './../storage/db';
  */
 
 const DataBase = new db();
-
+window._successEvent = {};
 // пример подписки на событие и передача данных в шину
 const channel = new ContentChannel('user-event');
 
@@ -97,70 +97,69 @@ function startDetectedEvent(path) {
          break;
       case '/Tasks/registry/OnMe/':
          // мы в задачах на мне
-         if (!window.myper){
-         window.myper = true;
-         sendNotification('Тут будут твои задачи!')
-         window.addEventListener('click', (event) => {
-            const textButton = event.toElement.innerText;
-            if (window.location.pathname==="/Tasks/registry/OnMe/" && textButton === 'Задача') {
-               const msg = 'Вы открыли свою первую задачу, заполните поля и продолжите работу!';
-               const date = new Date();
-
-               channel.dispatch('tasks_click-new-task-dlyamenya', { msg, date });
-               
-               // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000)
-            }
-            // создаём задачу в разделе задачи на мне
-            else{
-               if (window.location.pathname==="/Tasks/registry/OnMe/" && textButton === 'На выполнение' && document.getElementsByClassName('richEditor_TinyMCE')[0].innerText != null){
-                  const msg = 'Вы создали свою первую задачу, можете продолжать работу!';
+         if (!window.myper) {
+            window.myper = true;
+            sendNotification('Тут будут твои задачи!');
+            window.addEventListener('click', (event) => {
+               const textButton = event.toElement.innerText;
+               if (window.location.pathname === '/Tasks/registry/OnMe/' && textButton === 'Задача') {
+                  const msg = 'Вы открыли свою первую задачу, заполните поля и продолжите работу!';
                   const date = new Date();
 
-                  channel.dispatch('tasks_click-create-new-task-dlyamenya', { msg, date });
-            
+                  channel.dispatch('tasks_click-new-task-dlyamenya', { msg, date });
+
                   // временно, перейти на определение открытия панели
-                  setTimeout(() => sendConfirmation(msg), 1000)
+                  setTimeout(() => sendConfirmation(msg), 1000);
                }
-            }
-         });
+               // создаём задачу в разделе задачи на мне
+               else {
+                  if (window.location.pathname === '/Tasks/registry/OnMe/' && textButton === 'На выполнение' && document.getElementsByClassName('richEditor_TinyMCE')[0].innerText != null) {
+                     const msg = 'Вы создали свою первую задачу, можете продолжать работу!';
+                     const date = new Date();
+
+                     channel.dispatch('tasks_click-create-new-task-dlyamenya', { msg, date });
+
+                     // временно, перейти на определение открытия панели
+                     setTimeout(() => sendConfirmation(msg), 1000);
+                  }
+               }
+            });
          }
          break;
       case '/Tasks/registry/FromMe/':
          // мы в задачах от меня
-         if (!window.myper1){
-         window.myper1 = true;
-         window.addEventListener('click', (event) => {
-            const textButton = event.toElement.innerText;
-            if (window.location.pathname==="/Tasks/registry/FromMe/" && textButton === 'На выполнение' && document.getElementsByClassName('richEditor_TinyMCE')[0].innerText != null){
-               const msg = 'Вы создали свою первую задачу, можете продолжать работу!';
-               const date = new Date();
-
-               channel.dispatch('tasks_click-create-new-task-otmenya', { msg, date });
-            
-               // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000);
-            }
-            else{
-               // создавали из раздела задачи на мне
-               const poisk = document.getElementsByClassName('controls-Button__text_clickable_theme-online-default')
-               let element;
-               for (let item of poisk) {
-                  if (item.innerText==='Да'){
-                      element = item;
-                  }
-               }
-               if (window.location.pathname==="/Tasks/registry/FromMe/" && textButton === 'Да' && element.closest(".controls-ConfirmationTemplate").children[0].children[0].children[0].children[0].children[0].children[0].innerText ==='Удалить документ?'){
-                  const msg = 'Вы удалили свою первую задачу, можете продолжать работу!';
+         if (!window.myper1) {
+            window.myper1 = true;
+            window.addEventListener('click', (event) => {
+               const textButton = event.toElement.innerText;
+               if (window.location.pathname === '/Tasks/registry/FromMe/' && textButton === 'На выполнение' && document.getElementsByClassName('richEditor_TinyMCE')[0].innerText != null) {
+                  const msg = 'Вы создали свою первую задачу, можете продолжать работу!';
                   const date = new Date();
-      
-                  channel.dispatch('tasks_click-delete-task-otmenya-yesout', { msg, date });
-                  
+
+                  channel.dispatch('tasks_click-create-new-task-otmenya', { msg, date });
+
                   // временно, перейти на определение открытия панели
                   setTimeout(() => sendConfirmation(msg), 1000);
+               } else {
+                  // создавали из раздела задачи на мне
+                  const poisk = document.getElementsByClassName('controls-Button__text_clickable_theme-online-default');
+                  let element;
+                  for (let item of poisk) {
+                     if (item.innerText === 'Да') {
+                        element = item;
+                     }
+                  }
+                  if (window.location.pathname === '/Tasks/registry/FromMe/' && textButton === 'Да' && element.closest('.controls-ConfirmationTemplate').children[0].children[0].children[0].children[0].children[0].children[0].innerText === 'Удалить документ?') {
+                     const msg = 'Вы удалили свою первую задачу, можете продолжать работу!';
+                     const date = new Date();
+
+                     channel.dispatch('tasks_click-delete-task-otmenya-yesout', { msg, date });
+
+                     // временно, перейти на определение открытия панели
+                     setTimeout(() => sendConfirmation(msg), 1000);
+                  }
                }
-            }
-         });
+            });
          }
          break;
       case '/disk.html':
@@ -172,7 +171,7 @@ function startDetectedEvent(path) {
          sendNotification('Коллег и других сотрудников можно найти здесь!');
          let timerId = setInterval(() => {
             const cearhelement = document.getElementsByClassName('controls-InputRender__wrapper_singleLine');
-            if ( cearhelement[0]){
+            if (cearhelement[0]) {
                clearInterval(timerId);
                cearhelement[0].addEventListener('click', (event) => {
                   let stopId = setInterval(() => {
@@ -183,16 +182,16 @@ function startDetectedEvent(path) {
                         const msg = 'Вы начали свой первый поиск сотрудника!';
                         const date = new Date();
 
-                        channel.dispatch('news_click-all-staff',{ msg, date });
+                        channel.dispatch('news_click-all-staff', { msg, date });
 
                         // временно, перейти на определение открытия панели
                         setTimeout(() => sendConfirmation(msg), 1000);
                      }
-                  },100)
+                  }, 100);
 
                });
             }
-   },100);
+         }, 100);
 
          // setTimeout(() => { clearInterval(timerId); alert(''); }, 5000);
          // if (timerId) {
@@ -263,26 +262,11 @@ function sendConfirmation(msg) {
  * @param {String} eventName - название событие которое должно запускать действие
  */
 function preparation(msg, eventName, date = new Date()) {
-   // получаю список состояний задач
-   DataBase.getState().then((res) => {
-      // рассматриваю отдельно каждое состояние
-      DataBase.toArray(res).forEach((task) => {
-         if (task !== undefined) {
-            // Получаю данные по таску
-            DataBase.subscribeChanges('tasks', function(data) {
-               // Задание связано с нашим событием
-               if (data[task.id] && data[task.id].event === eventName) {
-                  // И оно выполнено
-                  if (task.state === 'done') {
-                     return;
-                  }
-                  // Если не выполнено отправляю event и показываю окошко с текстом
-                  channel.dispatch(eventName, { msg, date });
-                  // временно, перейти на определение открытия панели
-                  setTimeout(() => sendConfirmation(msg), 1000);
-               }
-            });
-         }
-      });
-   });
+   if (!window._successEvent[eventName]) {
+      window._successEvent[eventName] = true;
+      channel.dispatch(eventName, { msg, date });
+      // временно, перейти на определение открытия панели
+      setTimeout(() => sendConfirmation(msg), 1000);
+   }
+
 }
