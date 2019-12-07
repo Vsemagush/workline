@@ -4,10 +4,8 @@ import DataBaseApi from '../../storage/db';
 import TopBar from '../TopBar/TopBar';
 import {Pane, OrderedList} from 'evergreen-ui';
 import Task from './Task'
-import { GROUPED_BAR_CHART } from '@blueprintjs/icons/lib/esm/generated/iconContents';
 
 import ContentChannel from './../Channel';
-import Progress from './ProgressBar';
 
 /** Возможные состояния задачи */
 const STATE_DONE = 'done';
@@ -97,7 +95,6 @@ function LearningPage() {
     const [items, setItems] = useState();
     const [progress, setProgress] = useState();
     const groupedItems = useGroupedItems(useMatchingData(items,progress))
-
     /** Смена текущего задания для выполнения */
     const changeProcessingItem = useCallback(()=>{
        if (!items || !groupedItems || !groupedItems.length)
@@ -174,14 +171,14 @@ function LearningPage() {
                             return( 
                                 <Fragment key={group.id}>   
                                      <hr/>                                     
-                                    <Task status={group.status} description={group.theme}></Task> 
+                                    <Task state={group.state || STATE_CLOSED} description={group.theme}></Task>
                                      
                                     <OrderedList>
                                     {
                                         group.items.map((item) => {
                                             return (
                                                 <Task 
-                                                status = {item.status} 
+                                                state = {item.state || STATE_CLOSED}
                                                 description={item.description} 
                                                 additional = {item.additional}  
                                                 subTask={true}

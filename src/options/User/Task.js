@@ -21,7 +21,7 @@ const iconStyle = {
    }
 }
 
-function Task({status,description,additional,subTask}) {
+function Task({state,description,additional,subTask}) {
 
    const [isHint,setIsShowHint] = useState(false); 
 
@@ -33,21 +33,22 @@ function Task({status,description,additional,subTask}) {
          width="100%">
             
          <Icon 
-            icon={iconStyle[status].icon}
-            color={iconStyle[status].color}
+            icon={iconStyle[state].icon}
+            color={iconStyle[state].color}
+            flexShrink={0}
             size={subTask && 25 || 30}
          />
-         <Text  
-            fontSize={subTask && 50 || 70}
+         <Text
+            fontSize={subTask && 20 || 40}
             padding={20}
             paddingLeft={40}
-            className={"Task-Color-Status-"+status}>
+            className={"Task-Color-Status-"+state}>
             {description}
          </Text>
          
-         {subTask && status!="closed" && <Icon 
+         {subTask && state!="closed" && <Icon
             icon="info-sign" 
-            color={status==="processing" && "blue" || "rgb(71, 184, 129)"}
+            color={state==="processing" && "blue" || "rgb(71, 184, 129)"}
             size={25}
             onClick= {()=>{setIsShowHint(true)}}/>
          }
