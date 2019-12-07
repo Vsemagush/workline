@@ -78,9 +78,9 @@ function Admin() {
    }, []);
 
    return (
-      <Pane>
+      <Pane height="100vh" overflow="hidden">
          <TopBar caption="Администрирование" />
-         <Pane display="flex" alignItems="center" justifyContent="center">
+         <Pane display="flex" alignItems="center" justifyContent="center" className="invscroll" overflow="auto">
             <Pane display="flex" flexDirection="column">
                <UnorderedList>
                   {groupedTasks.map((group) => {
