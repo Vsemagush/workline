@@ -32,6 +32,8 @@ const EVENTS_ARRAY = [
    'news_post-filter', // В разделе Новости получение новостей по фильтру
    'news_notification-open', // В разделе Новости открытие панели уведомлений
    'news_notification-hidden', // В раздели Новости скрытие панели уведомлений
+   'tasks_click-create-new-task', // В разделе задач создана новая задача
+   'tasks_click-delete-task' // В разделе задач - удаление задачи
 ];
 
 const DEFAULT_USER = 'demo-user';

@@ -96,14 +96,93 @@ function startDetectedEvent(path) {
          });
          break;
       case '/Tasks/registry/OnMe/':
-         // мы в задачах
-         sendNotification('Тут будут твои задачи!');
+         // мы в задачах на мне
+         if (!window.myper){
+         window.myper = true;
+         sendNotification('Тут будут твои задачи!')
          window.addEventListener('click', (event) => {
             const textButton = event.toElement.innerText;
-            if (textButton === 'Задача') {
-               preparation('Вы открыли свою первую задачу, заполните поля и продолжите работу!', 'tasks_click-new-task');
+            if (window.location.pathname==="/Tasks/registry/OnMe/" && textButton === 'Задача') {
+               const msg = 'Вы открыли свою первую задачу, заполните поля и продолжите работу!';
+               const date = new Date();
+
+               channel.dispatch('tasks_click-new-task-dlyamenya', { msg, date });
+               
+               // временно, перейти на определение открытия панели
+               setTimeout(() => sendConfirmation(msg), 1000)
+            }
+            // создаём задачу в разделе задачи на мне
+            else{
+               if (window.location.pathname==="/Tasks/registry/OnMe/" && textButton === 'На выполнение' && document.getElementsByClassName('richEditor_TinyMCE')[0].innerText != null){
+                  const msg = 'Вы создали свою первую задачу, можете продолжать работу!';
+                  const date = new Date();
+
+                  channel.dispatch('tasks_click-create-new-task-dlyamenya', { msg, date });
+            
+                  // временно, перейти на определение открытия панели
+                  setTimeout(() => sendConfirmation(msg), 1000)
+               }
             }
          });
+         }
+         break;
+      case '/Tasks/registry/FromMe/':
+         //мы в задачах от меня
+         if (!window.myper1){
+         window.myper1 = true;
+         window.addEventListener('click', (event) => {
+            const textButton = event.toElement.innerText;
+            if (window.location.pathname==="/Tasks/registry/FromMe/" && textButton === 'На выполнение' && document.getElementsByClassName('richEditor_TinyMCE')[0].innerText != null){
+               const msg = 'Вы создали свою первую задачу, можете продолжать работу!';
+               const date = new Date();
+
+               channel.dispatch('tasks_click-create-new-task-otmenya', { msg, date });
+            
+               // временно, перейти на определение открытия панели
+               setTimeout(() => sendConfirmation(msg), 1000)
+               
+               //если создали от меня, но не выходили из окна, теперь удаляем
+               /*window.addEventListener('click', (event) => {
+                  const textButton = event.toElement.innerText;
+                  const a = document.getElementsByClassName('controls-BaseButton__text controls-Button__text_clickable_theme-online-default controls-Button__text_viewMode-button_theme-online-default')
+                  let b;
+                  for (let item of a) {
+                     if (item.innerText==='Да'){
+                        b = item;
+                     }
+                 }
+                  if (window.location.pathname==="/Tasks/registry/FromMe/" && textButton === 'Да' && b.closest(".controls-ConfirmationTemplate").children[0].children[0].children[0].children[0].children[0].children[0].innerText ==='Удалить документ?'){
+                     const msg = 'Вы удалили свою первую задачу, можете продолжать работу!';
+                     const date = new Date();
+      
+                     channel.dispatch('tasks_click-delete-task-otmenya-noout', { msg, date });
+                  
+                     // временно, перейти на определение открытия панели
+                     setTimeout(() => sendConfirmation(msg), 1000)
+                  }
+               });*/
+            }
+            else{
+               //если вышли из окна, после создания или создавали из раздела задачи на мне
+               const a = document.getElementsByClassName('controls-BaseButton__text controls-Button__text_clickable_theme-online-default controls-Button__text_viewMode-button_theme-online-default')
+               let b;
+               for (let item of a) {
+                  if (item.innerText==='Да'){
+                      b = item;
+                  }
+               }
+               if (window.location.pathname==="/Tasks/registry/FromMe/" && textButton === 'Да' && b.closest(".controls-ConfirmationTemplate").children[0].children[0].children[0].children[0].children[0].children[0].innerText ==='Удалить документ?'){
+                  const msg = 'Вы удалили свою первую задачу, можете продолжать работу!';
+                  const date = new Date();
+      
+                  channel.dispatch('tasks_click-delete-task-otmenya-yesout', { msg, date });
+                  
+                  // временно, перейти на определение открытия панели
+                  setTimeout(() => sendConfirmation(msg), 1000)
+               }
+            }
+         });
+         }
          break;
       case '/disk.html':
          // мы в Документах
