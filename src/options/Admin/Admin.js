@@ -4,13 +4,13 @@ import React, {
    useState,
    useCallback,
    useMemo,
-   Fragment
+   Fragment,
 } from 'react';
 import DataBase from '../../storage/db';
 import { Pane, Select, IconButton, UnorderedList, ListItem, Button } from 'evergreen-ui';
 import EditingItem from './EditingItem';
 import EditDialog from './EditDialog';
-import TopBar from '../TopBar/TopBar'
+import TopBar from '../TopBar/TopBar';
 
 function Admin() {
    const [taskList, setTaskList] = useState([]);
@@ -40,7 +40,7 @@ function Admin() {
    );
 
    const data = useRef();
-   const saveItem = useCallback(function (item) {
+   const saveItem = useCallback(function(item) {
       data.current.updateTask(item.id, item);
    }, []);
 
@@ -54,7 +54,7 @@ function Admin() {
    }, []);
 
    const saveGroup = useCallback(
-      function (oldName, newName) {
+      function(oldName, newName) {
          let newData = {};
          for (var i = 0; i < taskList.length; i++) {
             if (taskList[i].theme === oldName) {
@@ -79,9 +79,12 @@ function Admin() {
 
    return (
       <Pane height="100vh" overflow="hidden">
-         <TopBar caption="Администрирование" />
-         <Pane display="flex" alignItems="center" justifyContent="center" className="invscroll" overflow="auto">
-            <Pane display="flex" flexDirection="column">
+         <TopBar caption="Администрирование"/>
+         <Pane height={1000}  justifyContent="center">
+            <Pane height={1000} display="flex" flexDirection="column" className="invscroll" overflow="scroll"
+                  background="white" elevation={2} marginLeft={80}
+                  marginRight={80}
+                  padding={30}>
                <UnorderedList>
                   {groupedTasks.map((group) => {
                      return (
@@ -92,26 +95,29 @@ function Admin() {
                                     saveGroup(group.theme, text);
                                  }}
                                  newup={group.theme}
-                                 size={600}
+                                 size={30}
                               />
                               <IconButton icon="plus" onClick={() => data.current.createTask({
                                  description: 'Новое задание',
-                                 theme: group.theme
-                              })} appearance="minimal" />
-                              <IconButton icon="cross" intent="danger" onClick={() => { deleteGroup(group.items) }} appearance="minimal" />
+                                 theme: group.theme,
+                              })} appearance="minimal"/>
+                              <IconButton icon="cross" intent="danger" onClick={() => {
+                                 deleteGroup(group.items);
+                              }} appearance="minimal"/>
                            </ListItem>
                            <ListItem listStyleType="none">
                               <UnorderedList>
                                  {group.items.map((item) => {
                                     return (
-                                       <ListItem key={item.id} listStyleType="none" display="flex" alignItems="center" margin={10}>
+                                       <ListItem key={item.id} listStyleType="none" display="flex" alignItems="center"
+                                                 margin={10}>
                                           <EditingItem
                                              onSave={(text) => {
                                                 item.description = text;
                                                 saveItem(item);
                                              }}
                                              newup={item.description}
-                                             size={500}
+                                             size={20}
                                           />
 
                                           <Select value={item.event} onChange={(event) => {
@@ -119,9 +125,9 @@ function Admin() {
                                              saveItem(item);
                                           }
                                           }
-                                             marginLeft={10}
-                                             maxWidth={200}
-                                             minWidth={170}
+                                                  marginLeft={10}
+                                                  maxWidth={200}
+                                                  minWidth={170}
                                           >
 
                                              {events.map((text) => {
@@ -135,7 +141,9 @@ function Admin() {
                                              }}
                                              appearance="minimal"
                                           />
-                                          <IconButton icon="cross" onClick={() => { deleteTask(item.id) }} intent="danger" appearance="minimal" />
+                                          <IconButton icon="cross" onClick={() => {
+                                             deleteTask(item.id);
+                                          }} intent="danger" appearance="minimal"/>
                                        </ListItem>
                                     );
                                  })}
@@ -147,8 +155,8 @@ function Admin() {
                </UnorderedList>
                <IconButton icon="plus" onClick={() => data.current.createTask({
                   description: 'Новое задание',
-                  theme: "Новая тема"
-               })} appearance="minimal" />
+                  theme: 'Новая тема',
+               })} appearance="minimal"/>
                {editElement && (
                   <EditDialog
                      text={editElement.additional}
@@ -164,4 +172,5 @@ function Admin() {
       </Pane>
    );
 }
+
 export default Admin;

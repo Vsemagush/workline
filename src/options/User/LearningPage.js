@@ -170,8 +170,7 @@ function LearningPage() {
     return (
         <Pane height="100vh" overflow="hidden">
            <TopBar caption="Обучение"/>
-            <Pane 
-                background="#DDEBF7"
+            <Pane
             >
                 <Pane
                    className="invscroll"

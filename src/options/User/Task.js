@@ -24,7 +24,7 @@ function Task({state,description,additional,subTask}) {
    return (
       <ListItem
          className="Task-AlignCenter"
-         margin={20}
+         marginRight={20}
          marginLeft={subTask && 50 || 20}
          width="100%">
             
@@ -35,7 +35,7 @@ function Task({state,description,additional,subTask}) {
             size={subTask && 25 || 30}
          />
          <Text
-            fontSize={subTask && 20 || 40}
+            fontSize={subTask && 20 || 30}
             padding={20}
             paddingLeft={40}
             className={"Task-Color-Status-"+state}>
@@ -51,10 +51,9 @@ function Task({state,description,additional,subTask}) {
          { isHint && <Dialog
             isShown={isHint}
             title="Подсказка к заданию"
-            fontSize={600}
             onCloseComplete={() => setIsShowHint(false)}
             hasFooter={false}>
-            <Text fontSize="30px">{additional}</Text>
+            <Text fontSize="20px">{additional}</Text>
                      </Dialog>
          }
    
