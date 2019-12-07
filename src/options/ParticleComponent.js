@@ -138,7 +138,7 @@ class ParticleComponent extends Component {
                         }
                      }
                   },
-                  "retina_detect": true
+                  "retina_detect": false
                }}
             />
          </div>

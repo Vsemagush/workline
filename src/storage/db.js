@@ -63,13 +63,15 @@ class DataBaseApi {
     * @returns {Object}
     */
    getFormatTask() {
+      // считаем что по умолчанию выбрано первое событие
+      const event = this.getEvent()[0];
       return {
          id: Date.now(),  // уникальный идентификатор
          description: '', // описание задачи
          theme: '',       // раздел обучения, уникальная тема
          additional: '',  // дополнительные данные (подсказки)
          type: '',        // должность
-         event: '',        // привязанное событие из controller/*
+         event: event,    // привязанное событие из controller/*
       };
    }
 
