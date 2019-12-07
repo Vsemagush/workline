@@ -2,6 +2,7 @@ import React, { useMemo, useEffect, useState, useRef, useCallback } from 'react'
 import './User.css';
 import DataBaseApi from '../../storage/db';
 import ContentChannel from './../Channel';
+import Progress from './ProgressBar';
 
 /** Возможные состояния задачи */
 const STATE_DONE = 'done';
@@ -145,7 +146,7 @@ function LearningPage() {
          }
     },[changeProcessingItem, items])
     return (
-        <div>Hello,world</div>
+       <Progress progress={80} />
     );
 }
 
