@@ -22,7 +22,7 @@ function ProgressBar({progress}) {
                borderBottomRightRadius={10}
                >
          </Pane>
-         <Text  className= "ProgressBar-Number" position="absolute" left="50%" top="20%" >{progress+"%"}</Text>
+         <Text  className= "ProgressBar-Number" position="absolute" left="50%" top="20%" >{Math.min(100, Math.ceil(progress))+"%"}</Text>
       </Pane>
                
    );

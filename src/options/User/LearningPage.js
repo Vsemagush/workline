@@ -67,7 +67,7 @@ function useGroupedItems(items) {
          themes[0].items[0].state = STATE_PROCESSING;
          themes[0].state = STATE_PROCESSING;
       }
-      return themes;
+      return themes.slice();
 
    }, [items]);
 }
@@ -76,8 +76,12 @@ function useGroupedItems(items) {
 /** Сопоставление задачам прогресс */
 function useMatchingData(tasks, progress) {
       return useMemo(() => {
-         if (!tasks || !progress)
+         if (!tasks)
             return [];
+
+        if (!progress) {
+            return tasks.slice();
+        }
 
          for (let [i,task] of tasks.entries()) {
             let id = ['task',task.id].join('-');
@@ -85,7 +89,7 @@ function useMatchingData(tasks, progress) {
                tasks[i].state = progress[id].state
             }
          }
-         return tasks;
+         return tasks.slice();
       },[tasks,progress])
 }
 
