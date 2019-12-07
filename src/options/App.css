@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Bebas+Neue&display=swap');
+
 body {
   margin: 0;
 }
@@ -9,8 +11,11 @@ body {
 .Home-TopBar__header {
   text-align: center;
   color: #1e90ff;
-  font-size: 70px;
+  font-size: 80px;
+  font-family: 'Bebas Neue';
 }
+
+
 .Home-TextInput{
   height: 80px;
   padding: 10px;
@@ -27,12 +32,13 @@ body {
 
 .Home-TopBar__logo {
   text-align: center;
-  width: 40px;
+  width: 60px;
 }
 .Home-TopBar__logoBlock {
   text-align: center;
   width: 20px;
   padding: 20px;
+  padding-left: 0;
 }
 
 .particlejs_div {
