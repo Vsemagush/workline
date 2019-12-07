@@ -4,6 +4,7 @@ import DataBaseApi from '../../storage/db';
 import TopBar from '../TopBar/TopBar';
 import {Pane, OrderedList} from 'evergreen-ui';
 import Task from './Task'
+import ProgressBar from './ProgressBar';
 
 import ContentChannel from './../Channel';
 
@@ -182,7 +183,7 @@ function LearningPage() {
                     padding={30}
                     elevation={2}
                 >
-                    <Progress progress={lineProgress} />
+                   <div  className="progress"><ProgressBar progress={lineProgress} /></div>
                     <OrderedList>
                     {
                         groupedItems.map((group) => {  
