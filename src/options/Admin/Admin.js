@@ -1,15 +1,17 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import DataBase from '../../storage/db'
-import { Pane } from 'evergreen-ui';
+import { Pane, Icon } from 'evergreen-ui';
 import EditingItem from './EditingItem'
+import EditDialog from './EditDialog'
 
 function Admin() {
 
    const [taskList, setTaskList] = useState([]);
+   const [editElement, setEditElement] = useState();
    const data = useRef();
    const saveItem = useCallback(function (item) {
       data.current.updateTask(item.id, item)
-   });
+   }, []);
 
    useEffect(
       () => {
@@ -34,10 +36,27 @@ function Admin() {
                         }}
                         newup={item.description}
                      />
+                     <Icon icon="info-sign" color="info" marginLeft={16}
+                        onClick={() => {
+                            setEditElement(item);
+                        }} />
                   </li>
                );
             })}
          </ul>
+
+
+         {editElement && <EditDialog text={editElement.additional}
+            onConfirm={(text) => {
+               editElement.additional = text;
+               saveItem(editElement);
+            }}
+
+            onCloseComplete={() => setEditElement()}
+
+         />}
+
+
          <button onClick={() => saveItem({ id: 0, description: '1', theme: '2', additional: '3', type: '4', event: '5' })}>
             Проверка
          </button>
