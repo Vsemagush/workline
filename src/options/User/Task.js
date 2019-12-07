@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import {Icon, Text, Paragraph, Tooltip, ListItem, Dialog} from 'evergreen-ui';
-import { resetIdCounter } from 'downshift';
-
-const STATUS_DONE = 'done';
-const STATUS_CLOSED = 'closed';
+import {Icon, Text, ListItem, Dialog} from 'evergreen-ui';
 
 /** Стиль иконки в зависимости от статуса задачи */
 const iconStyle = {
