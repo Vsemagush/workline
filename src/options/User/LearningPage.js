@@ -146,7 +146,6 @@ function LearningPage() {
          }
     },[changeProcessingItem, items])
     return (
-       <Progress progress={80} />
     );
 }
 
