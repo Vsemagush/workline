@@ -1,10 +1,29 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import DataBase from '../../storage/db'
 import { Pane } from 'evergreen-ui';
 import EditingItem from './EditingItem'
 
 function Admin() {
    const [taskList, setTaskList] = useState([]);
+   
+   const groupedTasks = useMemo(function group() {
+      var nev = [];
+      for (var i = 0; i < taskList.length; i++) {
+         const theme = nev.find((element) => { return element.theme == taskList[i].theme })
+         if (theme!=null) {
+            theme.items.push(taskList[i])
+         }
+         else {
+            nev.push({
+               theme: taskList[i].theme,
+               id: taskList[i].theme,
+               items: [taskList[i]]
+            });
+         }
+      }
+      return nev;
+   }, [taskList]);
+
    const data = useRef();
    const saveItem = useCallback(function(item) {
       data.current.updateTask(item.id, item);
