@@ -114,7 +114,7 @@ function Admin() {
                                              size={500}
                                           />
 
-                                          <Select onChange={(event) => {
+                                          <Select value={item.event} onChange={(event) => {
                                              item.event = event.target.value;
                                              saveItem(item);
                                           }
