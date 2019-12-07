@@ -24,7 +24,7 @@ function Admin() {
       for (var i = 0; i < taskList.length; i++) {
          if (taskList[i].theme === oldName) {
             taskList[i].theme = newName;
-            newData[taskList[i].id] = taskList[i]
+            newData[taskList[i].id] = taskList[i];
          }
       }
       data.current.updateTasks(newData);
