@@ -112,6 +112,33 @@ function startDetectedEvent(path) {
       case '/employees.html':
          // мы в Сотрудниках
          sendNotification('Коллег и других сотрудников можно найти здесь!');
+         let timerId = setInterval(() => {
+            const cearhelement = document.getElementsByClassName('controls-InputRender__wrapper_singleLine');
+            if ( cearhelement[0]){
+               clearInterval(timerId);
+               cearhelement[0].addEventListener('click', (event) => {
+                  let stopId = setInterval(() => {
+                     const isSearchButton = document.getElementsByClassName('controls-InputRender__field');
+                     if (isSearchButton[0].value !== '') {
+                        clearInterval(timerId);
+                        clearInterval(stopId);
+                        const msg = 'Вы начали свой первый поиск сотрудника!';
+                        const date = new Date();
+
+                        channel.dispatch('news_click-all-staff',{ msg, date });
+
+                        // временно, перейти на определение открытия панели
+                        setTimeout(() => sendConfirmation(msg), 1000);
+                     }
+                  },100)
+
+               });
+            }
+   },100);
+
+         // setTimeout(() => { clearInterval(timerId); alert(''); }, 5000);
+         // if (timerId) {
+
          break;
       case '/Calendar/':
          //мы в календаре
@@ -123,6 +150,7 @@ function startDetectedEvent(path) {
             }
          });
          break;
+
    }
 }
 
