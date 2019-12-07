@@ -7,10 +7,11 @@ import React, {
    Fragment,
 } from 'react';
 import DataBase from '../../storage/db';
-import { Pane, Select, IconButton, UnorderedList, ListItem, Button } from 'evergreen-ui';
+import { Pane, Select, Icon, UnorderedList, ListItem } from 'evergreen-ui';
 import EditingItem from './EditingItem';
 import EditDialog from './EditDialog';
 import TopBar from '../TopBar/TopBar';
+import './Admin.css';
 
 function Admin() {
    const [taskList, setTaskList] = useState([]);
@@ -72,24 +73,38 @@ function Admin() {
    }, []);
 
    const deleteGroup = useCallback((groupItems) => {
-      data.current.removeTasks(groupItems.map((item) => {
-         return item.id;
-      }));
+      data.current.removeTasks(
+         groupItems.map((item) => {
+            return item.id;
+         }),
+      );
    }, []);
 
    return (
       <Pane height="100vh" overflow="hidden">
-         <TopBar caption="Администрирование"/>
-         <Pane height={1000}  justifyContent="center">
-            <Pane height={1000} display="flex" flexDirection="column" className="invscroll" overflow="scroll"
-                  background="white" elevation={2} marginLeft={80}
-                  marginRight={80}
-                  padding={30}>
+         <TopBar caption="Администрирование" />
+         <Pane height={1000} justifyContent="center">
+            <Pane
+               height={1000}
+               display="flex"
+               flexDirection="column"
+               className="invscroll"
+               overflow="scroll"
+               background="white"
+               elevation={2}
+               marginLeft={80}
+               marginRight={80}
+               padding={30}
+            >
                <UnorderedList>
                   {groupedTasks.map((group) => {
                      return (
                         <Fragment key={group.id}>
-                           <ListItem listStyleType="none" display="flex" alignItems="center">
+                           <ListItem
+                              listStyleType="none"
+                              display="flex"
+                              alignItems="center"
+                           >
                               <EditingItem
                                  onSave={(text) => {
                                     saveGroup(group.theme, text);
@@ -97,20 +112,41 @@ function Admin() {
                                  newup={group.theme}
                                  size={30}
                               />
-                              <IconButton icon="plus" onClick={() => data.current.createTask({
-                                 description: 'Новое задание',
-                                 theme: group.theme,
-                              })} appearance="minimal"/>
-                              <IconButton icon="cross" intent="danger" onClick={() => {
-                                 deleteGroup(group.items);
-                              }} appearance="minimal"/>
+                              <Icon
+                                 size={30}
+                                 icon="plus"
+                                 color="muted"
+                                 onClick={() =>
+                                    data.current.createTask({
+                                       description: 'Новое задание',
+                                       theme: group.theme,
+                                    })
+                                 }
+                                 appearance="minimal"
+                                 marginRight={5}
+                                 marginLeft={5}
+                              />
+                              <Icon
+                                 size={30}
+                                 icon="cross"
+                                 color="danger"
+                                 onClick={() => {
+                                    deleteGroup(group.items);
+                                 }}
+                                 appearance="minimal"
+                              />
                            </ListItem>
                            <ListItem listStyleType="none">
                               <UnorderedList>
                                  {group.items.map((item) => {
                                     return (
-                                       <ListItem key={item.id} listStyleType="none" display="flex" alignItems="center"
-                                                 margin={10}>
+                                       <ListItem
+                                          key={item.id}
+                                          listStyleType="none"
+                                          display="flex"
+                                          alignItems="center"
+                                          margin={10}
+                                       >
                                           <EditingItem
                                              onSave={(text) => {
                                                 item.description = text;
@@ -119,31 +155,48 @@ function Admin() {
                                              newup={item.description}
                                              size={20}
                                           />
-
-                                          <Select value={item.event} onChange={(event) => {
-                                             item.event = event.target.value;
-                                             saveItem(item);
-                                          }
-                                          }
-                                                  marginLeft={10}
-                                                  maxWidth={200}
-                                                  minWidth={170}
+                                          <Select
+                                             value={item.event}
+                                             onChange={(event) => {
+                                                item.event = event.target.value;
+                                                saveItem(item);
+                                             }}
+                                             marginLeft={10}
+                                             marginRight={20}
+                                             maxWidth={350}
+                                             minWidth={300}
+                                             className="Admin-Select"
                                           >
-
                                              {events.map((text) => {
-                                                return <option value={text} key={text}>{text}</option>;
+                                                return (
+                                                   <option
+                                                      value={text}
+                                                      key={text}
+                                                   >
+                                                      {text}
+                                                   </option>
+                                                );
                                              })}
                                           </Select>
-                                          <Button
-                                             iconBefore="info-sign" paddingRight={0}
+                                          <Icon
+                                             icon="info-sign"
+                                             color="info"
                                              onClick={() => {
                                                 setEditElement(item);
                                              }}
                                              appearance="minimal"
+                                             size={25}
+                                             marginRight={10}
                                           />
-                                          <IconButton icon="cross" onClick={() => {
-                                             deleteTask(item.id);
-                                          }} intent="danger" appearance="minimal"/>
+                                          <Icon
+                                             icon="cross"
+                                             onClick={() => {
+                                                deleteTask(item.id);
+                                             }}
+                                             color="danger"
+                                             appearance="minimal"
+                                             size={25}
+                                          />
                                        </ListItem>
                                     );
                                  })}
@@ -153,10 +206,18 @@ function Admin() {
                      );
                   })}
                </UnorderedList>
-               <IconButton icon="plus" onClick={() => data.current.createTask({
-                  description: 'Новое задание',
-                  theme: 'Новая тема',
-               })} appearance="minimal"/>
+               <Icon
+                  icon="plus"
+                  color="muted"
+                  size={30}
+                  onClick={() =>
+                     data.current.createTask({
+                        description: 'Новое задание',
+                        theme: 'Новая тема',
+                     })
+                  }
+                  appearance="minimal"
+               />
                {editElement && (
                   <EditDialog
                      text={editElement.additional}
