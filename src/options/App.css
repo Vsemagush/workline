@@ -9,12 +9,12 @@ body {
 .TopBar__header {
   text-align: center;
   color: #1e90ff;
-  font-size: 48px;
+  font-size: 70px;
 }
 .Home-TextInput{
+  height: 80px;
   padding: 10px;
   margin: 10px;
-  text-align:center;
 }
 
 .Home-Form{
@@ -27,7 +27,7 @@ body {
 
 .TopBar__logo {
   text-align: center;
-  width: 26px;
+  width: 40px;
 }
 .TopBar__logoBlock {
   text-align: center;

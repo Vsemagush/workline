@@ -43,10 +43,11 @@ function Home() {
                     innerRef={password}
                     placeholder="Пароль"
                     className="Home-TextInput"
+                    type='password'
                 />
             </div>
             <Button 
-                height={40}
+                height={55}
                 margin='10px'
                 appearance="primary"
                 onClick={onEnterClick}
