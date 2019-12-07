@@ -8,6 +8,7 @@ function Admin() {
    const saveItem = useCallback(function(item) {
       data.current.updateTask(item.id, item);
    });
+
    useEffect(
       () => {
          data.current = new DataBase();
@@ -17,14 +18,18 @@ function Admin() {
                setTaskList(array);
             });
       }, []);
+
    const saveGroup = useCallback(function(oldName, newName) {
+      let newData = {};
       for (var i = 0; i < taskList.length; i++) {
          if (taskList[i].theme === oldName) {
             taskList[i].theme = newName;
+            newData[taskList[i].id] = taskList[i]
          }
       }
-      data.current.updateTasks(taskList);
+      data.current.updateTasks(newData);
    });
+
    return (
       <Pane background="#DDEBF7">
          <ul>
@@ -32,11 +37,13 @@ function Admin() {
                return (<li key={item.id}>{item.description}</li>);
             })}
          </ul>
+
          <button
             onClick={() => saveItem({ id: 0, description: '1', theme: '2', additional: '3', type: '4', event: '5' })}>
             Проверка
          </button>
-         <button onClick={() => saveGroup('2', '55')}>
+
+         <button onClick={() => saveGroup('55', '2837')}>
             проверка_saveGroup
          </button>
       </Pane>
