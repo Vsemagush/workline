@@ -6,7 +6,6 @@ import {Pane, OrderedList} from 'evergreen-ui';
 import Task from './Task'
 
 import ContentChannel from './../Channel';
-import Progress from './ProgressBar';
 
 /** Возможные состояния задачи */
 const STATE_DONE = 'done';
@@ -189,14 +188,14 @@ function LearningPage() {
                             return( 
                                 <Fragment key={group.id}>   
                                      <hr/>                                     
-                                    <Task status={group.status} description={group.theme}></Task> 
+                                    <Task state={group.state || STATE_CLOSED} description={group.theme}></Task>
                                      
                                     <OrderedList>
                                     {
                                         group.items.map((item) => {
                                             return (
                                                 <Task 
-                                                status = {item.status} 
+                                                state = {item.state || STATE_CLOSED}
                                                 description={item.description} 
                                                 additional = {item.additional}  
                                                 subTask={true}

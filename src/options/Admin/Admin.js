@@ -80,7 +80,7 @@ function Admin() {
    return (
       <Pane>
          <TopBar caption="Администрирование" />
-         <Pane background="#DDEBF7" display="flex" alignItems="center" justifyContent="center">
+         <Pane display="flex" alignItems="center" justifyContent="center">
             <Pane display="flex" flexDirection="column">
                <UnorderedList>
                   {groupedTasks.map((group) => {
@@ -114,7 +114,7 @@ function Admin() {
                                              size={500}
                                           />
 
-                                          <Select onChange={(event) => {
+                                          <Select value={item.event} onChange={(event) => {
                                              item.event = event.target.value;
                                              saveItem(item);
                                           }
