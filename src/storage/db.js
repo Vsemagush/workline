@@ -266,6 +266,19 @@ class DataBaseApi {
    }
 
    /**
+    * Сохранить процент прогресса
+    * @param {Number} size 
+    */
+   setProgressSize(size) {
+      const userName = this.getUser();
+      const data = {
+         size,
+         dateLastLogin: Date().toString(),
+      };
+      this.set(`users/${userName}`, data);
+   }
+
+   /**
     * Добавляет статус задачи
     * @param {String} taskId
     * @param {String} user
