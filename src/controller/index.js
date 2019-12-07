@@ -171,9 +171,9 @@ function sendConfirmation(msg) {
 }
 
 /**
- * Cоздаю окошка с сообщением, отправляю событие
+ * Cоздаю окошко с сообщением, отправляю событие
  * @param {String} msg - текст который будет показан в окошке
- * @param date - дата, необязательный аттрибут. По умолчанию new Date()
+ * @param {Date} date - дата, необязательный аттрибут. По умолчанию new Date()
  * @param {String} eventName - название событие которое должно запускать действие
  */
 function preparation(msg, eventName, date = new Date()) {
