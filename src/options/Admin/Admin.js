@@ -6,7 +6,7 @@ import React, {
    useMemo,
 } from 'react';
 import DataBase from '../../storage/db';
-import { Pane, Icon, Select } from 'evergreen-ui';
+import { Pane, Icon, Select, IconButton } from 'evergreen-ui';
 import EditingItem from './EditingItem';
 import EditDialog from './EditDialog';
 
@@ -81,6 +81,11 @@ function Admin() {
                         }}
                         newup={group.theme}
                      />
+                     <IconButton icon="plus" color="green" size={20} onClick={() => data.current.createTask({
+                        description: 'Новое задание',
+                        theme: group.theme
+                     })} />
+
                      <ul>
                         {group.items.map((item) => {
                            return (
@@ -92,7 +97,7 @@ function Admin() {
                                     }}
                                     newup={item.description}
                                  />
-                                 <Icon
+                                 <IconButton
                                     icon="info-sign"
                                     color="info"
                                     marginLeft={16}
@@ -109,11 +114,12 @@ function Admin() {
                                        return <option value={text} key={text}>{text}</option>;
                                     })}
                                  </Select>
-                                 <Icon icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
+                                 <IconButton icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
                               </li>
                            );
                         })}
                      </ul>
+
                   </li>
                );
             })}
@@ -128,6 +134,7 @@ function Admin() {
                onCloseComplete={() => setEditElement()}
             />
          )}
+
       </Pane>
    );
 }
