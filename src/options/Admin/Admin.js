@@ -149,6 +149,7 @@ function Admin() {
                   description: 'Новое задание',
                   theme: "Новая тема"
                })} appearance="minimal" />
+               <Pane marginBottom={75} />
                {editElement && (
                   <EditDialog
                      text={editElement.additional}
