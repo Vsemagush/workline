@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState, useRef } from 'react';
+import React, { useMemo, useEffect, useState, useRef, useCallback } from 'react';
 import './User.css';
 import DataBaseApi from '../../storage/db';
 import ContentChannel from './../Channel';
@@ -85,13 +85,38 @@ function useMatchingData(tasks, progress) {
 
 function LearningPage() {
 
-    /** Смена текущего задания для выполнения */
-    const changeProcessingItem = {};
     const db = useRef();
     const channel = useRef();
     const [items, setItems] = useState();
     const [progress, setProgress] = useState();
     const groupedItems = useGroupedItems(useMatchingData(items,progress))
+
+    /** Смена текущего задания для выполнения */
+    const changeProcessingItem = useCallback(()=>{
+       if (!items || !groupedItems || !groupedItems.length)
+          return;
+       let newItems = items.slice();
+       let current = newItems.findIndex((element)=>element.state===STATE_PROCESSING);
+       newItems[current].state = STATE_DONE;
+       db.current.setState(newItems[current].id,STATE_DONE);
+       channel.current.removeListener(newItems[current].event)
+       let cGroup = groupedItems.findIndex((group)=>group.theme===newItems[current].theme);
+       let group = groupedItems[cGroup];
+       let currentInGroup = group.items.indexOf(newItems[current]);
+
+       if (currentInGroup+1<group.items.length) {
+          let idx = newItems.indexOf(group.items[currentInGroup+1]);
+          newItems[idx].state = STATE_PROCESSING;
+          db.current.setState(newItems[idx].id,STATE_PROCESSING)
+       } else {
+          if (cGroup+1<groupedItems.length && groupedItems[cGroup+1].items) {
+             let idx = newItems.indexOf(groupedItems[cGroup+1].items[0]);
+             newItems[idx].state=STATE_PROCESSING;
+             db.current.setState(newItems[idx].id,STATE_PROCESSING)
+          }
+       }
+       setItems(newItems)
+    }, [groupedItems,items]);
 
     /** Получение прогресса и задач из БД и подписка на их изменение */
     useEffect(() => {
@@ -103,7 +128,7 @@ function LearningPage() {
             setProgress(result);
         });
     }, [])
-    
+
     useEffect(()=> {
          if (items && items.length){
             channel.current = new ContentChannel('user-event');
@@ -111,12 +136,12 @@ function LearningPage() {
             if (currentProcess){
                const event = currentProcess.event;
                channel.current.addListener(event, changeProcessingItem);
-               
+
                return function() {
                   channel.current.removeListener(event, changeProcessingItem);
                };
             }
-            
+
          }
     },[changeProcessingItem, items])
     return (
