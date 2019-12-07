@@ -29,10 +29,10 @@ function Home() {
          <div className="particlejs_div">
             <div className="Home-Form">
                <div>
-                <span className="TopBar__logoBlock">
-                    <img className="TopBar__logo" src="../../assets/logo.png"></img>
+                <span className="Home-TopBar__logoBlock">
+                    <img className="Home-TopBar__logo" src="../../assets/logo.png"></img>
                 </span>
-                  <span className="TopBar__header">Workline</span>
+                  <span className="Home-TopBar__header">Workline</span>
                </div>
                <div>
                   <TextInput
@@ -46,6 +46,7 @@ function Home() {
                      innerRef={password}
                      placeholder="Пароль"
                      className="Home-TextInput"
+                     type='password'
                   />
                </div>
                <Button

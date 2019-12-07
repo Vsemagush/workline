@@ -6,7 +6,7 @@ import React, {
    useMemo,
 } from 'react';
 import DataBase from '../../storage/db';
-import { Pane, Icon, Select, IconButton } from 'evergreen-ui';
+import { Pane, Select, IconButton } from 'evergreen-ui';
 import EditingItem from './EditingItem';
 import EditDialog from './EditDialog';
 
@@ -69,6 +69,12 @@ function Admin() {
       data.current.removeTask(key);
    }, []);
 
+   const deleteGroup = useCallback((groupItems) => {
+      data.current.removeTasks(groupItems.map((item) => {
+         return item.id;
+      }));
+   }, []);
+
    return (
       <Pane background="#DDEBF7">
          <ul>
@@ -85,6 +91,7 @@ function Admin() {
                         description: 'Новое задание',
                         theme: group.theme
                      })} />
+                     <IconButton icon="cross" color="red" size={20} onClick={() => { deleteGroup(group.items) }} />
                      <ul>
                         {group.items.map((item) => {
                            return (
@@ -132,7 +139,6 @@ function Admin() {
                onCloseComplete={() => setEditElement()}
             />
          )}
-
       </Pane>
    );
 }
