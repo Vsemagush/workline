@@ -88,6 +88,21 @@ function useMatchingData(tasks, progress) {
       },[tasks,progress])
 }
 
+function useCurrentLineProgress(items) {
+    return useMemo(() => {
+        let progress = 0;
+        if (items && items.length) {
+            let doneCount = 0;
+            items.forEach(item => {
+                if(item.state===STATE_DONE) doneCount++;
+            })
+            progress = (doneCount / items.length) * 100;
+        }
+
+        return progress;
+    },[items])
+}
+
 function LearningPage() {
 
     const db = useRef();
@@ -95,6 +110,8 @@ function LearningPage() {
     const [items, setItems] = useState();
     const [progress, setProgress] = useState();
     const groupedItems = useGroupedItems(useMatchingData(items,progress))
+    const lineProgress = useCurrentLineProgress(useMatchingData(items,progress));
+
     /** Смена текущего задания для выполнения */
     const changeProcessingItem = useCallback(()=>{
        if (!items || !groupedItems || !groupedItems.length)
@@ -151,7 +168,7 @@ function LearningPage() {
     
     return (
         <Pane height="100vh" overflow="hidden">
-            <TopBar />
+           <TopBar caption="Обучение"/>
             <Pane 
                 background="#DDEBF7"
             >
@@ -165,7 +182,7 @@ function LearningPage() {
                     padding={30}
                     elevation={2}
                 >
-                    
+                    <Progress progress={lineProgress} />
                     <OrderedList>
                     {
                         groupedItems.map((group) => {  
