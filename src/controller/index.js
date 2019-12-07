@@ -127,7 +127,7 @@ function startDetectedEvent(path) {
          }
          break;
       case '/Tasks/registry/FromMe/':
-         //мы в задачах от меня
+         // мы в задачах от меня
          if (!window.myper1){
          window.myper1 = true;
          window.addEventListener('click', (event) => {
@@ -139,46 +139,25 @@ function startDetectedEvent(path) {
                channel.dispatch('tasks_click-create-new-task-otmenya', { msg, date });
             
                // временно, перейти на определение открытия панели
-               setTimeout(() => sendConfirmation(msg), 1000)
-               
-               //если создали от меня, но не выходили из окна, теперь удаляем
-               /*window.addEventListener('click', (event) => {
-                  const textButton = event.toElement.innerText;
-                  const a = document.getElementsByClassName('controls-BaseButton__text controls-Button__text_clickable_theme-online-default controls-Button__text_viewMode-button_theme-online-default')
-                  let b;
-                  for (let item of a) {
-                     if (item.innerText==='Да'){
-                        b = item;
-                     }
-                 }
-                  if (window.location.pathname==="/Tasks/registry/FromMe/" && textButton === 'Да' && b.closest(".controls-ConfirmationTemplate").children[0].children[0].children[0].children[0].children[0].children[0].innerText ==='Удалить документ?'){
-                     const msg = 'Вы удалили свою первую задачу, можете продолжать работу!';
-                     const date = new Date();
-      
-                     channel.dispatch('tasks_click-delete-task-otmenya-noout', { msg, date });
-                  
-                     // временно, перейти на определение открытия панели
-                     setTimeout(() => sendConfirmation(msg), 1000)
-                  }
-               });*/
+               setTimeout(() => sendConfirmation(msg), 1000);
             }
             else{
-               //если вышли из окна, после создания или создавали из раздела задачи на мне
-               const a = document.getElementsByClassName('controls-BaseButton__text controls-Button__text_clickable_theme-online-default controls-Button__text_viewMode-button_theme-online-default')
-               let b;
-               for (let item of a) {
+               // создавали из раздела задачи на мне
+               const poisk = document.getElementsByClassName('controls-Button__text_clickable_theme-online-default')
+               let element;
+               for (let item of poisk) {
                   if (item.innerText==='Да'){
-                      b = item;
+                      element = item;
                   }
                }
-               if (window.location.pathname==="/Tasks/registry/FromMe/" && textButton === 'Да' && b.closest(".controls-ConfirmationTemplate").children[0].children[0].children[0].children[0].children[0].children[0].innerText ==='Удалить документ?'){
+               if (window.location.pathname==="/Tasks/registry/FromMe/" && textButton === 'Да' && element.closest(".controls-ConfirmationTemplate").children[0].children[0].children[0].children[0].children[0].children[0].innerText ==='Удалить документ?'){
                   const msg = 'Вы удалили свою первую задачу, можете продолжать работу!';
                   const date = new Date();
       
                   channel.dispatch('tasks_click-delete-task-otmenya-yesout', { msg, date });
                   
                   // временно, перейти на определение открытия панели
-                  setTimeout(() => sendConfirmation(msg), 1000)
+                  setTimeout(() => sendConfirmation(msg), 1000);
                }
             }
          });
@@ -193,7 +172,7 @@ function startDetectedEvent(path) {
          sendNotification('Коллег и других сотрудников можно найти здесь!');
          break;
       case '/Calendar/':
-         //мы в календаре
+         // мы в календаре
          sendNotification('Здесь Вы можете заполнить своё расписание!');
          window.addEventListener('click', (event) => {
             const arrayList = event.toElement.className;
