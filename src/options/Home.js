@@ -24,23 +24,9 @@ function Home() {
    }, [history, password, login]);
 
    return (
-      <div
-         style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-         }}
-      >
+      <div className="particlejs_div">
          <ParticleComponent/>
-         <div
-            style={{
-               position: 'absolute',
-               top: 0,
-               left: 0,
-               width: '100%',
-               height: '100%',
-            }}>
+         <div className="particlejs_div">
             <div className="Home-Form">
                <div>
                 <span className="TopBar__logoBlock">

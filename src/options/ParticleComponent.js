@@ -11,6 +11,9 @@ class ParticleComponent extends Component {
             height: `${window.innerHeight}px`
          });
       };
+      this.particlesStyle = {
+         background: '#cacaca',
+      }
    }
    componentDidMount() {
       this.updateWindowDimensions();
@@ -23,20 +26,10 @@ class ParticleComponent extends Component {
    render() {
       const { width, height } = this.state;
       return (
-         <div
-            style={{
-               position: 'absolute',
-               top: 0,
-               left: 0,
-               width: '100%',
-               height: '100%',
-            }}
-         >
+         <div className="particlejs_div">
             <Particles
                {...this.state}
-               style={{
-                  background: '#cacaca',
-               }}
+               style={this.particlesStyle}
                params={{
                   "particles": {
                      "number": {
