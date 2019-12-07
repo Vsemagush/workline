@@ -53,6 +53,10 @@ body {
   width:500px;
 }
 
+.HomeButtonAuth {
+  width:400px;
+}
+
 .disp-flex {
   display: flex;
   flex-direction: column;
