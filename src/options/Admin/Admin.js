@@ -6,13 +6,14 @@ import React, {
    useMemo,
 } from 'react';
 import DataBase from '../../storage/db';
-import { Pane, Icon } from 'evergreen-ui';
+import { Pane, Icon, Select } from 'evergreen-ui';
 import EditingItem from './EditingItem';
 import EditDialog from './EditDialog';
 
 function Admin() {
    const [taskList, setTaskList] = useState([]);
    const [editElement, setEditElement] = useState();
+   const [events, setEvents] = useState();
 
    const groupedTasks = useMemo(
       function group() {
@@ -37,12 +38,13 @@ function Admin() {
    );
 
    const data = useRef();
-   const saveItem = useCallback(function(item) {
+   const saveItem = useCallback(function (item) {
       data.current.updateTask(item.id, item);
    }, []);
 
    useEffect(() => {
       data.current = new DataBase();
+      setEvents(data.current.getEvent());
       data.current.get('tasks').then((result) => {
          var array = data.current.toArray(result);
          setTaskList(array);
@@ -50,7 +52,7 @@ function Admin() {
    }, []);
 
    const saveGroup = useCallback(
-      function(oldName, newName) {
+      function (oldName, newName) {
          let newData = {};
          for (var i = 0; i < taskList.length; i++) {
             if (taskList[i].theme === oldName) {
@@ -66,7 +68,7 @@ function Admin() {
    const deleteTask = useCallback((key) => {
       data.current.removeTask(key);
    }, []);
-   
+
    return (
       <Pane background="#DDEBF7">
          <ul>
@@ -89,7 +91,7 @@ function Admin() {
                                        saveItem(item);
                                     }}
                                     newup={item.description}
-                                 />              
+                                 />
                                  <Icon
                                     icon="info-sign"
                                     color="info"
@@ -98,7 +100,16 @@ function Admin() {
                                        setEditElement(item);
                                     }}
                                  />
-                                  <Icon icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
+                                 <Select onChange={(event) => {
+                                    item.event = event.target.value;
+                                    saveItem(item);
+                                 }
+                                 }>
+                                    {events.map((text) => {
+                                       return <option value={text} key={text}>{text}</option>;
+                                    })}
+                                 </Select>
+                                 <Icon icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
                               </li>
                            );
                         })}
