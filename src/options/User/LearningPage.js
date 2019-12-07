@@ -95,12 +95,12 @@ function useCurrentLineProgress(items) {
         if (items && items.length) {
             let doneCount = 0;
             items.forEach(item => {
-                if(item.state===STATE_DONE) doneCount++;  
+                if(item.state===STATE_DONE) doneCount++;
             })
             progress = (doneCount / items.length) * 100;
         }
 
-        return progress;        
+        return progress;
     },[items])
 }
 
@@ -168,13 +168,15 @@ function LearningPage() {
     },[changeProcessingItem, items]);
     
     return (
-        <div height="100vh">
-            <TopBar caption="Обучение"/>
+        <Pane height="100vh" overflow="hidden">
+           <TopBar caption="Обучение"/>
             <Pane 
                 background="#DDEBF7"
             >
-                <Pane 
-                    height={1000}  
+                <Pane
+                   className="invscroll"
+                    height={1000}
+                    overflow="auto"
                     background="white"
                     marginLeft={80}
                     marginRight={80}
@@ -215,7 +217,7 @@ function LearningPage() {
                     
                 </Pane>
             </Pane>
-        </div>
+        </Pane>
     );
 }
 
