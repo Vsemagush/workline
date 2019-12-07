@@ -9,10 +9,10 @@ import HomeDemo from './HomeDemo';
 function App() {
    return (
       <Switch>
-         <Route exact path="/" component={Home}/>
-         <Route path="/admin" component={Admin}/>
-         <Route path="/user" component={LearningPage}/>
-         <Route path="/demo" component={HomeDemo}/>
+         <Route exact path="/" component={Home} />
+         <Route path="/admin" component={Admin} />
+         <Route path="/user" component={LearningPage} />
+         <Route path="/demo" component={HomeDemo} />
       </Switch>
    );
 }

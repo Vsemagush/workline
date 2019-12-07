@@ -53,7 +53,7 @@ function startDetectedEvent(path) {
             const textButton = event.toElement.innerText;
             const elementClass = event.toElement.className;
             const openNews = event.toElement.parentElement;
-            const parentFirstLevel = openNews.parentElement;
+            const parentFirstLevel = openNews ? openNews.parentElement : null;
 
             if (textButton === 'Все сотрудники') {
                preparation('Вы открыли список сотрудников! Тут можно найти ваших коллег!', 'news_click-all-staff');
@@ -67,7 +67,7 @@ function startDetectedEvent(path) {
 
             if ((openNews.className === 'feed-Item' ||
                openNews.className === 'feed-Content' ||
-               (parentFirstLevel.parentElement !== null && parentFirstLevel.parentElement.parentElement !== null &&
+               (parentFirstLevel && parentFirstLevel.parentElement !== null && parentFirstLevel.parentElement.parentElement !== null &&
                   parentFirstLevel.parentElement.parentElement.className === 'feed-Content'))) {
                preparation('Вы открыли новость! Замечательно!', 'news_post-open');
             }
