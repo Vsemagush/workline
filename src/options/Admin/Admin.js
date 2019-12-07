@@ -38,28 +38,19 @@ function Admin() {
                      />
                      <Icon icon="info-sign" color="info" marginLeft={16}
                         onClick={() => {
-                            setEditElement(item);
+                           setEditElement(item);
                         }} />
                   </li>
                );
             })}
          </ul>
-
-
          {editElement && <EditDialog text={editElement.additional}
             onConfirm={(text) => {
                editElement.additional = text;
                saveItem(editElement);
             }}
-
             onCloseComplete={() => setEditElement()}
-
          />}
-
-
-         <button onClick={() => saveItem({ id: 0, description: '1', theme: '2', additional: '3', type: '4', event: '5' })}>
-            Проверка
-         </button>
       </Pane>
    );
 }
