@@ -86,8 +86,7 @@ function useMatchingData(tasks, progress) {
 function LearningPage() {
 
     /** Смена текущего задания для выполнения */
-    const changeProcessingItem = {
-    };
+    const changeProcessingItem = {};
     const db = useRef();
     const channel = useRef();
     const [items, setItems] = useState();
