@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text } from 'evergreen-ui'
+import { Text, TextInput } from 'evergreen-ui'
 
 function EditingItem(props) {
   const [text, setText] = useState(props.newup);
@@ -7,7 +7,7 @@ function EditingItem(props) {
 
   if (edit == true) {
     return (
-      <input type="text" value={text} onChange={(event) => setText(event.target.value)} onKeyDown={(e) => {
+      <TextInput value={text} onChange={(event) => setText(event.target.value)} onKeyDown={(e) => {
         switch (e.key) {
           case 'Enter':
             {
