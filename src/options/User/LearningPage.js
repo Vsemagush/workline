@@ -1,6 +1,11 @@
-import React, { useMemo, useEffect, useState, useRef } from 'react';
+import React, { useMemo, useEffect, useState, useRef, Fragment } from 'react';
 import './User.css';
 import DataBaseApi from '../../storage/db';
+import TopBar from '../TopBar/TopBar';
+import {Pane, OrderedList} from 'evergreen-ui';
+import Task from './Task'
+import { GROUPED_BAR_CHART } from '@blueprintjs/icons/lib/esm/generated/iconContents';
+
 
 /** Возможные состояния задачи */
 const STATE_DONE = 'done';
@@ -9,59 +14,60 @@ const STATE_CLOSED = 'closed';
 
 /** Форматирование списка задач - группировка со статусами */
 function useGroupedItems(items) {
-   return useMemo(() => {
-      /** Группируем задачи по темам */
-      var data = {};
-      for (let item of items) {
-         if (item.theme in data)
-            data[item.theme].push(item);
-         else
-            data[item.theme] = [item];
-      }
-
-      /** Формируем список тем*/
-      var themes = [];
-
-      for (let theme of Object.keys(data)) {
-         var obj = {
-            id: theme,
-            theme: theme,
-            items: data[theme],
-         };
-
-         /** Определяем статус */
-         var wasProcessing = false;
-         var doneCount = 0;
-         for (let item of obj.items) {
-            if (item.state===STATE_PROCESSING) {
-               wasProcessing = true;
-               break;
-            }
-
-            if (item.state===STATE_DONE)
-               doneCount++
-         }
-         if (wasProcessing) {
-            obj.state = STATE_PROCESSING;
-         } else if (doneCount === obj.items.length) {
-            obj.state = STATE_DONE;
-         } else {
-            obj.state = STATE_CLOSED;
-         }
-
-         themes.push(obj);
-      }
-
-      if ((themes.length > 0) &&
-         (themes[0].items.length > 0) &&
-         !('state' in themes[0].items[0])) {
-         themes[0].items[0].state = STATE_PROCESSING;
-         themes[0].state = STATE_PROCESSING;
-      }
-      return themes;
-
-   }, [items]);
+    return useMemo(() => {
+        /** Группируем задачи по темам */
+        var data = {};
+        for (let item of items) {
+           if (item.theme in data)
+              data[item.theme].push(item);
+           else
+              data[item.theme] = [item];
+        }
+  
+        /** Формируем список тем*/
+        var themes = [];
+  
+        for (let theme of Object.keys(data)) {
+           var obj = {
+              id: theme,
+              theme: theme,
+              items: data[theme],
+           };
+  
+           /** Определяем статус */
+           var wasProcessing = false;
+           var doneCount = 0;
+           for (let item of obj.items) {
+              if (item.state===STATE_PROCESSING) {
+                 wasProcessing = true;
+                 break;
+              }
+  
+              if (item.state===STATE_DONE)
+                 doneCount++
+           }
+           if (wasProcessing) {
+              obj.state = STATE_PROCESSING;
+           } else if (doneCount === obj.items.length) {
+              obj.state = STATE_DONE;
+           } else {
+              obj.state = STATE_CLOSED;
+           }
+  
+           themes.push(obj);
+        }
+  
+        if ((themes.length > 0) &&
+           (themes[0].items.length > 0) &&
+           !('state' in themes[0].items[0])) {
+           themes[0].items[0].state = STATE_PROCESSING;
+           themes[0].state = STATE_PROCESSING;
+        }
+        return themes;
+  
+    }, [items]);
 }
+
 
 /** Сопоставление задачам прогресс */
 function useMatchingData(tasks, progress) {
@@ -86,8 +92,56 @@ function LearningPage() {
             setProgress(db.current.toArray(result));
         });
     }, [])
+
     return (
-        <div>Hello,world</div>
+        <div height="100vh">
+            <TopBar />
+            <Pane 
+                background="#DDEBF7"
+            >
+                <Pane 
+                    height={1000}  
+                    background="white"
+                    marginLeft={80}
+                    marginRight={80}
+                    padding={30}
+                    elevation={2}
+                >
+                    
+                    <OrderedList>
+                    {
+                        groupedItems.map((group) => {  
+                            
+                            return( 
+                                <Fragment key={group.id}>   
+                                     <hr/>                                     
+                                    <Task status={group.status} description={group.theme}></Task> 
+                                     
+                                    <OrderedList>
+                                    {
+                                        group.items.map((item) => {
+                                            return (
+                                                <Task 
+                                                status = {item.status} 
+                                                description={item.description} 
+                                                additional = {item.additional}  
+                                                subTask={true}
+                                                key={item.id}>
+
+                                                </Task> 
+                                            );
+                                        })
+                                    }
+                                    </OrderedList>                           
+                                </Fragment>
+                            );         
+                        })
+                    }     
+                    </OrderedList>       
+                    
+                </Pane>
+            </Pane>
+        </div>
     );
 }
 

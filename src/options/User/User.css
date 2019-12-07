@@ -2,4 +2,23 @@ hr {
     border: none;
     background-color: rgba(200, 201, 202, 0.5);
     height: 1px;
+    margin-bottom: 20px;
+}
+
+.Task-AlignCenter {
+    display: flex;
+    align-items: center;
+}
+
+.Task-Color-Status-done {
+    color: rgb(71, 184, 129);
+}
+
+.Task-Color-Status-closed{
+    color: rgba(67, 90, 111, 0.5)
+}
+
+.Task-Color-Status-processing{
+    color: rgb(42, 42, 42);
+    font-weight: 500;
 }

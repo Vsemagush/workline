@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import {Icon, Text, Paragraph, Tooltip, ListItem, Dialog} from 'evergreen-ui';
+import { resetIdCounter } from 'downshift';
 
 const STATUS_DONE = 'done';
 const STATUS_CLOSED = 'closed';
@@ -19,10 +21,49 @@ const iconStyle = {
    }
 }
 
-function Task() {
+function Task({status,description,additional,subTask}) {
+
+   const [isHint,setIsShowHint] = useState(false); 
+
    return (
-      <div></div>
+      <ListItem
+         className="Task-AlignCenter"
+         margin={20}
+         marginLeft={subTask && 50 || 20}
+         width="100%">
+            
+         <Icon 
+            icon={iconStyle[status].icon}
+            color={iconStyle[status].color}
+            size={subTask && 25 || 30}
+         />
+         <Text  
+            fontSize={subTask && 50 || 70}
+            padding={20}
+            paddingLeft={40}
+            className={"Task-Color-Status-"+status}>
+            {description}
+         </Text>
+         
+         {subTask && status!="closed" && <Icon 
+            icon="info-sign" 
+            color={status==="processing" && "blue" || "rgb(71, 184, 129)"}
+            size={25}
+            onClick= {()=>{setIsShowHint(true)}}/>
+         }
+         { isHint && <Dialog
+            isShown={isHint}
+            title="Подсказка к заданию"
+            fontSize={600}
+            onCloseComplete={() => setIsShowHint(false)}
+            hasFooter={false}>
+            <Text fontSize="30px">{additional}</Text>
+                     </Dialog>
+         }
+   
+   </ListItem>
    );
+   
 }
 
 export default Task;
