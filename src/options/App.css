@@ -6,7 +6,7 @@ body {
   margin: 0;
   height: 100%;
 }
-.TopBar__header {
+.Home-TopBar__header {
   text-align: center;
   color: #1e90ff;
   font-size: 70px;
@@ -25,11 +25,11 @@ body {
   flex-direction: column;
 }
 
-.TopBar__logo {
+.Home-TopBar__logo {
   text-align: center;
   width: 40px;
 }
-.TopBar__logoBlock {
+.Home-TopBar__logoBlock {
   text-align: center;
   width: 20px;
   padding: 20px;
