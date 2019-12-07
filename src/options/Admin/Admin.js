@@ -45,7 +45,7 @@ function Admin() {
    useEffect(() => {
       data.current = new DataBase();
       setEvents(data.current.getEvent());
-      data.current.get('tasks').then((result) => {
+      data.current.subscribeChanges('tasks', (result) => {
          var array = data.current.toArray(result);
          setTaskList(array);
       });
