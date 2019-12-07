@@ -1,8 +1,8 @@
-import React, { useMemo, useEffect, useState, useRef, Fragment,useCallback } from 'react';
+import React, { useMemo, useEffect, useState, useRef, Fragment, useCallback } from 'react';
 import './User.css';
 import DataBaseApi from '../../storage/db';
 import TopBar from '../TopBar/TopBar';
-import {Pane, OrderedList} from 'evergreen-ui';
+import { Pane, OrderedList } from 'evergreen-ui';
 import Task from './Task'
 import ProgressBar from './ProgressBar';
 
@@ -15,78 +15,82 @@ const STATE_CLOSED = 'closed';
 
 /** Форматирование списка задач - группировка со статусами */
 function useGroupedItems(items) {
-   return useMemo(() => {
-      if (!items || !items.length)
-         return [];
+    return useMemo(() => {
+        if (!items || !items.length)
+            return [];
 
-      /** Группируем задачи по темам */
-      let data = {};
-      for (let item of items) {
-         if (item.theme in data)
-            data[item.theme].push(item);
-         else
-            data[item.theme] = [item];
-      }
+        /** Группируем задачи по темам */
+        let data = {};
+        for (let item of items) {
+            if (item.theme in data)
+                data[item.theme].push(item);
+            else
+                data[item.theme] = [item];
+        }
 
-      /** Формируем список тем*/
-      let themes = [];
+        /** Формируем список тем*/
+        let themes = [];
 
-      for (let theme of Object.keys(data)) {
-         var obj = {
-            id: theme,
-            theme: theme,
-            items: data[theme],
-         };
+        for (let theme of Object.keys(data)) {
+            var obj = {
+                id: theme,
+                theme: theme,
+                items: data[theme],
+            };
 
-         /** Определяем статус */
-         var wasProcessing = false;
-         var doneCount = 0;
-         for (let item of obj.items) {
-            if (item.state===STATE_PROCESSING) {
-               wasProcessing = true;
-               break;
+            /** Определяем статус */
+            var wasProcessing = false;
+            var doneCount = 0;
+            for (let item of obj.items) {
+                if (item.state === STATE_PROCESSING) {
+                    wasProcessing = true;
+                    break;
+                }
+
+                if (item.state === STATE_DONE)
+                    doneCount++
+            }
+            if (wasProcessing) {
+                obj.state = STATE_PROCESSING;
+            } else if (doneCount === obj.items.length) {
+                obj.state = STATE_DONE;
+            } else {
+                obj.state = STATE_CLOSED;
             }
 
-            if (item.state===STATE_DONE)
-               doneCount++
-         }
-         if (wasProcessing) {
-            obj.state = STATE_PROCESSING;
-         } else if (doneCount === obj.items.length) {
-            obj.state = STATE_DONE;
-         } else {
-            obj.state = STATE_CLOSED;
-         }
+            themes.push(obj);
+        }
 
-         themes.push(obj);
-      }
+        if ((themes.length > 0) &&
+            (themes[0].items.length > 0) &&
+            !('state' in themes[0].items[0])) {
+            themes[0].items[0].state = STATE_PROCESSING;
+            themes[0].state = STATE_PROCESSING;
+        }
+        return themes.slice();
 
-      if ((themes.length > 0) &&
-         (themes[0].items.length > 0) &&
-         !('state' in themes[0].items[0])) {
-         themes[0].items[0].state = STATE_PROCESSING;
-         themes[0].state = STATE_PROCESSING;
-      }
-      return themes;
-
-   }, [items]);
+    }, [items]);
 }
 
 
 /** Сопоставление задачам прогресс */
 function useMatchingData(tasks, progress) {
-      return useMemo(() => {
-         if (!tasks || !progress)
+    return useMemo(() => {
+        if (!tasks)
             return [];
 
-         for (let [i,task] of tasks.entries()) {
-            let id = ['task',task.id].join('-');
+        if (!progress) {
+            return tasks.slice();
+        }
+
+        for (let [i, task] of tasks.entries()) {
+            let id = ['task', task.id].join('-');
             if (id in progress) {
-               tasks[i].state = progress[id].state
+                tasks[i].state = progress[id].state
             }
-         }
-         return tasks;
-      },[tasks,progress])
+        }
+        return tasks.slice();
+    }, [tasks, progress])
 }
 
 function useCurrentLineProgress(items) {
@@ -95,13 +99,13 @@ function useCurrentLineProgress(items) {
         if (items && items.length) {
             let doneCount = 0;
             items.forEach(item => {
-                if(item.state===STATE_DONE) doneCount++;
+                if (item.state === STATE_DONE) doneCount++;
             })
             progress = (doneCount / items.length) * 100;
         }
 
         return progress;
-    },[items])
+    }, [items])
 }
 
 function LearningPage() {
@@ -110,70 +114,69 @@ function LearningPage() {
     const channel = useRef();
     const [items, setItems] = useState();
     const [progress, setProgress] = useState();
-    const groupedItems = useGroupedItems(useMatchingData(items,progress))
-    const lineProgress = useCurrentLineProgress(useMatchingData(items,progress));
+    const groupedItems = useGroupedItems(useMatchingData(items, progress))
+    const lineProgress = useCurrentLineProgress(useMatchingData(items, progress));
 
     /** Смена текущего задания для выполнения */
-    const changeProcessingItem = useCallback(()=>{
-       if (!items || !groupedItems || !groupedItems.length)
-          return;
-       let newItems = items.slice();
-       let current = newItems.findIndex((element)=>element.state===STATE_PROCESSING);
-       newItems[current].state = STATE_DONE;
-       db.current.setState(newItems[current].id,STATE_DONE);
-       channel.current.removeListener(newItems[current].event)
-       let cGroup = groupedItems.findIndex((group)=>group.theme===newItems[current].theme);
-       let group = groupedItems[cGroup];
-       let currentInGroup = group.items.indexOf(newItems[current]);
+    const changeProcessingItem = useCallback(() => {
+        if (!items || !groupedItems || !groupedItems.length)
+            return;
+        let newItems = items.slice();
+        let current = newItems.findIndex((element) => element.state === STATE_PROCESSING);
+        newItems[current].state = STATE_DONE;
+        db.current.setState(newItems[current].id, STATE_DONE);
+        channel.current.removeListener(newItems[current].event)
+        let cGroup = groupedItems.findIndex((group) => group.theme === newItems[current].theme);
+        let group = groupedItems[cGroup];
+        let currentInGroup = group.items.indexOf(newItems[current]);
 
-       if (currentInGroup+1<group.items.length) {
-          let idx = newItems.indexOf(group.items[currentInGroup+1]);
-          newItems[idx].state = STATE_PROCESSING;
-          db.current.setState(newItems[idx].id,STATE_PROCESSING)
-       } else {
-          if (cGroup+1<groupedItems.length && groupedItems[cGroup+1].items) {
-             let idx = newItems.indexOf(groupedItems[cGroup+1].items[0]);
-             newItems[idx].state=STATE_PROCESSING;
-             db.current.setState(newItems[idx].id,STATE_PROCESSING)
-          }
-       }
-       setItems(newItems)
-    }, [groupedItems,items]);
+        if (currentInGroup + 1 < group.items.length) {
+            let idx = newItems.indexOf(group.items[currentInGroup + 1]);
+            newItems[idx].state = STATE_PROCESSING;
+            db.current.setState(newItems[idx].id, STATE_PROCESSING)
+        } else {
+            if (cGroup + 1 < groupedItems.length && groupedItems[cGroup + 1].items) {
+                let idx = newItems.indexOf(groupedItems[cGroup + 1].items[0]);
+                newItems[idx].state = STATE_PROCESSING;
+                db.current.setState(newItems[idx].id, STATE_PROCESSING)
+            }
+        }
+        setItems(newItems)
+    }, [groupedItems, items]);
 
     /** Получение прогресса и задач из БД и подписка на их изменение */
     useEffect(() => {
         db.current = new DataBaseApi();
-        db.current.subscribeChanges('tasks', (result) =>{
+        db.current.subscribeChanges('tasks', (result) => {
             setItems(db.current.toArray(result));
         });
-        db.current.subscribeChanges('progress/'+db.current.getUser(),(result) => {
+        db.current.subscribeChanges('progress/' + db.current.getUser(), (result) => {
             setProgress(result);
         });
     }, [])
 
-    useEffect(()=> {
-         if (items && items.length){
+    useEffect(() => {
+        if (items && items.length) {
             channel.current = new ContentChannel('user-event');
-            const currentProcess = items.find((element)=> element.state===STATE_PROCESSING);
-            if (currentProcess){
-               const event = currentProcess.event;
-               channel.current.addListener(event, changeProcessingItem);
+            const currentProcess = items.find((element) => element.state === STATE_PROCESSING);
+            if (currentProcess) {
+                const event = currentProcess.event;
+                channel.current.addListener(event, changeProcessingItem);
 
-               return function() {
-                  channel.current.removeListener(event, changeProcessingItem);
-               };
+                return function () {
+                    channel.current.removeListener(event, changeProcessingItem);
+                };
             }
 
-         }
-    },[changeProcessingItem, items]);
-    
+        }
+    }, [changeProcessingItem, items]);
+
     return (
         <Pane height="100vh" overflow="hidden">
-           <TopBar caption="Обучение"/>
-            <Pane
-            >
+            <TopBar caption="Обучение" />
+            <Pane>
                 <Pane
-                   className="invscroll"
+                    className="invscroll"
                     height={1000}
                     overflow="auto"
                     background="white"
@@ -182,38 +185,36 @@ function LearningPage() {
                     padding={30}
                     elevation={2}
                 >
-                   <div  className="progress"><ProgressBar progress={lineProgress} /></div>
+                    <div className="progress"><ProgressBar progress={lineProgress} /></div>
                     <OrderedList>
-                    {
-                        groupedItems.map((group) => {  
-                            
-                            return( 
-                                <Fragment key={group.id}>   
-                                     <hr/>                                     
-                                    <Task state={group.state || STATE_CLOSED} description={group.theme}></Task>
-                                     
-                                    <OrderedList>
-                                    {
-                                        group.items.map((item) => {
-                                            return (
-                                                <Task 
-                                                state = {item.state || STATE_CLOSED}
-                                                description={item.description} 
-                                                additional = {item.additional}  
-                                                subTask={true}
-                                                key={item.id}>
+                        {
+                            groupedItems.map((group) => {
 
-                                                </Task> 
-                                            );
-                                        })
-                                    }
-                                    </OrderedList>                           
-                                </Fragment>
-                            );         
-                        })
-                    }     
-                    </OrderedList>       
-                    
+                                return (
+                                    <Fragment key={group.id}>
+                                        <hr />
+                                        <Task state={group.state || STATE_CLOSED} description={group.theme}></Task>
+                                        <OrderedList>
+                                            {
+                                                group.items.map((item) => {
+                                                    return (
+                                                        <Task
+                                                            state={item.state || STATE_CLOSED}
+                                                            description={item.description}
+                                                            additional={item.additional}
+                                                            subTask={true}
+                                                            key={item.id}>
+                                                        </Task>
+                                                    );
+                                                })
+                                            }
+                                        </OrderedList>
+                                    </Fragment>
+                                );
+                            })
+                        }
+                    </OrderedList>
+                    <Pane marginBottom={75} />
                 </Pane>
             </Pane>
         </Pane>
