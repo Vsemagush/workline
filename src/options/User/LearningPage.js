@@ -87,7 +87,6 @@ function LearningPage() {
 
     /** Смена текущего задания для выполнения */
     const changeProcessingItem = {
-
     };
     const db = useRef();
     const channel = useRef();
