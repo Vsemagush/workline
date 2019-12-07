@@ -40,9 +40,37 @@ window.addEventListener('load', function() {
    startDetectedEvent(path);
 });
 
+function setLayout() {
+   setTimeout(function() {
+      const overlay = document.createElement('div');
+      overlay.id = 'overlay';
+      overlay.style.zIndex = '0';
+      overlay.style.width = '100%';
+      overlay.style.height = '100%';
+      overlay.style.backgroundColor = 'lightblue';
+      overlay.style.position = 'absolute';
+      overlay.style.opacity = '0.5';
+      overlay.style.top = '0';
+      overlay.style.left = '0';
+      overlay.style.overflow = 'auto';
+      document.body.appendChild(overlay);
+      const notificationDisable = document.getElementsByClassName('noticeCenter-Button noticeCenter-Button_expand noticeCenter-Panel__closeButton ws-flex-shrink-0 noticeCenter-Panel__closeButton_shading');
+      if (notificationDisable.length !== 0) {
+         notificationDisable[0].style.zIndex = '2';
+      }
+      const notificationEnable = document.getElementsByClassName('noticeCenter-EmbedButton');
+      if (notificationEnable.length !== 0) {
+         notificationEnable[0].style.zIndex = '2';
+         notificationEnable[0].reload();
+      }
+   }, 2000);
+
+}
+
 function startDetectedEvent(path) {
    switch (path) {
       case '/':
+         setLayout();
          // мы на главной странице
          sendNotification('Поздравляем с входом на портал online.sbis.ru!');
 
@@ -92,7 +120,8 @@ function startDetectedEvent(path) {
                setTimeout(() => sendConfirmation(msg), 1000);
             }
             if (openNews.parentElement.className.includes('controls-ListView__item__selected') ||
-               parentFirstLevel.parentElement.className.includes('controls-ListView__item__selected')) {
+               (parentFirstLevel != null && parentFirstLevel.parentElement != null &&
+                  parentFirstLevel.parentElement.className.includes('controls-ListView__item__selected'))) {
                const msg = 'Вы получили список новостей по выбранной группе!';
                const date = new Date();
 
