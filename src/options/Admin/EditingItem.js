@@ -6,7 +6,7 @@ function EditingItem(props) {
   const [edit, setEdit] = useState(false);
   if (edit == true) {
     return (
-      <TextInput size={props.size} value={text} onChange={(event) => setText(event.target.value)} onKeyDown={(e) => {
+      <TextInput fontSize={props.size} value={text} onChange={(event) => setText(event.target.value)} onKeyDown={(e) => {
         switch (e.key) {
           case 'Enter':
             setEdit(false);
@@ -22,7 +22,7 @@ function EditingItem(props) {
   }
   else {
     return (
-      <Text size={props.size} onClick={() => setEdit(true)}>
+      <Text fontSize={props.size} onClick={() => setEdit(true)}>
         {text}</Text>
     );
   }
