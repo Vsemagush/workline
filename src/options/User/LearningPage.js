@@ -227,6 +227,7 @@ function LearningPage() {
                      );
                   })}
                </OrderedList>
+               <Pane marginBottom={500} />
             </Pane>
          </Pane>
       </Pane>

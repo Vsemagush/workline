@@ -97,6 +97,7 @@ function Admin() {
                {groupedTasks.map((group) => {
                   return (
                      <Fragment key={group.id}>
+                        <hr />
                         <ListItem
                            listStyleType="none"
                            display="flex"
@@ -212,6 +213,7 @@ function Admin() {
                }
                appearance="minimal"
             />
+            <Pane marginBottom={500} />
             {editElement && (
                <EditDialog
                   text={editElement.additional}
