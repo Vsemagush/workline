@@ -69,6 +69,12 @@ function Admin() {
       data.current.removeTask(key);
    }, []);
 
+   const deleteGroup = useCallback((groupItems) => {
+      data.current.removeTasks(groupItems.map((item) => {
+         return item.id;
+      }));
+   }, []);
+
    return (
       <Pane background="#DDEBF7">
          <ul>
@@ -81,6 +87,7 @@ function Admin() {
                         }}
                         newup={group.theme}
                      />
+                     <Icon icon="cross" color="red" size={20} onClick={() => { deleteGroup(group.items) }} />
                      <ul>
                         {group.items.map((item) => {
                            return (
@@ -118,17 +125,19 @@ function Admin() {
                );
             })}
          </ul>
-         {editElement && (
-            <EditDialog
-               text={editElement.additional}
-               onConfirm={(text) => {
-                  editElement.additional = text;
-                  saveItem(editElement);
-               }}
-               onCloseComplete={() => setEditElement()}
-            />
-         )}
-      </Pane>
+         {
+            editElement && (
+               <EditDialog
+                  text={editElement.additional}
+                  onConfirm={(text) => {
+                     editElement.additional = text;
+                     saveItem(editElement);
+                  }}
+                  onCloseComplete={() => setEditElement()}
+               />
+            )
+         }
+      </Pane >
    );
 }
 export default Admin;
