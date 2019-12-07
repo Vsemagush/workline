@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import DataBase from '../../storage/db'
-import { Pane } from 'evergreen-ui';
+import { Pane, Icon } from 'evergreen-ui';
 import EditingItem from './EditingItem'
 
 function Admin() {
@@ -50,7 +50,9 @@ function Admin() {
       data.current.updateTasks(newData);
    }, [taskList]);
 
-
+   const deleteTask = useCallback((key) => {
+      data.current.removeTask(key);
+   }, []);
 
    return (
       <Pane background="#DDEBF7">
@@ -75,6 +77,7 @@ function Admin() {
                                     }}
                                     newup={item.description}
                                  />
+                                 <Icon icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
                               </li>
                            );
                         })}
