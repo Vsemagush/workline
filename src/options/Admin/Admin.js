@@ -5,12 +5,12 @@ import EditingItem from './EditingItem'
 
 function Admin() {
    const [taskList, setTaskList] = useState([]);
-   
+
    const groupedTasks = useMemo(function group() {
       var nev = [];
       for (var i = 0; i < taskList.length; i++) {
          const theme = nev.find((element) => { return element.theme == taskList[i].theme })
-         if (theme!=null) {
+         if (theme != null) {
             theme.items.push(taskList[i])
          }
          else {
@@ -25,7 +25,7 @@ function Admin() {
    }, [taskList]);
 
    const data = useRef();
-   const saveItem = useCallback(function(item) {
+   const saveItem = useCallback(function (item) {
       data.current.updateTask(item.id, item);
    });
 
@@ -39,7 +39,7 @@ function Admin() {
             });
       }, []);
 
-   const saveGroup = useCallback(function(oldName, newName) {
+   const saveGroup = useCallback(function (oldName, newName) {
       let newData = {};
       for (var i = 0; i < taskList.length; i++) {
          if (taskList[i].theme === oldName) {
@@ -48,21 +48,37 @@ function Admin() {
          }
       }
       data.current.updateTasks(newData);
-   });
+   }, [taskList]);
+
+
 
    return (
       <Pane background="#DDEBF7">
          <ul>
-            {taskList.map((item) => {
+            {groupedTasks.map((group) => {
                return (
-                  <li key={item.id} >
+                  <li key={group.id}>
                      <EditingItem
                         onSave={(text) => {
-                           item.description = text;
-                           saveItem(item);
+                           saveGroup(group.theme, text);
                         }}
-                        newup={item.description}
+                        newup={group.theme}
                      />
+                     <ul>
+                        {group.items.map((item) => {
+                           return (
+                              <li key={item.id} >
+                                 <EditingItem
+                                    onSave={(text) => {
+                                       item.description = text;
+                                       saveItem(item);
+                                    }}
+                                    newup={item.description}
+                                 />
+                              </li>
+                           );
+                        })}
+                     </ul>
                   </li>
                );
             })}
@@ -75,7 +91,7 @@ function Admin() {
          <button onClick={() => saveItem({ id: 0, description: '1', theme: '2', additional: '3', type: '4', event: '5' })}>
             Проверка
          </button>
-      </Pane>
+      </Pane >
    );
 }
 export default Admin;
