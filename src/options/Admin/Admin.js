@@ -80,7 +80,7 @@ function Admin() {
    return (
       <Pane>
          <TopBar caption="Администрирование" />
-         <Pane background="#DDEBF7" display="flex" alignItems="center" justifyContent="center">
+         <Pane display="flex" alignItems="center" justifyContent="center">
             <Pane display="flex" flexDirection="column">
                <UnorderedList>
                   {groupedTasks.map((group) => {
