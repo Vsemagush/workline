@@ -1,3 +1,10 @@
 .Admin-Select select {
    font-size: 18px;
 }
+
+hr {
+   border: none;
+   background-color: rgba(200, 201, 202, 0.5);
+   height: 1px;
+   margin-bottom: 20px;
+}

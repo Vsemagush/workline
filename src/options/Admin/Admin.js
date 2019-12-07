@@ -7,7 +7,7 @@ import React, {
    Fragment,
 } from 'react';
 import DataBase from '../../storage/db';
-import { Pane, Select, Icon, UnorderedList, ListItem } from 'evergreen-ui';
+import { Pane, Select, Icon, OrderedList, ListItem } from 'evergreen-ui';
 import EditingItem from './EditingItem';
 import EditDialog from './EditDialog';
 import TopBar from '../TopBar/TopBar';
@@ -93,10 +93,11 @@ function Admin() {
             marginRight={80}
             padding={30}
          >
-            <UnorderedList>
+            <OrderedList>
                {groupedTasks.map((group) => {
                   return (
                      <Fragment key={group.id}>
+                        <hr />
                         <ListItem
                            listStyleType="none"
                            display="flex"
@@ -134,7 +135,7 @@ function Admin() {
                            />
                         </ListItem>
                         <ListItem listStyleType="none">
-                           <UnorderedList>
+                           <OrderedList>
                               {group.items.map((item) => {
                                  return (
                                     <ListItem
@@ -194,12 +195,12 @@ function Admin() {
                                     </ListItem>
                                  );
                               })}
-                           </UnorderedList>
+                           </OrderedList>
                         </ListItem>
                      </Fragment>
                   );
                })}
-            </UnorderedList>
+            </OrderedList>
             <Icon
                icon="plus"
                color="muted"
