@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import { TextInput, Button } from 'evergreen-ui';
 import { useHistory } from "react-router-dom";
+import ParticleComponent from './ParticleComponent';
 
 /** Главная страница - страница авторизации */
 function Home() {
@@ -23,6 +24,26 @@ function Home() {
     }, [history,password,login]);
 
     return (
+       <div
+          style={{
+             position: 'absolute',
+             top: 0,
+             left: 0,
+             width: '100%',
+             height: '100%',
+             background: '#cacaca',
+          }}
+       >
+          <ParticleComponent/>
+          <div
+             style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+             }}
+          >
         <div>
             <div className="TopBar__header">Workline</div>
             <div className="TopBar__logoBlock">
@@ -44,7 +65,7 @@ function Home() {
             >
                 Войти
             </Button>
-        </div>
+        </div></div></div>
     );
 }
 
