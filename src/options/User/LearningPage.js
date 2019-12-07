@@ -10,8 +10,11 @@ const STATE_CLOSED = 'closed';
 /** Форматирование списка задач - группировка со статусами */
 function useGroupedItems(items) {
    return useMemo(() => {
+      if (!items || !items.length)
+         return [];
+
       /** Группируем задачи по темам */
-      var data = {};
+      let data = {};
       for (let item of items) {
          if (item.theme in data)
             data[item.theme].push(item);
@@ -20,7 +23,7 @@ function useGroupedItems(items) {
       }
 
       /** Формируем список тем*/
-      var themes = [];
+      let themes = [];
 
       for (let theme of Object.keys(data)) {
          var obj = {
@@ -65,7 +68,18 @@ function useGroupedItems(items) {
 
 /** Сопоставление задачам прогресс */
 function useMatchingData(tasks, progress) {
-      return {};
+      return useMemo(() => {
+         if (!tasks || !progress)
+            return [];
+
+         for (let [i,task] of tasks.entries()) {
+            let id = ['task',task.id].join('-');
+            if (id in progress) {
+               tasks[i].state = progress[id].state
+            }
+         }
+         return tasks;
+      },[tasks,progress])
 }
 
 function LearningPage() {
@@ -75,6 +89,7 @@ function LearningPage() {
     const db = useRef();
     const [items, setItems] = useState();
     const [progress, setProgress] = useState();
+    const groupedItems = useGroupedItems(useMatchingData(items,progress))
 
     /** Получение прогресса и задач из БД и подписка на их изменение */
     useEffect(() => {
@@ -82,8 +97,8 @@ function LearningPage() {
         db.current.subscribeChanges('tasks', (result) =>{
             setItems(db.current.toArray(result));
         });
-        db.current.subscribeChanges('progress',(result) => {
-            setProgress(db.current.toArray(result));
+        db.current.subscribeChanges('progress/'+db.current.getUser(),(result) => {
+            setProgress(result);
         });
     }, [])
     return (

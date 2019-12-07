@@ -14,6 +14,7 @@ function Home() {
     const onEnterClick = useCallback(() => {
         const loginInput = login.current.value;
         const passwordInput = password.current.value;
+        localStorage.setItem('userName', loginInput);
         if (loginInput === EDIT_DEFAULT_LOGIN && passwordInput === EDIT_DEFAULT_PASSWORD){
             history.replace('/admin');
         }
