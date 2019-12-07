@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect, useState, useRef, useCallback } from 'react';
 import './User.css';
 import DataBaseApi from '../../storage/db';
+import ContentChannel from './../Channel';
 
 /** Возможные состояния задачи */
 const STATE_DONE = 'done';
@@ -84,10 +85,11 @@ function useMatchingData(tasks, progress) {
 
 function LearningPage() {
 
-   const db = useRef();
-   const [items, setItems] = useState();
-   const [progress, setProgress] = useState();
-   const groupedItems = useGroupedItems(useMatchingData(items,progress))
+    const db = useRef();
+    const channel = useRef();
+    const [items, setItems] = useState();
+    const [progress, setProgress] = useState();
+    const groupedItems = useGroupedItems(useMatchingData(items,progress))
 
     /** Смена текущего задания для выполнения */
     const changeProcessingItem = useCallback(()=>{
@@ -126,6 +128,22 @@ function LearningPage() {
             setProgress(result);
         });
     }, [])
+
+    useEffect(()=> {
+         if (items && items.length){
+            channel.current = new ContentChannel('user-event');
+            const currentProcess = items.find((element)=> element.state===STATE_PROCESSING);
+            if (currentProcess){
+               const event = currentProcess.event;
+               channel.current.addListener(event, changeProcessingItem);
+
+               return function() {
+                  channel.current.removeListener(event, changeProcessingItem);
+               };
+            }
+
+         }
+    },[changeProcessingItem, items])
     return (
         <div>Hello,world</div>
     );
