@@ -150,13 +150,15 @@ function LearningPage() {
     },[changeProcessingItem, items]);
     
     return (
-        <div height="100vh">
+        <Pane height="100vh" overflow="hidden">
             <TopBar />
             <Pane 
                 background="#DDEBF7"
             >
-                <Pane 
-                    height={1000}  
+                <Pane
+                   className="invscroll"
+                    height={1000}
+                    overflow="auto"
                     background="white"
                     marginLeft={80}
                     marginRight={80}
@@ -197,7 +199,7 @@ function LearningPage() {
                     
                 </Pane>
             </Pane>
-        </div>
+        </Pane>
     );
 }
 
