@@ -25,10 +25,16 @@ const EVENTS_ARRAY = [
    'news_click-all-staff', // Открыть список всех сотрудников с главной страницы через поиск
    'contacts_click-new-message', // В разделе контактов создание сообщение и отправка его 
    'tasks_click-new-task', // В разделе задач - запуск задачи на выполнение
-   'calendar_click-new-event' // В разделе календарь - создание события
+   'calendar_click-new-event', // В разделе календарь - создание события
+   'news_like-click', // В разделе Новости нажатие на кнопку лайка
+   'news_unlike-click', // В разделе Новости нажатие на кнопку дизлайка
+   'news_post-open', // В разделе Новости открытие поп-апа при нажатие на новость
+   'news_post-filter', // В разделе Новости получение новостей по фильтру
+   'news_notification-open', // В разделе Новости открытие панели уведомлений
+   'news_notification-hidden', // В раздели Новости скрытие панели уведомлений
 ];
 
-const DEFAULT_USER = 'demo-user'
+const DEFAULT_USER = 'demo-user';
 
 /**
  * Доступ к API FireBase
@@ -44,10 +50,10 @@ class DataBaseApi {
     * Уровень доступа к данным обучения, по умолчанию пишем на уровень "test"
     * @param {String} root
     */
-   constructor(root='test') {
+   constructor(root = 'test') {
       this._db = database;
       this._subscriber = {};
-      this._root = root ? `/${root}/`: '/' ;
+      this._root = root ? `/${root}/` : '/';
       this._user = localStorage.getItem('userName') ? localStorage.getItem('userName') : DEFAULT_USER;
       this._events = EVENTS_ARRAY;
    }
@@ -63,7 +69,7 @@ class DataBaseApi {
          theme: '',       // раздел обучения, уникальная тема
          additional: '',  // дополнительные данные (подсказки)
          type: '',        // должность
-         event: ''        // привязанное событие из controller/*
+         event: '',        // привязанное событие из controller/*
       };
    }
 
@@ -97,19 +103,19 @@ class DataBaseApi {
       if (field) {
          const ref = this._db.ref(this._root + field);
          this._subscriber[field] = ref;
-   
+
          ref.on('value', (res) => callback(res.val()));
       } else {
-         throw Error('Нельзя наблюдать за корнем базы!')
+         throw Error('Нельзя наблюдать за корнем базы!');
       }
    }
 
    /**
     * Отписка от вотчера
-    * @param {String} field 
+    * @param {String} field
     * @returns {Boolean}
     */
-   unsubscribeChanges(field='') {
+   unsubscribeChanges(field = '') {
       const currentEvents = this._events[field];
       if (currentEvents) {
          this._subscriber[field].off('value');
@@ -224,7 +230,7 @@ class DataBaseApi {
 
       if (!keys) {
          if (!data) {
-            throw Error('Недопустимый набор параметров, нужны ключи или данные')
+            throw Error('Недопустимый набор параметров, нужны ключи или данные');
          }
          // если нет ключей - извлечем их из данных
          keys = Object.keys(data);
@@ -241,7 +247,7 @@ class DataBaseApi {
 
    /**
     * Возвращает id задачи для вставки
-    * @param {String|Number} key 
+    * @param {String|Number} key
     * @returns {String}
     */
    getTaskId(key) {
@@ -264,9 +270,9 @@ class DataBaseApi {
       const user = this.getUser();
       const stateTask = {
          state,
-         user
+         user,
       };
-      
+
       taskId = this.getTaskId(taskId);
 
       updates[`${this._root}/progress/${user}/${taskId}`] = stateTask;
@@ -300,12 +306,12 @@ class DataBaseApi {
 
    /**
     * Установка пользователя в базу, сохраняет/обновляет дату последнего логина
-    * @param {String} userName 
+    * @param {String} userName
     * @returns {Promise<Object|null>}
     */
-   setUser(userName=DEFAULT_USER) {
+   setUser(userName = DEFAULT_USER) {
       const data = {
-         dateLastLogin: Date().toString()
+         dateLastLogin: Date().toString(),
       };
       return this.set(`users/${userName}`, data);
    }
