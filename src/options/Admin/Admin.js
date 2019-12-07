@@ -87,11 +87,11 @@ function Admin() {
                         }}
                         newup={group.theme}
                      />
-                     <IconButton icon="plus" color="green" size={20} onClick={() => data.current.createTask({
+                     <IconButton icon="plus" onClick={() => data.current.createTask({
                         description: 'Новое задание',
                         theme: group.theme
                      })} />
-                     <IconButton icon="cross" color="red" size={20} onClick={() => { deleteGroup(group.items) }} />
+                     <IconButton icon="cross" onClick={() => { deleteGroup(group.items) }} />
                      <ul>
                         {group.items.map((item) => {
                            return (
@@ -120,7 +120,7 @@ function Admin() {
                                        return <option value={text} key={text}>{text}</option>;
                                     })}
                                  </Select>
-                                 <IconButton icon="cross" color="red" size={20} onClick={() => { deleteTask(item.id) }} />
+                                 <IconButton icon="cross" onClick={() => { deleteTask(item.id) }} />
                               </li>
                            );
                         })}
@@ -129,6 +129,10 @@ function Admin() {
                );
             })}
          </ul>
+         <IconButton icon="plus" onClick={() => data.current.createTask({
+            description: 'Новое задание',
+            theme: "Новая тема"
+         })} />
          {editElement && (
             <EditDialog
                text={editElement.additional}
