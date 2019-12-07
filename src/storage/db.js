@@ -159,6 +159,16 @@ class DataBaseApi {
    }
 
    /**
+    * Миграция данных
+    * @param {String} newRoot 
+    */
+   migrate(newRoot) {
+      this.get().then((data) => {
+         this._db.ref(newRoot).set(data);
+      });
+   }
+
+   /**
     * Запись задачи
     * @param {String} field
     * @returns {Promise<Object|null>}
